@@ -22,7 +22,7 @@
 html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);
   min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
-  padding-bottom:calc(var(--player-h) + var(--nav-h) + 0.5rem)}
+  padding-bottom:calc(var(--nav-h) + 1rem)}
 
 .view{display:none}.view.active{display:block}
 
@@ -171,8 +171,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .ep-info{flex:1;min-width:0}
 .ep-title{font-size:.88rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ep-meta{font-size:.72rem;color:var(--ink3);margin-top:2px;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
-.ep-diff{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:99px}
-.ep-time{font-family:'DM Mono',monospace}
 .ep-actions{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
 .ep-fav{width:28px;height:28px;border-radius:50%;background:transparent;border:1px solid var(--border2);
   color:var(--ink3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;
@@ -220,43 +218,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .math-block{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.65rem 0;text-align:center;margin:.7rem 0}
 .math-block .katex-display{margin:0;overflow-x:auto;overflow-y:hidden}
 
-/* ── NOW PLAYING ── */
-.np-wrap{display:flex;flex-direction:column;align-items:center;padding:1.8rem 1.2rem;
-  gap:1.4rem;min-height:60vh;justify-content:center}
-.np-cover{width:clamp(200px,60vw,270px);height:clamp(200px,60vw,270px);border-radius:var(--r);
-  display:flex;align-items:center;justify-content:center;font-size:clamp(5rem,16vw,7rem);
-  border:1px solid var(--border2);position:relative;overflow:hidden;
-  box-shadow:0 20px 60px rgba(0,0,0,.55)}
-.np-cover::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 55%)}
-.np-cover span{position:relative;z-index:1}
-.np-info{text-align:center;width:100%}
-.np-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;margin-bottom:.3rem}
-.np-author{font-size:.88rem;color:var(--ink2)}
-.progress-wrap{width:100%}
-.progress-bar{width:100%;height:4px;background:var(--s2);border-radius:99px;cursor:pointer;position:relative}
-.progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s linear}
-.progress-times{display:flex;justify-content:space-between;margin-top:.35rem;
-  font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3)}
-.waveform{width:100%;height:38px;display:flex;align-items:flex-end;justify-content:center;gap:3px}
-.wbar{width:3px;background:var(--accent);border-radius:2px;opacity:.7}
-.wbar.ani{animation:wave .7s ease-in-out infinite alternate}
-@keyframes wave{from{height:15%}to{height:100%}}
-.controls{display:flex;align-items:center;justify-content:center;gap:1.3rem}
-.ctrl-btn{width:42px;height:42px;border-radius:50%;background:transparent;border:1px solid var(--border2);
-  color:var(--ink2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
-.ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
-.ctrl-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ctrl-play{width:62px;height:62px;border-radius:50%;background:var(--accent);border:none;color:#000;
-  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;
-  box-shadow:0 8px 28px rgba(201,169,110,.32)}
-.ctrl-play:hover{transform:scale(1.05);box-shadow:0 12px 38px rgba(201,169,110,.42)}
-.ctrl-play svg{width:25px;height:25px;fill:currentColor}
-.np-open-notes{margin-top:.3rem;padding:.55rem 1.1rem;border-radius:99px;
-  background:var(--adim);border:1px solid var(--accent);color:var(--accent);
-  font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
-.np-open-notes:hover{background:var(--accent);color:#000}
-.np-notes{width:100%;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--s1)}
+
 
 /* ── FAVS VIEW ── */
 .favs-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
@@ -271,30 +233,18 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .nav-item svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2}
 .nav-label{font-size:9.5px;font-weight:500;letter-spacing:.04em}
 
-/* ── MINI PLAYER ── */
-.mini-player{position:fixed;bottom:var(--nav-h);left:0;right:0;z-index:100;
-  height:var(--player-h);padding:0 .9rem;display:flex;align-items:center;gap:.75rem;
-  background:rgba(0,0,0,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border2);
-  cursor:pointer;transition:background .2s}
-.mini-player:hover{background:var(--s1)}
-.mp-cover{width:42px;height:42px;border-radius:var(--rsm);display:flex;align-items:center;
-  justify-content:center;font-size:1.4rem;background:var(--s2);flex-shrink:0}
-.mp-info{flex:1;min-width:0}
-.mp-title{font-size:.79rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mp-sub{font-size:.69rem;color:var(--ink3);margin-top:1px}
-.mp-progress{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--s2)}
-.mp-progress-fill{height:100%;background:var(--accent);transition:width .4s linear}
-.mp-controls{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
-.mp-btn{width:34px;height:34px;border-radius:50%;background:var(--adim);border:1px solid var(--accent);
-  color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:all .2s;flex-shrink:0}
-.mp-btn:hover{background:var(--accent);color:#000}
-.mp-btn svg{width:13px;height:13px;fill:currentColor;stroke:none}
+
 
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+/* ── PDF COVER ── */
+.pdf-cover-btn{font-size:.7rem;color:var(--ink3);cursor:pointer;padding:.3rem .7rem;
+  border-radius:99px;border:1px dashed var(--border2);background:transparent;
+  font-family:'DM Sans',sans-serif;transition:all .2s;margin-top:.3rem;display:inline-block}
+.pdf-cover-btn:hover{border-color:var(--accent);color:var(--accent)}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 </head>
 <body>
 
@@ -321,25 +271,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 <div id="search-view" class="view"></div>
 <div id="detail" class="view"></div>
 <div id="favs-view" class="view"></div>
-<div id="now-playing" class="view"></div>
 
-<!-- MINI PLAYER -->
-<div class="mini-player" id="mini-player" onclick="openNowPlayingView()">
-  <div class="mp-cover" id="mp-cover">♩</div>
-  <div class="mp-info">
-    <div class="mp-title" id="mp-title">Selecciona un tema para estudiar</div>
-    <div class="mp-sub" id="mp-sub">NotePlayer</div>
-  </div>
-  <div class="mp-controls" onclick="event.stopPropagation()">
-    <button class="mp-btn" id="mp-prev" onclick="prevTrack()">
-      <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4" fill="currentColor"/><rect x="5" y="4" width="3" height="16" rx="1" fill="currentColor"/></svg>
-    </button>
-    <button class="mp-btn" id="mp-next" onclick="nextTrack()">
-      <svg viewBox="0 0 24 24"><polygon points="5,20 15,12 5,4" fill="currentColor"/><rect x="16" y="4" width="3" height="16" rx="1" fill="currentColor"/></svg>
-    </button>
-  </div>
-  <div class="mp-progress"><div class="mp-progress-fill" id="mp-prog"></div></div>
-</div>
+
+
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
@@ -364,7 +298,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 ══════════════════════════════════════════ */
 const LIBRARY = [
   { label:"Cálculo Infinitesimal", books:[
-    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
+    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Stewart, James", pages:52, totalTime:"2h 35min", pdfUrl:"https://www.academia.edu/43053097/Calculo_James_Stewart_7ma_Edicion", tracks:[
       { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
         latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
 <h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
@@ -398,7 +332,7 @@ const LIBRARY = [
 <h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
 <div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
     ]},
-    { id:"cal2", title:"Cálculo Integral", emoji:"∫", cover:"linear-gradient(135deg,#0a2540,#1a6fbf)", author:"Vol. II", pages:44, totalTime:"1h 48min", tracks:[
+    { id:"cal2", title:"Cálculo Integral", emoji:"∫", cover:"linear-gradient(135deg,#0a2540,#1a6fbf)", author:"Apostol, Tom M.", pages:44, totalTime:"1h 48min", pdfUrl:"https://www.maths.ed.ac.uk/~v1ranick/papers/apostol1.pdf", tracks:[
       { num:1, title:"Series de Taylor", sub:"Expansiones en serie", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"48min",
         latex:`<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Vol. II · Cálculo Integral</span>
 <h2>Definición</h2><div class="math-block">$$f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
@@ -417,7 +351,7 @@ const LIBRARY = [
     ]}
   ]},
   { label:"Álgebra Superior", books:[
-    { id:"alg1", title:"Álgebra Lineal", emoji:"⊗", cover:"linear-gradient(135deg,#0d2f1f,#1d9e6a)", author:"Vol. Único", pages:48, totalTime:"2h 10min", tracks:[
+    { id:"alg1", title:"Álgebra Lineal", emoji:"⊗", cover:"linear-gradient(135deg,#0d2f1f,#1d9e6a)", author:"Strang, Gilbert", pages:48, totalTime:"2h 10min", pdfUrl:"https://math.mit.edu/~gs/linearalgebra/ila6/indexila6.html", tracks:[
       { num:1, title:"Sistemas Lineales", sub:"Eliminación Gaussiana", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"40min",
         latex:`<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal</span>
 <h2>Forma Matricial</h2><div class="math-block">$$A\\mathbf{x}=\\mathbf{b}$$</div>
@@ -436,7 +370,7 @@ const LIBRARY = [
 <div class="ex-box"><strong>Ejemplo:</strong> $A=\\begin{pmatrix}3&1\\\\0&2\\end{pmatrix}\\Rightarrow\\lambda_1=3,\\,\\lambda_2=2$</div>
 <div class="thm-box">$A=PDP^{-1}$ si tiene $n$ eigenvectores L.I.<br>$A^k=PD^kP^{-1}=P\\operatorname{diag}(\\lambda_1^k,\\ldots,\\lambda_n^k)P^{-1}$</div>` }
     ]},
-    { id:"alg2", title:"Álgebra Abstracta", emoji:"Σ", cover:"linear-gradient(135deg,#1a0a30,#6b21a8)", author:"Vol. I", pages:36, totalTime:"1h 30min", tracks:[
+    { id:"alg2", title:"Álgebra Abstracta", emoji:"Σ", cover:"linear-gradient(135deg,#1a0a30,#6b21a8)", author:"Herstein, I. N.", pages:36, totalTime:"1h 30min", pdfUrl:"https://archive.org/details/topicsinalgebra00hers", tracks:[
       { num:1, title:"Grupos", sub:"Axiomas y ejemplos", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"45min",
         latex:`<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta</span>
 <div class="def-box">$(G,*)$ es <strong>grupo</strong> si: cierre, asociatividad, identidad $e$, inverso $a^{-1}$.</div>
@@ -449,7 +383,7 @@ const LIBRARY = [
     ]}
   ]},
   { label:"Análisis Matemático", books:[
-    { id:"anc", title:"Análisis Complejo", emoji:"ℂ", cover:"linear-gradient(135deg,#1a0d0d,#b03030)", author:"Vol. Único", pages:40, totalTime:"1h 55min", tracks:[
+    { id:"anc", title:"Análisis Complejo", emoji:"ℂ", cover:"linear-gradient(135deg,#1a0d0d,#b03030)", author:"Ahlfors, Lars V.", pages:40, totalTime:"1h 55min", pdfUrl:"https://archive.org/details/AhlforsComplexAnalysis", tracks:[
       { num:1, title:"Números Complejos", sub:"Polar y exponencial", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"30min",
         latex:`<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo</span>
 <p>$z=a+bi$, $i^2=-1$. Módulo $|z|=\\sqrt{a^2+b^2}$.</p>
@@ -463,7 +397,7 @@ const LIBRARY = [
 <div class="math-block">$$\\frac{\\partial u}{\\partial x}=\\frac{\\partial v}{\\partial y}\\qquad\\frac{\\partial u}{\\partial y}=-\\frac{\\partial v}{\\partial x}$$</div>
 <div class="thm-box">$f$ es <strong>holomorfa</strong> en $D$ si es diferenciable en todo punto de $D$.</div>` }
     ]},
-    { id:"anr", title:"Análisis Real", emoji:"ℝ", cover:"linear-gradient(135deg,#0a1a0a,#2a7a2a)", author:"Vol. I", pages:38, totalTime:"1h 40min", tracks:[
+    { id:"anr", title:"Análisis Real", emoji:"ℝ", cover:"linear-gradient(135deg,#0a1a0a,#2a7a2a)", author:"Rudin, Walter", pages:38, totalTime:"1h 40min", pdfUrl:"https://archive.org/details/principlesofmath00rudi", tracks:[
       { num:1, title:"Sucesiones y Series", sub:"Criterios de convergencia", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"50min",
         latex:`<h1>Sucesiones y Series</h1><span class="subtitle">Análisis Real</span>
 <div class="def-box">$\\{a_n\\}\\to L$: $\\forall\\varepsilon>0\\,\\exists N:\\,n>N\\Rightarrow|a_n-L|<\\varepsilon$.</div>
@@ -476,7 +410,7 @@ const LIBRARY = [
     ]}
   ]},
   { label:"Probabilidad y Estadística", books:[
-    { id:"prob", title:"Probabilidad", emoji:"🎲", cover:"linear-gradient(135deg,#1a1200,#8a6a00)", author:"Vol. Único", pages:45, totalTime:"2h", tracks:[
+    { id:"prob", title:"Probabilidad", emoji:"🎲", cover:"linear-gradient(135deg,#1a1200,#8a6a00)", author:"Ross, Sheldon", pages:45, totalTime:"2h", pdfUrl:"https://archive.org/details/introductiontopr0000ross", tracks:[
       { num:1, title:"Espacios de Probabilidad", sub:"Axiomas de Kolmogorov", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"40min",
         latex:`<h1>Probabilidad</h1><span class="subtitle">Axiomas de Kolmogorov</span>
 <div class="def-box">$( \\Omega,\\mathcal{F},P)$: espacio muestral, $\\sigma$-álgebra, medida de probabilidad con $P(\\Omega)=1$.</div>
@@ -503,9 +437,15 @@ let state = {
   openTracks: new Set(),
   progress: 0,
   progressTimer: null,
+  recentTracks: JSON.parse(localStorage.getItem('np_recent') || '[]'),
 };
 
 function saveFavs() { localStorage.setItem('np_favs', JSON.stringify([...state.favorites])); }
+function addRecent(bookId, trackNum) {
+  const key = trackKey(bookId, trackNum);
+  state.recentTracks = [key, ...state.recentTracks.filter(k => k !== key)].slice(0, 8);
+  localStorage.setItem('np_recent', JSON.stringify(state.recentTracks));
+}
 function trackKey(bookId, num) { return `${bookId}:${num}`; }
 function isFav(key) { return state.favorites.has(key); }
 
@@ -521,8 +461,8 @@ function renderHome() {
       <div class="hscroll">
         ${cat.books.map(b => `
           <div class="mini-card" onclick="openDetail('${b.id}')">
-            <div class="mini-cover" style="background:${b.cover}">
-              <span>${b.emoji}</span>
+            <div class="mini-cover" style="background:${b.cover};position:relative;overflow:hidden">
+              ${b.pdfCoverData ? `<img src="${b.pdfCoverData}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:0">` : `<span>${b.emoji}</span>`}
               <div class="fav-dot ${isFav(b.id)?'faved':''}" onclick="event.stopPropagation();toggleFavBook('${b.id}',this)">
                 ${isFav(b.id)?'★':'☆'}
               </div>
@@ -535,25 +475,33 @@ function renderHome() {
       </div>
     </div>`).join('');
 
-  // Recently played
-  const recent = allBooks.slice(0, 4);
-  html += `
-    <div class="section">
-      <div class="section-header"><span class="section-title">Continuar</span></div>
-      <div class="continue-list">
-        ${recent.map(b => `
-          <div class="continue-item" onclick="openDetail('${b.id}')">
-            <div class="c-thumb" style="background:${b.cover}">${b.emoji}</div>
-            <div class="c-info">
-              <div class="c-title">${b.title}</div>
-              <div class="c-sub">${b.author}</div>
-            </div>
-            <button class="play-btn" onclick="event.stopPropagation();playTrack('${b.id}',1)">
-              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-            </button>
-          </div>`).join('')}
-      </div>
-    </div>`;
+  // History section
+  if (state.recentTracks.length > 0) {
+    const recentItems = state.recentTracks.map(key => {
+      const [bId, numStr] = key.split(':');
+      const book = allBooks.find(b => b.id === bId);
+      const track = book?.tracks.find(t => t.num === parseInt(numStr));
+      return book && track ? { book, track } : null;
+    }).filter(Boolean);
+    if (recentItems.length > 0) {
+      html += `
+        <div class="section">
+          <div class="section-header"><span class="section-title">Continuar leyendo</span></div>
+          <div class="continue-list">
+            ${recentItems.map(({ book: b, track: t }) => `
+              <div class="continue-item" onclick="playTrack('${b.id}',${t.num})">
+                <div class="c-thumb" id="cthumb-${b.id}" style="background:${b.cover};overflow:hidden;position:relative">
+                  ${b.pdfCoverData ? `<img src="${b.pdfCoverData}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : b.emoji}
+                </div>
+                <div class="c-info">
+                  <div class="c-title">${t.title}</div>
+                  <div class="c-sub">${b.title} · ${b.author}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }
+  }
 
   document.getElementById('home').innerHTML = html;
 }
@@ -571,7 +519,9 @@ function openDetail(bookId, skipHistory) {
 
   let html = `
     <div class="detail-header">
-      <div class="detail-cover" style="background:${book.cover}"><span>${book.emoji}</span></div>
+      <div class="detail-cover" style="background:${book.cover}" id="detail-cover-${book.id}">
+        ${book.pdfCoverData ? `<img src="${book.pdfCoverData}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r)">` : `<span>${book.emoji}</span>`}
+      </div>
       <div class="detail-info">
         <div class="detail-title">${book.title}</div>
         <div class="detail-author">${book.author} · ${book.pages} páginas</div>
@@ -580,9 +530,14 @@ function openDetail(bookId, skipHistory) {
         <button class="action-btn ${isFav(book.id)?'faved':''}" id="fav-btn" onclick="toggleFavBook('${book.id}',this,true)">
           ${isFav(book.id)?'★ Guardado':'☆ Guardar'}
         </button>
-        <button class="action-btn primary" onclick="playTrack('${book.id}',1)">▶ Reproducir</button>
+        ${book.pdfUrl ? `<a class="action-btn primary" href="${book.pdfUrl}" target="_blank" rel="noopener" style="text-decoration:none">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+          Ver PDF</a>` : ''}
       </div>
       <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
+      <button class="pdf-cover-btn" onclick="triggerPdfUpload('${book.id}')">
+        📄 Subir portada PDF
+      </button>
     </div>
     <div class="section-header" style="padding:0 1rem .4rem"><span class="section-title">Temas</span></div>
     <div class="episode-list" id="ep-list">`;
@@ -608,8 +563,6 @@ function renderTrackItem(book, t, isActive, isOpen, key) {
           <div class="ep-title">${t.title}</div>
           <div class="ep-meta">
             <span>${t.sub}</span>
-            <span class="ep-diff" style="${t.diffStyle}">${t.diff}</span>
-            <span class="ep-time">${t.time}</span>
           </div>
         </div>
         <div class="ep-actions">
@@ -664,168 +617,42 @@ function playTrack(bookId, num) {
 
   state.currentBookId = bookId;
   state.currentTrackKey = trackKey(bookId, num);
-  state.isPlaying = true;
-  state.progress = 0;
+  addRecent(bookId, num);
 
-  // Update mini player
-  document.getElementById('mp-cover').textContent = book.emoji;
-  document.getElementById('mp-cover').style.background = book.cover;
-  document.getElementById('mp-title').textContent = track.title;
-  document.getElementById('mp-sub').textContent = `${book.title} · ${track.sub}`;
-  updateMiniPlayBtn();
-
-  // Fake progress
-  clearInterval(state.progressTimer);
-  state.progressTimer = setInterval(() => {
-    state.progress = Math.min(state.progress + 0.2, 100);
-    document.getElementById('mp-prog').style.width = state.progress + '%';
-    if (state.isPlaying && document.getElementById('np-progress-fill')) {
-      document.getElementById('np-progress-fill').style.width = state.progress + '%';
-    }
-    if (state.progress >= 100) { clearInterval(state.progressTimer); nextTrack(); }
-  }, 500);
-
-  // Refresh detail view buttons if visible
-  if (state.view === 'detail' && state.currentBookId === bookId) {
-    refreshDetailButtons();
+  // If not already on this book's detail, open it
+  if (state.view !== 'detail' || state.currentBookId !== bookId) {
+    openDetail(bookId);
   }
 
-  // Open now playing
-  renderNowPlaying();
-  showView('now-playing');
-  setTopBar('Reproduciendo', true);
+  // Render apunte inline under the track row
+  openApunteInline(bookId, num, book, track);
 }
 
-function refreshDetailButtons() {
-  document.querySelectorAll('.ep-item').forEach(el => {
-    const id = el.id.replace('ep-','');
-    const parts = id.split('-');
-    const bId = parts.slice(0,-1).join('-');
-    const n = parseInt(parts[parts.length-1]);
-    const key = trackKey(bId, n);
-    const isActive = state.currentTrackKey === key;
-    const playBtn = el.querySelector('.ep-play');
-    const numEl = el.querySelector('.ep-num');
-    if (playBtn) {
-      playBtn.classList.toggle('active', isActive && state.isPlaying);
-      playBtn.innerHTML = `<svg viewBox="0 0 24 24">${isActive && state.isPlaying
-        ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
-        : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>'}</svg>`;
-    }
-  });
+function openApunteInline(bookId, num, book, track) {
+  // Remove any existing open apunte
+  document.querySelectorAll('.inline-apunte').forEach(el => el.remove());
+  document.querySelectorAll('.ep-item.open').forEach(el => el.classList.remove('open'));
+
+  const wrap = document.getElementById('wrap-' + bookId + '-' + num);
+  if (!wrap) return;
+
+  const epEl = document.getElementById('ep-' + bookId + '-' + num);
+  epEl?.classList.add('open');
+
+  // Create apunte block
+  const div = document.createElement('div');
+  div.className = 'apunte-wrap open inline-apunte';
+  div.innerHTML = '<div class="apunte-inner" id="inline-ai-' + num + '"></div>';
+  wrap.appendChild(div);
+
+  const ai = div.querySelector('.apunte-inner');
+  ai.innerHTML = track.latex;
+  renderKaTeX(ai);
+
+  setTimeout(() => epEl?.scrollIntoView({ behavior:'smooth', block:'start' }), 150);
 }
 
-function prevTrack() {
-  if (!state.currentTrackKey) return;
-  const [bId, numStr] = state.currentTrackKey.split(':');
-  const book = allBooks.find(b => b.id === bId);
-  if (!book) return;
-  const idx = book.tracks.findIndex(t => t.num === parseInt(numStr));
-  if (idx > 0) playTrack(bId, book.tracks[idx-1].num);
-}
 
-function nextTrack() {
-  if (!state.currentTrackKey) return;
-  const [bId, numStr] = state.currentTrackKey.split(':');
-  const book = allBooks.find(b => b.id === bId);
-  if (!book) return;
-  const idx = book.tracks.findIndex(t => t.num === parseInt(numStr));
-  if (idx < book.tracks.length - 1) playTrack(bId, book.tracks[idx+1].num);
-}
-
-function togglePlay() {
-  state.isPlaying = !state.isPlaying;
-  if (state.isPlaying) {
-    state.progressTimer = setInterval(() => {
-      state.progress = Math.min(state.progress + 0.2, 100);
-      document.getElementById('mp-prog').style.width = state.progress + '%';
-      if (document.getElementById('np-progress-fill')) document.getElementById('np-progress-fill').style.width = state.progress + '%';
-    }, 500);
-  } else {
-    clearInterval(state.progressTimer);
-  }
-  updateMiniPlayBtn();
-  if (document.getElementById('np-play-icon')) {
-    document.getElementById('np-play-icon').innerHTML = state.isPlaying
-      ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
-      : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>';
-  }
-}
-
-function updateMiniPlayBtn() {
-  const icon = document.getElementById('mp-icon');
-  if (!icon) return;
-  icon.innerHTML = state.isPlaying
-    ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
-    : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>';
-}
-
-/* ══════════════════════════════════════════
-   NOW PLAYING VIEW
-══════════════════════════════════════════ */
-function openNowPlayingView() {
-  if (!state.currentTrackKey) return;
-  renderNowPlaying();
-  showView('now-playing');
-  setTopBar('Reproduciendo', true);
-}
-
-function renderNowPlaying() {
-  if (!state.currentTrackKey) return;
-  const [bId, numStr] = state.currentTrackKey.split(':');
-  const book = allBooks.find(b => b.id === bId);
-  const track = book?.tracks.find(t => t.num === parseInt(numStr));
-  if (!book || !track) return;
-
-  document.getElementById('now-playing').innerHTML = `
-    <div class="np-wrap">
-      <div class="np-cover" style="background:${book.cover}"><span>${book.emoji}</span></div>
-      <div class="np-info">
-        <div class="np-title">${track.title}</div>
-        <div class="np-author">${book.title} · ${track.sub}</div>
-      </div>
-      <div class="progress-wrap">
-        <div class="progress-bar" onclick="seekProgress(event)">
-          <div class="progress-fill" id="np-progress-fill" style="width:${state.progress}%"></div>
-        </div>
-        <div class="progress-times">
-          <span id="np-elapsed">—</span>
-          <span>${track.time}</span>
-        </div>
-      </div>
-      <div class="controls">
-        <button class="ctrl-btn" onclick="prevTrack()">
-          <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4" fill="currentColor" stroke="none"/><rect x="5" y="4" width="3" height="16" rx="1" fill="currentColor" stroke="none"/></svg>
-        </button>
-        <button class="ctrl-play" onclick="togglePlay()">
-          <svg viewBox="0 0 24 24" id="np-play-icon">
-            ${state.isPlaying
-              ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
-              : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>'}
-          </svg>
-        </button>
-        <button class="ctrl-btn" onclick="nextTrack()">
-          <svg viewBox="0 0 24 24"><polygon points="5,20 15,12 5,4" fill="currentColor" stroke="none"/><rect x="16" y="4" width="3" height="16" rx="1" fill="currentColor" stroke="none"/></svg>
-        </button>
-      </div>
-      <div id="np-notes-area" style="width:100%"></div>
-    </div>`;
-
-  // Auto-open notes immediately
-  const notesArea = document.getElementById('np-notes-area');
-  notesArea.innerHTML = `<div class="np-notes"><div class="apunte-inner" id="np-ai"></div></div>`;
-  const npAi = document.getElementById('np-ai');
-  npAi.innerHTML = track.latex;
-  renderKaTeX(npAi);
-}
-
-function seekProgress(e) {
-  const bar = e.currentTarget;
-  const ratio = e.offsetX / bar.offsetWidth;
-  state.progress = ratio * 100;
-  document.getElementById('np-progress-fill').style.width = state.progress + '%';
-  document.getElementById('mp-prog').style.width = state.progress + '%';
-}
 
 /* ══════════════════════════════════════════
    SEARCH
@@ -1010,10 +837,53 @@ function renderKaTeX(el) {
 }
 
 /* ══════════════════════════════════════════
+   PDF COVER EXTRACTION
+══════════════════════════════════════════ */
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+function triggerPdfUpload(bookId) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/pdf';
+  inp.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    try {
+      const pdf = await pdfjsLib.getDocument(url).promise;
+      const page = await pdf.getPage(1);
+      const vp = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement('canvas');
+      canvas.width = vp.width; canvas.height = vp.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      const imgData = canvas.toDataURL('image/jpeg', 0.85);
+      // Save to book object
+      const book = allBooks.find(b => b.id === bookId);
+      if (book) {
+        book.pdfCoverData = imgData;
+        localStorage.setItem('np_cover_' + bookId, imgData);
+        // Refresh detail view
+        openDetail(bookId);
+      }
+    } catch(err) { alert('No se pudo leer el PDF: ' + err.message); }
+    URL.revokeObjectURL(url);
+  };
+  inp.click();
+}
+
+// Load saved PDF covers on startup
+function loadSavedCovers() {
+  allBooks.forEach(b => {
+    const saved = localStorage.getItem('np_cover_' + b.id);
+    if (saved) b.pdfCoverData = saved;
+  });
+}
+
+/* ══════════════════════════════════════════
    INIT
 ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   history.replaceState({ view: 'home' }, '', '#home');
+  loadSavedCovers();
   renderHome();
   updateNavFavBadge();
 });
@@ -1028,9 +898,6 @@ window.addEventListener('popstate', (e) => {
     showView('home', true);
   } else if (v === 'detail') {
     if (data.bookId) openDetail(data.bookId, true);
-    else goHome();
-  } else if (v === 'now-playing') {
-    if (state.currentTrackKey) { renderNowPlaying(); showView('now-playing', true); setTopBar('Reproduciendo', true); }
     else goHome();
   } else if (v === 'search-view') {
     showSearch(true);
