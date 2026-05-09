@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotePlayer — Tus apuntes como música</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']], tags: 'ams' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0c;
+  --bg2: #111116;
+  --bg3: #18181f;
+  --bg4: #22222c;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #f0ede8;
+  --text2: #9995a0;
+  --text3: #5a5768;
+  --accent: #c8b4fa;
+  --accent2: #8b6dde;
+  --gold: #e8c97a;
+  --teal: #5dcaa5;
+  --coral: #f0997b;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xl: 20px;
+}
+
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; overflow: hidden; }
+
+/* ── LAYOUT ── */
+#app { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 1fr 96px; height: 100vh; }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  grid-row: 1 / 3;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+#sidebar-header {
+  padding: 28px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+#sidebar-header .logo {
+  font-size: 18px; font-weight: 800; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#sidebar-header .tagline { font-size: 11px; color: var(--text3); margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+
+#library-label { padding: 20px 20px 8px; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+
+#album-list { overflow-y: auto; flex: 1; padding: 4px 12px 12px; }
+#album-list::-webkit-scrollbar { width: 3px; }
+#album-list::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+.album-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 10px; border-radius: var(--radius-sm); cursor: pointer;
+  transition: background 0.15s; margin-bottom: 2px;
+}
+.album-item:hover { background: var(--bg3); }
+.album-item.active { background: var(--bg4); }
+
+.album-thumb {
+  width: 46px; height: 46px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; position: relative; overflow: hidden;
+}
+.album-thumb::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+}
+
+.album-info { overflow: hidden; }
+.album-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.album-meta { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+.now-playing-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  margin-left: auto; flex-shrink: 0; animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ── MAIN CONTENT ── */
+#main { background: var(--bg); overflow: hidden; display: flex; flex-direction: column; }
+
+/* ── ALBUM HEADER ── */
+#album-header {
+  padding: 40px 40px 24px;
+  display: flex; align-items: flex-end; gap: 28px;
+  flex-shrink: 0;
+}
+
+#album-cover-big {
+  width: 140px; height: 140px; border-radius: 16px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 64px; position: relative; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+#album-cover-big:hover { transform: scale(1.04) rotate(-1deg); }
+#album-cover-big::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%);
+}
+
+#album-details { padding-bottom: 4px; }
+#album-type-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+#album-title { font-family: 'Instrument Serif', serif; font-size: 36px; font-weight: 400; line-height: 1.1; color: var(--text); }
+#album-author { font-size: 13px; color: var(--text2); margin-top: 6px; }
+#album-stats { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 10px; }
+
+/* ── TRACK LIST ── */
+#tracklist-container {
+  flex: 1; overflow-y: auto; padding: 0 28px 20px;
+}
+#tracklist-container::-webkit-scrollbar { width: 3px; }
+#tracklist-container::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+#tracklist-header {
+  display: grid; grid-template-columns: 32px 1fr 80px 60px;
+  padding: 0 12px 8px; margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 1px; font-family: 'DM Mono', monospace;
+}
+
+.track-row {
+  display: grid; grid-template-columns: 32px 1fr 80px 60px;
+  align-items: center; padding: 10px 12px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.12s; gap: 0; margin-bottom: 1px;
+}
+.track-row:hover { background: var(--bg3); }
+.track-row.playing { background: var(--bg4); }
+.track-row.playing .track-num { color: var(--accent); }
+
+.track-num { font-size: 13px; color: var(--text3); font-family: 'DM Mono', monospace; text-align: center; }
+.track-num .eq-bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; justify-content: center; }
+.eq-bar { width: 3px; background: var(--accent); border-radius: 1px; animation: eq 0.6s ease-in-out infinite alternate; }
+.eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.eq-bar:nth-child(3) { animation-delay: 0.4s; }
+@keyframes eq {
+  from { height: 4px; }
+  to { height: 14px; }
+}
+
+.track-info { padding-left: 4px; }
+.track-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.track-subtitle { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 2px; }
+.track-difficulty { font-size: 11px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+.track-duration { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; text-align: right; }
+
+/* ── PLAYER BAR ── */
+#player-bar {
+  grid-column: 2;
+  background: var(--bg2); border-top: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 32px; gap: 24px;
+}
+
+#now-playing-info { display: flex; align-items: center; gap: 14px; width: 260px; flex-shrink: 0; }
+#now-mini-cover {
+  width: 46px; height: 46px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+#now-track-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#now-album-name { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+#player-controls { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+#ctrl-buttons { display: flex; align-items: center; gap: 20px; }
+
+.ctrl-btn {
+  background: none; border: none; cursor: pointer; color: var(--text2);
+  padding: 6px; border-radius: 50%; transition: color 0.15s, background 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.ctrl-btn:hover { color: var(--text); background: var(--bg3); }
+.ctrl-btn.play-btn {
+  width: 40px; height: 40px; background: var(--accent); color: var(--bg);
+  border-radius: 50%;
+}
+.ctrl-btn.play-btn:hover { background: #d8c4ff; transform: scale(1.05); }
+
+.ctrl-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.ctrl-btn.play-btn svg { width: 16px; height: 16px; }
+
+#progress-area { width: 100%; display: flex; align-items: center; gap: 10px; }
+#time-elapsed { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+#progress-bar { flex: 1; height: 3px; background: var(--bg4); border-radius: 2px; position: relative; cursor: pointer; }
+#progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.3s; }
+#time-total { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+#vol-area { display: flex; align-items: center; gap: 8px; width: 140px; flex-shrink: 0; }
+#vol-icon { color: var(--text3); }
+#vol-icon svg { width: 16px; height: 16px; fill: currentColor; }
+#vol-bar { flex: 1; height: 3px; background: var(--bg4); border-radius: 2px; }
+#vol-fill { height: 100%; background: var(--text3); border-radius: 2px; width: 70%; }
+
+/* ── APUNTE MODAL ── */
+#apunte-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 100; display: none; align-items: flex-start; justify-content: center;
+  padding: 24px; backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+#apunte-overlay.visible { display: flex; }
+
+#apunte-panel {
+  background: #f8f6f1; color: #1a1a1e;
+  border-radius: 20px; width: 100%; max-width: 800px;
+  min-height: calc(100vh - 48px);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  overflow: hidden; position: relative;
+  animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+#apunte-close {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px 12px; background: #f8f6f1;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+#close-btn {
+  background: #1a1a1e; color: #f8f6f1; border: none; cursor: pointer;
+  width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; transition: opacity 0.15s;
+}
+#close-btn:hover { opacity: 0.75; }
+#apunte-close-title { font-size: 13px; font-weight: 600; color: #1a1a1e; font-family: 'Syne', sans-serif; }
+
+#apunte-content {
+  padding: 40px 56px 60px;
+  font-family: 'Instrument Serif', serif; font-size: 17px; line-height: 1.75; color: #1a1a1e;
+}
+#apunte-content h1 { font-size: 32px; font-weight: 700; font-family: 'Syne', sans-serif; margin-bottom: 8px; line-height: 1.2; }
+#apunte-content .subtitle { font-size: 16px; color: #666; font-family: 'DM Mono', monospace; margin-bottom: 36px; }
+#apunte-content h2 { font-size: 22px; font-weight: 700; font-family: 'Syne', sans-serif; margin: 36px 0 14px; color: #1a1a1e; }
+#apunte-content h3 { font-size: 17px; font-weight: 600; font-family: 'Syne', sans-serif; margin: 24px 0 10px; color: #333; }
+#apunte-content p { margin-bottom: 16px; }
+#apunte-content .definition-box {
+  background: #f0ece3; border-left: 3px solid #8b6dde; padding: 16px 20px;
+  border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 15px; line-height: 1.6;
+}
+#apunte-content .theorem-box {
+  background: #e8f4ee; border-left: 3px solid #1d9e75; padding: 16px 20px;
+  border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 15px;
+}
+#apunte-content .example-box {
+  background: #fff8ee; border-left: 3px solid #e8c97a; padding: 16px 20px;
+  border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 15px;
+}
+#apunte-content .display-math { text-align: center; margin: 24px 0; overflow-x: auto; }
+#apunte-content table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; font-family: 'DM Mono', monospace; }
+#apunte-content th { background: #1a1a1e; color: #f8f6f1; padding: 10px 14px; text-align: left; font-family: 'Syne', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+#apunte-content td { padding: 10px 14px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+#apunte-content tr:last-child td { border-bottom: none; }
+#apunte-content ul, #apunte-content ol { margin: 12px 0 16px 24px; }
+#apunte-content li { margin-bottom: 6px; }
+#apunte-content code { font-family: 'DM Mono', monospace; background: rgba(0,0,0,0.07); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <div class="logo">♫ NotePlayer</div>
+      <div class="tagline">Tu biblioteca de apuntes</div>
+    </div>
+    <div id="library-label">Biblioteca</div>
+    <div id="album-list"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main">
+    <div id="album-header">
+      <div id="album-cover-big"></div>
+      <div id="album-details">
+        <div id="album-type-label">Apuntes · Libro de texto</div>
+        <div id="album-title">—</div>
+        <div id="album-author"></div>
+        <div id="album-stats"></div>
+      </div>
+    </div>
+
+    <div id="tracklist-container">
+      <div id="tracklist-header">
+        <span>#</span><span>Tema</span><span>Nivel</span><span style="text-align:right">Págs</span>
+      </div>
+      <div id="tracklist"></div>
+    </div>
+  </main>
+
+  <!-- PLAYER BAR -->
+  <div id="player-bar">
+    <div id="now-playing-info">
+      <div id="now-mini-cover"></div>
+      <div>
+        <div id="now-track-name">Elige un tema para estudiar</div>
+        <div id="now-album-name">NotePlayer</div>
+      </div>
+    </div>
+
+    <div id="player-controls">
+      <div id="ctrl-buttons">
+        <button class="ctrl-btn" id="btn-prev" title="Anterior">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl-btn play-btn" id="btn-play" title="Abrir apunte">
+          <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-next" title="Siguiente">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zm2.5-6 6-4.5v9z"/><path d="M16 6h2v12h-2z"/></svg>
+        </button>
+      </div>
+      <div id="progress-area">
+        <span id="time-elapsed">0:00</span>
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+        <span id="time-total">—</span>
+      </div>
+    </div>
+
+    <div id="vol-area">
+      <div id="vol-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+      </div>
+      <div id="vol-bar"><div id="vol-fill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- APUNTE MODAL -->
+<div id="apunte-overlay">
+  <div id="apunte-panel">
+    <div id="apunte-close">
+      <div id="apunte-close-title"></div>
+      <button id="close-btn">✕</button>
+    </div>
+    <div id="apunte-content"></div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────
+   DATA: Libros con apuntes en LaTeX
+──────────────────────────────────────────*/
+const LIBRARY = [
+  {
+    id: 1,
+    title: "Cálculo Diferencial e Integral",
+    author: "Apuntes — Sem. 2024",
+    emoji: "∫",
+    color: "linear-gradient(135deg, #4a1b8c 0%, #8b3cc8 100%)",
+    bg: "#4a1b8c",
+    tracks: [
+      {
+        num: 1,
+        title: "Límites y Continuidad",
+        subtitle: "Definición épsilon-delta",
+        difficulty: "Básico",
+        diffColor: { bg:"#1d3a1d", text:"#5dcaa5" },
+        pages: "12 p.",
+        latex: `
+<h1>Límites y Continuidad</h1>
+<p class="subtitle">Capítulo 1 — Cálculo Diferencial · Sem. 2024</p>
+
+<h2>1.1 Definición Formal de Límite</h2>
+<p>El concepto de límite es la piedra angular del cálculo. Decimos que el límite de $f(x)$ cuando $x$ tiende a $a$ es $L$, y escribimos:</p>
+
+<div class="display-math">$$\\lim_{x \\to a} f(x) = L$$</div>
+
+<div class="definition-box">
+<strong>Definición $\\varepsilon$-$\\delta$:</strong> Para todo $\\varepsilon > 0$ existe $\\delta > 0$ tal que si $0 < |x - a| < \\delta$, entonces $|f(x) - L| < \\varepsilon$.
+</div>
+
+<h2>1.2 Propiedades de los Límites</h2>
+<p>Sean $\\lim_{x\\to a} f(x) = L$ y $\\lim_{x\\to a} g(x) = M$. Entonces:</p>
+<ul>
+  <li><strong>Suma:</strong> $\\lim_{x\\to a}[f(x)+g(x)] = L+M$</li>
+  <li><strong>Producto:</strong> $\\lim_{x\\to a}[f(x)\\cdot g(x)] = L\\cdot M$</li>
+  <li><strong>Cociente:</strong> $\\lim_{x\\to a}\\dfrac{f(x)}{g(x)} = \\dfrac{L}{M}$, siempre que $M \\neq 0$</li>
+</ul>
+
+<h2>1.3 Límites Notables</h2>
+<div class="display-math">$$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1 \\qquad \\lim_{x \\to 0} \\frac{1 - \\cos x}{x} = 0 \\qquad \\lim_{x \\to \\infty}\\left(1 + \\frac{1}{x}\\right)^x = e$$</div>
+
+<h2>1.4 Continuidad</h2>
+<div class="definition-box">
+<strong>Definición:</strong> $f$ es continua en $a$ si y sólo si:<br>
+(1) $f(a)$ está definida, (2) $\\lim_{x\\to a}f(x)$ existe, (3) $\\lim_{x\\to a}f(x) = f(a)$.
+</div>
+
+<div class="example-box">
+<strong>Ejemplo:</strong> Analiza la continuidad de $f(x) = \\dfrac{x^2 - 1}{x-1}$ en $x=1$.<br><br>
+Como $f(1)$ no está definida, la función <em>no es continua</em> en $x=1$. Sin embargo, $\\lim_{x\\to 1}\\dfrac{x^2-1}{x-1} = \\lim_{x\\to 1}(x+1) = 2$.
+</div>
+
+<h2>1.5 Teorema del Valor Intermedio</h2>
+<div class="theorem-box">
+<strong>TVI:</strong> Si $f$ es continua en $[a,b]$ y $f(a) \\cdot f(b) < 0$, entonces existe $c \\in (a,b)$ tal que $f(c) = 0$.
+</div>
+`
+      },
+      {
+        num: 2,
+        title: "Derivadas",
+        subtitle: "Reglas de derivación",
+        difficulty: "Intermedio",
+        diffColor: { bg:"#2a2312", text:"#e8c97a" },
+        pages: "18 p.",
+        latex: `
+<h1>Derivadas y Reglas de Derivación</h1>
+<p class="subtitle">Capítulo 2 — Cálculo Diferencial · Sem. 2024</p>
+
+<h2>2.1 Definición de Derivada</h2>
+<p>La derivada de $f$ en $a$ es el límite del cociente diferencial:</p>
+
+<div class="display-math">$$f'(a) = \\lim_{h \\to 0} \\frac{f(a+h)-f(a)}{h}$$</div>
+
+<p>Geométricamente, $f'(a)$ es la <em>pendiente de la recta tangente</em> a la gráfica de $f$ en el punto $(a, f(a))$.</p>
+
+<h2>2.2 Reglas Fundamentales</h2>
+<table>
+  <tr><th>Regla</th><th>Fórmula</th></tr>
+  <tr><td>Potencia</td><td>$\\dfrac{d}{dx}[x^n] = nx^{n-1}$</td></tr>
+  <tr><td>Suma</td><td>$\\dfrac{d}{dx}[f+g] = f'+g'$</td></tr>
+  <tr><td>Producto</td><td>$\\dfrac{d}{dx}[fg] = f'g + fg'$</td></tr>
+  <tr><td>Cociente</td><td>$\\dfrac{d}{dx}\\left[\\dfrac{f}{g}\\right] = \\dfrac{f'g-fg'}{g^2}$</td></tr>
+  <tr><td>Cadena</td><td>$\\dfrac{d}{dx}[f(g(x))] = f'(g(x))\\cdot g'(x)$</td></tr>
+</table>
+
+<h2>2.3 Derivadas de Funciones Elementales</h2>
+<div class="display-math">$$\\frac{d}{dx}[\\sin x]=\\cos x \\quad \\frac{d}{dx}[\\cos x]=-\\sin x \\quad \\frac{d}{dx}[e^x]=e^x \\quad \\frac{d}{dx}[\\ln x]=\\frac{1}{x}$$</div>
+
+<div class="example-box">
+<strong>Ejemplo — Regla de la cadena:</strong> Sea $h(x) = \\sin(x^2)$.<br><br>
+$h'(x) = \\cos(x^2) \\cdot 2x = 2x\\cos(x^2)$
+</div>
+
+<h2>2.4 Teorema de Rolle y del Valor Medio</h2>
+<div class="theorem-box">
+<strong>Teorema del Valor Medio:</strong> Si $f$ es continua en $[a,b]$ y diferenciable en $(a,b)$, existe $c\\in(a,b)$ tal que:
+$$f'(c) = \\frac{f(b)-f(a)}{b-a}$$
+</div>
+`
+      },
+      {
+        num: 3,
+        title: "Integrales",
+        subtitle: "Técnicas de integración",
+        difficulty: "Avanzado",
+        diffColor: { bg:"#2a1212", text:"#f0997b" },
+        pages: "22 p.",
+        latex: `
+<h1>Integral Definida e Indefinida</h1>
+<p class="subtitle">Capítulo 3 — Cálculo Integral · Sem. 2024</p>
+
+<h2>3.1 Integral Indefinida (Antiderivada)</h2>
+<p>La antiderivada de $f$ es la función $F$ tal que $F'(x) = f(x)$. Se denota:</p>
+<div class="display-math">$$\\int f(x)\\,dx = F(x) + C$$</div>
+
+<h2>3.2 Tabla de Integrales Básicas</h2>
+<table>
+  <tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
+  <tr><td>$x^n$</td><td>$\\dfrac{x^{n+1}}{n+1}+C$, $\\;n\\neq-1$</td></tr>
+  <tr><td>$\\dfrac{1}{x}$</td><td>$\\ln|x|+C$</td></tr>
+  <tr><td>$e^x$</td><td>$e^x+C$</td></tr>
+  <tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
+  <tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr>
+</table>
+
+<h2>3.3 Integral Definida — Sumas de Riemann</h2>
+<div class="display-math">$$\\int_a^b f(x)\\,dx = \\lim_{n\\to\\infty}\\sum_{i=1}^n f(x_i^*)\\,\\Delta x$$</div>
+
+<h2>3.4 Teorema Fundamental del Cálculo</h2>
+<div class="theorem-box">
+<strong>Parte I:</strong> Si $F(x) = \\int_a^x f(t)\\,dt$, entonces $F'(x) = f(x)$.<br><br>
+<strong>Parte II:</strong> $\\displaystyle\\int_a^b f(x)\\,dx = F(b) - F(a)$, donde $F$ es cualquier antiderivada de $f$.
+</div>
+
+<h2>3.5 Integración por Partes</h2>
+<p>Derivada del producto al revés: si $u = u(x)$ y $v = v(x)$,</p>
+<div class="display-math">$$\\int u\\,dv = uv - \\int v\\,du$$</div>
+<div class="example-box">
+<strong>Ejemplo:</strong> $\\int x e^x\\,dx$. Tomamos $u=x$, $dv=e^x\\,dx$:<br><br>
+$= x e^x - \\int e^x\\,dx = x e^x - e^x + C = e^x(x-1)+C$
+</div>
+`
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Álgebra Lineal",
+    author: "Apuntes — Sem. 2024",
+    emoji: "⊗",
+    color: "linear-gradient(135deg, #0d3a30 0%, #1d9e75 100%)",
+    bg: "#0d3a30",
+    tracks: [
+      {
+        num: 1,
+        title: "Sistemas Lineales",
+        subtitle: "Eliminación Gaussiana",
+        difficulty: "Básico",
+        diffColor: { bg:"#1d3a1d", text:"#5dcaa5" },
+        pages: "14 p.",
+        latex: `
+<h1>Sistemas de Ecuaciones Lineales</h1>
+<p class="subtitle">Capítulo 1 — Álgebra Lineal · Sem. 2024</p>
+
+<h2>1.1 Representación Matricial</h2>
+<p>Un sistema de $m$ ecuaciones con $n$ incógnitas:</p>
+<div class="display-math">
+$$\\begin{cases} a_{11}x_1 + a_{12}x_2 + \\cdots + a_{1n}x_n = b_1 \\\\ a_{21}x_1 + a_{22}x_2 + \\cdots + a_{2n}x_n = b_2 \\\\ \\vdots \\\\ a_{m1}x_1 + a_{m2}x_2 + \\cdots + a_{mn}x_n = b_m \\end{cases}$$
+</div>
+<p>Se escribe compactamente como $A\\mathbf{x} = \\mathbf{b}$.</p>
+
+<h2>1.2 Eliminación Gaussiana</h2>
+<div class="definition-box">
+Las <strong>operaciones elementales de fila</strong> son: (1) intercambiar dos filas, (2) multiplicar una fila por un escalar no nulo, (3) sumar un múltiplo de una fila a otra.
+</div>
+
+<div class="example-box">
+<strong>Ejemplo:</strong> Resolver $\\begin{pmatrix}2&1\\\\4&3\\end{pmatrix}\\begin{pmatrix}x\\\\y\\end{pmatrix}=\\begin{pmatrix}5\\\\11\\end{pmatrix}$<br><br>
+Matriz aumentada: $\\left[\\begin{array}{cc|c}2&1&5\\\\4&3&11\\end{array}\\right] \\xrightarrow{R_2-2R_1} \\left[\\begin{array}{cc|c}2&1&5\\\\0&1&1\\end{array}\\right]$<br><br>
+Solución: $y=1$, $x=2$.
+</div>
+
+<h2>1.3 Teorema de Rouché-Frobenius</h2>
+<div class="theorem-box">
+El sistema $A\\mathbf{x}=\\mathbf{b}$ tiene solución si y sólo si $\\text{rango}(A) = \\text{rango}(A|\\mathbf{b})$.
+<ul style="margin-top:10px">
+  <li>Si $\\text{rango}(A) = n$: solución <strong>única</strong>.</li>
+  <li>Si $\\text{rango}(A) < n$: infinitas soluciones.</li>
+</ul>
+</div>
+`
+      },
+      {
+        num: 2,
+        title: "Valores y Vectores Propios",
+        subtitle: "Diagonalización",
+        difficulty: "Avanzado",
+        diffColor: { bg:"#2a1212", text:"#f0997b" },
+        pages: "20 p.",
+        latex: `
+<h1>Eigenvalores y Eigenvectores</h1>
+<p class="subtitle">Capítulo 4 — Álgebra Lineal · Sem. 2024</p>
+
+<h2>4.1 Definición</h2>
+<div class="definition-box">
+Sea $A$ una matriz $n\\times n$. Un escalar $\\lambda$ es <strong>valor propio</strong> de $A$ si existe un vector no nulo $\\mathbf{v}$ tal que:
+$$A\\mathbf{v} = \\lambda\\mathbf{v}$$
+El vector $\\mathbf{v}$ se llama <strong>vector propio</strong> asociado a $\\lambda$.
+</div>
+
+<h2>4.2 Polinomio Característico</h2>
+<p>Los valores propios son las raíces del polinomio característico:</p>
+<div class="display-math">$$p(\\lambda) = \\det(A - \\lambda I) = 0$$</div>
+
+<div class="example-box">
+<strong>Ejemplo:</strong> $A = \\begin{pmatrix}3&1\\\\0&2\\end{pmatrix}$<br><br>
+$\\det(A-\\lambda I) = \\det\\begin{pmatrix}3-\\lambda&1\\\\0&2-\\lambda\\end{pmatrix} = (3-\\lambda)(2-\\lambda) = 0$<br><br>
+Valores propios: $\\lambda_1 = 3$, $\\lambda_2 = 2$.
+</div>
+
+<h2>4.3 Diagonalización</h2>
+<div class="theorem-box">
+$A$ es diagonalizable si existe una matriz invertible $P$ tal que $P^{-1}AP = D$, donde $D$ es diagonal con los eigenvalores en la diagonal. Esto ocurre si y sólo si $A$ tiene $n$ eigenvectores linealmente independientes.
+</div>
+
+<p>La descomposición espectral permite calcular potencias de matrices eficientemente:</p>
+<div class="display-math">$$A^k = P D^k P^{-1} = P \\begin{pmatrix}\\lambda_1^k & & \\\\ & \\ddots & \\\\ & & \\lambda_n^k\\end{pmatrix} P^{-1}$$</div>
+`
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Física Clásica",
+    author: "Apuntes — Sem. 2023",
+    emoji: "⚡",
+    color: "linear-gradient(135deg, #2a1a00 0%, #ba7517 100%)",
+    bg: "#2a1a00",
+    tracks: [
+      {
+        num: 1,
+        title: "Mecánica Newtoniana",
+        subtitle: "Leyes de Newton",
+        difficulty: "Básico",
+        diffColor: { bg:"#1d3a1d", text:"#5dcaa5" },
+        pages: "16 p.",
+        latex: `
+<h1>Mecánica Newtoniana</h1>
+<p class="subtitle">Capítulo 1 — Física Clásica · Sem. 2023</p>
+
+<h2>1.1 Las Tres Leyes de Newton</h2>
+<div class="definition-box">
+<strong>1ª Ley (Inercia):</strong> Un cuerpo permanece en reposo o en movimiento rectilíneo uniforme a menos que actúe sobre él una fuerza neta.
+</div>
+<div class="definition-box">
+<strong>2ª Ley (Fuerza):</strong> La fuerza neta sobre un cuerpo es igual al producto de su masa por su aceleración:
+$$\\mathbf{F}_{\\text{neta}} = m\\mathbf{a} = m\\ddot{\\mathbf{r}}$$
+</div>
+<div class="definition-box">
+<strong>3ª Ley (Acción-Reacción):</strong> Para cada fuerza que un cuerpo ejerce sobre otro, existe una fuerza igual en magnitud y opuesta en dirección.
+</div>
+
+<h2>1.2 Cinemática</h2>
+<p>Para aceleración constante $a$, las ecuaciones cinemáticas son:</p>
+<div class="display-math">
+$$v = v_0 + at \\qquad x = x_0 + v_0 t + \\tfrac{1}{2}at^2 \\qquad v^2 = v_0^2 + 2a(x-x_0)$$
+</div>
+
+<h2>1.3 Trabajo y Energía</h2>
+<div class="display-math">$$W = \\int_{\\mathbf{r}_1}^{\\mathbf{r}_2} \\mathbf{F}\\cdot d\\mathbf{r} \\qquad E_c = \\frac{1}{2}mv^2 \\qquad E_p = mgh$$</div>
+
+<div class="theorem-box">
+<strong>Teorema Trabajo-Energía:</strong> El trabajo neto realizado sobre un cuerpo es igual al cambio en su energía cinética:
+$$W_{\\text{neto}} = \\Delta E_c = \\frac{1}{2}mv_f^2 - \\frac{1}{2}mv_i^2$$
+</div>
+
+<h2>1.4 Cantidad de Movimiento</h2>
+<p>El impulso $\\mathbf{J}$ es la integral de la fuerza en el tiempo:</p>
+<div class="display-math">$$\\mathbf{J} = \\int_{t_1}^{t_2}\\mathbf{F}\\,dt = \\Delta\\mathbf{p} = m\\mathbf{v}_f - m\\mathbf{v}_i$$</div>
+`
+      },
+      {
+        num: 2,
+        title: "Electromagnetismo",
+        subtitle: "Ecuaciones de Maxwell",
+        difficulty: "Avanzado",
+        diffColor: { bg:"#2a1212", text:"#f0997b" },
+        pages: "24 p.",
+        latex: `
+<h1>Electromagnetismo — Ecuaciones de Maxwell</h1>
+<p class="subtitle">Capítulo 5 — Física Clásica · Sem. 2023</p>
+
+<h2>5.1 Las Cuatro Ecuaciones de Maxwell</h2>
+<p>Las ecuaciones de Maxwell unifican la electricidad, el magnetismo y la óptica:</p>
+
+<table>
+  <tr><th>Ley</th><th>Forma Integral</th></tr>
+  <tr><td>Gauss (E)</td><td>$\\oint_S \\mathbf{E}\\cdot d\\mathbf{A} = \\dfrac{Q_{\\text{enc}}}{\\varepsilon_0}$</td></tr>
+  <tr><td>Gauss (B)</td><td>$\\oint_S \\mathbf{B}\\cdot d\\mathbf{A} = 0$</td></tr>
+  <tr><td>Faraday</td><td>$\\oint_C \\mathbf{E}\\cdot d\\mathbf{l} = -\\dfrac{d\\Phi_B}{dt}$</td></tr>
+  <tr><td>Ampère-Maxwell</td><td>$\\oint_C \\mathbf{B}\\cdot d\\mathbf{l} = \\mu_0\\left(I + \\varepsilon_0\\dfrac{d\\Phi_E}{dt}\\right)$</td></tr>
+</table>
+
+<h2>5.2 Forma Diferencial</h2>
+<div class="display-math">
+$$\\nabla\\cdot\\mathbf{E} = \\frac{\\rho}{\\varepsilon_0} \\qquad \\nabla\\cdot\\mathbf{B} = 0 \\qquad \\nabla\\times\\mathbf{E} = -\\frac{\\partial\\mathbf{B}}{\\partial t} \\qquad \\nabla\\times\\mathbf{B} = \\mu_0\\mathbf{J}+\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}$$
+</div>
+
+<h2>5.3 Ondas Electromagnéticas</h2>
+<p>De las ecuaciones de Maxwell se deduce la ecuación de onda:</p>
+<div class="display-math">$$\\nabla^2\\mathbf{E} = \\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{E}}{\\partial t^2}$$</div>
+
+<div class="theorem-box">
+La velocidad de propagación de las ondas electromagnéticas en el vacío es:
+$$c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} \\approx 2.998\\times10^8 \\text{ m/s}$$
+¡Esta es la velocidad de la luz!
+</div>
+`
+      }
+    ]
+  }
+];
+
+/* ─────────────────────────────────────────
+   STATE
+──────────────────────────────────────────*/
+let currentAlbum = LIBRARY[0];
+let currentTrack = null;
+let progressInterval = null;
+let progressVal = 0;
+
+/* ─────────────────────────────────────────
+   RENDER SIDEBAR
+──────────────────────────────────────────*/
+function renderSidebar() {
+  const list = document.getElementById('album-list');
+  list.innerHTML = LIBRARY.map(album => `
+    <div class="album-item ${album.id === currentAlbum.id ? 'active' : ''}" onclick="selectAlbum(${album.id})">
+      <div class="album-thumb" style="background:${album.color}">
+        <span style="position:relative;z-index:1">${album.emoji}</span>
+      </div>
+      <div class="album-info">
+        <div class="album-name">${album.title}</div>
+        <div class="album-meta">${album.tracks.length} temas</div>
+      </div>
+      ${currentTrack && album.id === currentAlbum.id ? '<div class="now-playing-dot"></div>' : ''}
+    </div>
+  `).join('');
+}
+
+/* ─────────────────────────────────────────
+   RENDER ALBUM
+──────────────────────────────────────────*/
+function renderAlbum(album) {
+  document.getElementById('album-cover-big').style.background = album.color;
+  document.getElementById('album-cover-big').textContent = album.emoji;
+  document.getElementById('album-cover-big').style.fontSize = '64px';
+  document.getElementById('album-title').textContent = album.title;
+  document.getElementById('album-author').textContent = album.author;
+  document.getElementById('album-stats').textContent = `${album.tracks.length} temas · ${album.tracks.reduce((s,t)=>s+parseInt(t.pages),0)} páginas`;
+
+  const list = document.getElementById('tracklist');
+  list.innerHTML = album.tracks.map(t => `
+    <div class="track-row ${currentTrack && currentTrack.num===t.num && currentAlbum.id===album.id ? 'playing' : ''}"
+         onclick="openTrack(${album.id}, ${t.num})">
+      <div class="track-num">
+        ${currentTrack && currentTrack.num===t.num && currentAlbum.id===album.id
+          ? `<div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>`
+          : t.num}
+      </div>
+      <div class="track-info">
+        <div class="track-title">${t.title}</div>
+        <div class="track-subtitle">${t.subtitle}</div>
+      </div>
+      <div>
+        <span class="track-difficulty" style="background:${t.diffColor.bg};color:${t.diffColor.text}">${t.difficulty}</span>
+      </div>
+      <div class="track-duration">${t.pages}</div>
+    </div>
+  `).join('');
+}
+
+/* ─────────────────────────────────────────
+   SELECT ALBUM
+──────────────────────────────────────────*/
+function selectAlbum(id) {
+  currentAlbum = LIBRARY.find(a => a.id === id);
+  renderSidebar();
+  renderAlbum(currentAlbum);
+}
+
+/* ─────────────────────────────────────────
+   OPEN TRACK
+──────────────────────────────────────────*/
+function openTrack(albumId, trackNum) {
+  const album = LIBRARY.find(a => a.id === albumId);
+  const track = album.tracks.find(t => t.num === trackNum);
+  currentAlbum = album;
+  currentTrack = track;
+
+  // Update player bar
+  document.getElementById('now-mini-cover').style.background = album.color;
+  document.getElementById('now-mini-cover').textContent = album.emoji;
+  document.getElementById('now-track-name').textContent = track.title;
+  document.getElementById('now-album-name').textContent = album.title;
+
+  // Fake progress
+  clearInterval(progressInterval);
+  progressVal = 0;
+  const total = parseInt(track.pages) * 12;
+  document.getElementById('time-total').textContent = fmtTime(total);
+  progressInterval = setInterval(() => {
+    progressVal = Math.min(progressVal + 0.4, 100);
+    document.getElementById('progress-fill').style.width = progressVal + '%';
+    document.getElementById('time-elapsed').textContent = fmtTime(Math.floor(progressVal/100 * total));
+    if (progressVal >= 100) clearInterval(progressInterval);
+  }, 400);
+
+  renderSidebar();
+  renderAlbum(album);
+
+  // Open apunte
+  openApunte(track, album);
+}
+
+function fmtTime(s) {
+  return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+
+/* ─────────────────────────────────────────
+   APUNTE MODAL
+──────────────────────────────────────────*/
+function openApunte(track, album) {
+  const overlay = document.getElementById('apunte-overlay');
+  const content = document.getElementById('apunte-content');
+  const title = document.getElementById('apunte-close-title');
+
+  title.textContent = `${album.emoji}  ${album.title} — ${track.title}`;
+  content.innerHTML = track.latex;
+
+  overlay.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+
+  // Typeset MathJax
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([content]).catch(console.error);
+  } else {
+    // Retry after MathJax loads
+    const wait = setInterval(() => {
+      if (window.MathJax && MathJax.typesetPromise) {
+        clearInterval(wait);
+        MathJax.typesetPromise([content]).catch(console.error);
+      }
+    }, 300);
+  }
+
+  // Scroll to top
+  document.getElementById('apunte-panel').scrollTop = 0;
+}
+
+document.getElementById('close-btn').addEventListener('click', () => {
+  document.getElementById('apunte-overlay').classList.remove('visible');
+  document.body.style.overflow = '';
+});
+
+document.getElementById('apunte-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('apunte-overlay')) {
+    document.getElementById('apunte-overlay').classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+});
+
+/* ─────────────────────────────────────────
+   PLAYER CONTROLS
+──────────────────────────────────────────*/
+document.getElementById('btn-play').addEventListener('click', () => {
+  if (currentTrack) openApunte(currentTrack, currentAlbum);
+});
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (!currentTrack) return;
+  const idx = currentAlbum.tracks.findIndex(t => t.num === currentTrack.num);
+  if (idx > 0) openTrack(currentAlbum.id, currentAlbum.tracks[idx-1].num);
+});
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (!currentTrack) return;
+  const idx = currentAlbum.tracks.findIndex(t => t.num === currentTrack.num);
+  if (idx < currentAlbum.tracks.length-1) openTrack(currentAlbum.id, currentAlbum.tracks[idx+1].num);
+});
+
+/* ─────────────────────────────────────────
+   INIT
+──────────────────────────────────────────*/
+renderSidebar();
+renderAlbum(LIBRARY[0]);
+</script>
+</body>
+</html>
