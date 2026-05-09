@@ -91,7 +91,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   overflow:hidden;background:var(--s1);border:1px solid var(--border);transition:all .2s}
 .mini-card:hover{border-color:var(--border2);transform:translateY(-2px)}
 .mini-card:active{transform:scale(.97)}
-.mini-cover{width:100%;aspect-ratio:1/1;display:flex;align-items:center;
+.mini-cover{width:100%;aspect-ratio:2/3;display:flex;align-items:center;
   justify-content:center;font-size:2.4rem;position:relative}
 .mini-cover::after{content:'';position:absolute;inset:0;
   background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 60%)}
@@ -139,7 +139,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 
 /* ── DETAIL ── */
 .detail-header{display:flex;flex-direction:column;align-items:center;padding:1.3rem 1rem .5rem;gap:.9rem}
-.detail-cover{width:168px;height:168px;border-radius:var(--r);display:flex;align-items:center;
+.detail-cover{width:clamp(110px,38vw,160px);aspect-ratio:2/3;height:auto;border-radius:var(--r);display:flex;align-items:center;
   justify-content:center;font-size:4.8rem;border:1px solid var(--border2);
   position:relative;overflow:hidden}
 .detail-cover::after{content:'';position:absolute;inset:0;
@@ -238,16 +238,33 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
-/* ── PDF COVER ── */
-.pdf-cover-btn{font-size:.7rem;color:var(--ink3);cursor:pointer;padding:.3rem .7rem;
-  border-radius:99px;border:1px dashed var(--border2);background:transparent;
-  font-family:'DM Sans',sans-serif;transition:all .2s;margin-top:.3rem;display:inline-block}
-.pdf-cover-btn:hover{border-color:var(--accent);color:var(--accent)}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 </head>
 <body>
 
+<!--
+  ╔══════════════════════════════════════════════════════╗
+  ║  ESTRUCTURA DEL REPOSITORIO GITHUB                   ║
+  ╠══════════════════════════════════════════════════════╣
+  ║  tu-repo/                                            ║
+  ║  ├── index.html          ← este archivo              ║
+  ║  └── pdfs/                                           ║
+  ║       ├── stewart-calculo-diferencial.pdf            ║
+  ║       ├── apostol-calculo-integral.pdf               ║
+  ║       ├── strang-algebra-lineal.pdf                  ║
+  ║       ├── herstein-algebra-abstracta.pdf             ║
+  ║       ├── ahlfors-analisis-complejo.pdf              ║
+  ║       ├── rudin-analisis-real.pdf                    ║
+  ║       ├── ross-probabilidad.pdf                      ║
+  ║       └── simmons-ecuaciones-diferenciales.pdf       ║
+  ║                                                      ║
+  ║  Al subir un PDF al repo, la portada se extrae       ║
+  ║  automáticamente al abrir la app. "Ver PDF"          ║
+  ║  lo abre directamente desde GitHub Pages.            ║
+  ╚══════════════════════════════════════════════════════╝
+-->
 <!-- TOP BAR -->
 <header class="top-bar">
   <div class="tb-left" id="tb-left">
@@ -298,7 +315,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 ══════════════════════════════════════════ */
 const LIBRARY = [
   { label:"Cálculo Infinitesimal", books:[
-    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Stewart, James", pages:52, totalTime:"2h 35min", pdfUrl:"https://www.academia.edu/43053097/Calculo_James_Stewart_7ma_Edicion", tracks:[
+    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Stewart, James", pages:52, totalTime:"2h 35min", pdfUrl:"pdfs/stewart-calculo-diferencial.pdf", tracks:[
       { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
         latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
 <h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
@@ -332,7 +349,7 @@ const LIBRARY = [
 <h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
 <div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
     ]},
-    { id:"cal2", title:"Cálculo Integral", emoji:"∫", cover:"linear-gradient(135deg,#0a2540,#1a6fbf)", author:"Apostol, Tom M.", pages:44, totalTime:"1h 48min", pdfUrl:"https://www.maths.ed.ac.uk/~v1ranick/papers/apostol1.pdf", tracks:[
+    { id:"cal2", title:"Cálculo Integral", emoji:"∫", cover:"linear-gradient(135deg,#0a2540,#1a6fbf)", author:"Apostol, Tom M.", pages:44, totalTime:"1h 48min", pdfUrl:"pdfs/apostol-calculo-integral.pdf", tracks:[
       { num:1, title:"Series de Taylor", sub:"Expansiones en serie", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"48min",
         latex:`<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Vol. II · Cálculo Integral</span>
 <h2>Definición</h2><div class="math-block">$$f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
@@ -351,7 +368,7 @@ const LIBRARY = [
     ]}
   ]},
   { label:"Álgebra Superior", books:[
-    { id:"alg1", title:"Álgebra Lineal", emoji:"⊗", cover:"linear-gradient(135deg,#0d2f1f,#1d9e6a)", author:"Strang, Gilbert", pages:48, totalTime:"2h 10min", pdfUrl:"https://math.mit.edu/~gs/linearalgebra/ila6/indexila6.html", tracks:[
+    { id:"alg1", title:"Álgebra Lineal", emoji:"⊗", cover:"linear-gradient(135deg,#0d2f1f,#1d9e6a)", author:"Strang, Gilbert", pages:48, totalTime:"2h 10min", pdfUrl:"pdfs/strang-algebra-lineal.pdf", tracks:[
       { num:1, title:"Sistemas Lineales", sub:"Eliminación Gaussiana", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"40min",
         latex:`<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal</span>
 <h2>Forma Matricial</h2><div class="math-block">$$A\\mathbf{x}=\\mathbf{b}$$</div>
@@ -370,7 +387,7 @@ const LIBRARY = [
 <div class="ex-box"><strong>Ejemplo:</strong> $A=\\begin{pmatrix}3&1\\\\0&2\\end{pmatrix}\\Rightarrow\\lambda_1=3,\\,\\lambda_2=2$</div>
 <div class="thm-box">$A=PDP^{-1}$ si tiene $n$ eigenvectores L.I.<br>$A^k=PD^kP^{-1}=P\\operatorname{diag}(\\lambda_1^k,\\ldots,\\lambda_n^k)P^{-1}$</div>` }
     ]},
-    { id:"alg2", title:"Álgebra Abstracta", emoji:"Σ", cover:"linear-gradient(135deg,#1a0a30,#6b21a8)", author:"Herstein, I. N.", pages:36, totalTime:"1h 30min", pdfUrl:"https://archive.org/details/topicsinalgebra00hers", tracks:[
+    { id:"alg2", title:"Álgebra Abstracta", emoji:"Σ", cover:"linear-gradient(135deg,#1a0a30,#6b21a8)", author:"Herstein, I. N.", pages:36, totalTime:"1h 30min", pdfUrl:"pdfs/herstein-algebra-abstracta.pdf", tracks:[
       { num:1, title:"Grupos", sub:"Axiomas y ejemplos", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"45min",
         latex:`<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta</span>
 <div class="def-box">$(G,*)$ es <strong>grupo</strong> si: cierre, asociatividad, identidad $e$, inverso $a^{-1}$.</div>
@@ -383,7 +400,7 @@ const LIBRARY = [
     ]}
   ]},
   { label:"Análisis Matemático", books:[
-    { id:"anc", title:"Análisis Complejo", emoji:"ℂ", cover:"linear-gradient(135deg,#1a0d0d,#b03030)", author:"Ahlfors, Lars V.", pages:40, totalTime:"1h 55min", pdfUrl:"https://archive.org/details/AhlforsComplexAnalysis", tracks:[
+    { id:"anc", title:"Análisis Complejo", emoji:"ℂ", cover:"linear-gradient(135deg,#1a0d0d,#b03030)", author:"Ahlfors, Lars V.", pages:40, totalTime:"1h 55min", pdfUrl:"pdfs/ahlfors-analisis-complejo.pdf", tracks:[
       { num:1, title:"Números Complejos", sub:"Polar y exponencial", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"30min",
         latex:`<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo</span>
 <p>$z=a+bi$, $i^2=-1$. Módulo $|z|=\\sqrt{a^2+b^2}$.</p>
@@ -397,7 +414,7 @@ const LIBRARY = [
 <div class="math-block">$$\\frac{\\partial u}{\\partial x}=\\frac{\\partial v}{\\partial y}\\qquad\\frac{\\partial u}{\\partial y}=-\\frac{\\partial v}{\\partial x}$$</div>
 <div class="thm-box">$f$ es <strong>holomorfa</strong> en $D$ si es diferenciable en todo punto de $D$.</div>` }
     ]},
-    { id:"anr", title:"Análisis Real", emoji:"ℝ", cover:"linear-gradient(135deg,#0a1a0a,#2a7a2a)", author:"Rudin, Walter", pages:38, totalTime:"1h 40min", pdfUrl:"https://archive.org/details/principlesofmath00rudi", tracks:[
+    { id:"anr", title:"Análisis Real", emoji:"ℝ", cover:"linear-gradient(135deg,#0a1a0a,#2a7a2a)", author:"Rudin, Walter", pages:38, totalTime:"1h 40min", pdfUrl:"pdfs/rudin-analisis-real.pdf", tracks:[
       { num:1, title:"Sucesiones y Series", sub:"Criterios de convergencia", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"50min",
         latex:`<h1>Sucesiones y Series</h1><span class="subtitle">Análisis Real</span>
 <div class="def-box">$\\{a_n\\}\\to L$: $\\forall\\varepsilon>0\\,\\exists N:\\,n>N\\Rightarrow|a_n-L|<\\varepsilon$.</div>
@@ -410,7 +427,7 @@ const LIBRARY = [
     ]}
   ]},
   { label:"Probabilidad y Estadística", books:[
-    { id:"prob", title:"Probabilidad", emoji:"🎲", cover:"linear-gradient(135deg,#1a1200,#8a6a00)", author:"Ross, Sheldon", pages:45, totalTime:"2h", pdfUrl:"https://archive.org/details/introductiontopr0000ross", tracks:[
+    { id:"prob", title:"Probabilidad", emoji:"🎲", cover:"linear-gradient(135deg,#1a1200,#8a6a00)", author:"Ross, Sheldon", pages:45, totalTime:"2h", pdfUrl:"pdfs/ross-probabilidad.pdf", tracks:[
       { num:1, title:"Espacios de Probabilidad", sub:"Axiomas de Kolmogorov", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"40min",
         latex:`<h1>Probabilidad</h1><span class="subtitle">Axiomas de Kolmogorov</span>
 <div class="def-box">$( \\Omega,\\mathcal{F},P)$: espacio muestral, $\\sigma$-álgebra, medida de probabilidad con $P(\\Omega)=1$.</div>
@@ -530,14 +547,15 @@ function openDetail(bookId, skipHistory) {
         <button class="action-btn ${isFav(book.id)?'faved':''}" id="fav-btn" onclick="toggleFavBook('${book.id}',this,true)">
           ${isFav(book.id)?'★ Guardado':'☆ Guardar'}
         </button>
-        ${book.pdfUrl ? `<a class="action-btn primary" href="${book.pdfUrl}" target="_blank" rel="noopener" style="text-decoration:none">
+        <button class="action-btn primary" onclick="openPdf('${book.id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
-          Ver PDF</a>` : ''}
+          Ver PDF</button>
+        <button class="action-btn" onclick="refreshCover('${book.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Actualizar portada</button>
       </div>
       <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
-      <button class="pdf-cover-btn" onclick="triggerPdfUpload('${book.id}')">
-        📄 Subir portada PDF
-      </button>
+
     </div>
     <div class="section-header" style="padding:0 1rem .4rem"><span class="section-title">Temas</span></div>
     <div class="episode-list" id="ep-list">`;
@@ -841,40 +859,61 @@ function renderKaTeX(el) {
 ══════════════════════════════════════════ */
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 
-function triggerPdfUpload(bookId) {
-  const inp = document.createElement('input');
-  inp.type = 'file'; inp.accept = 'application/pdf';
-  inp.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    try {
-      const pdf = await pdfjsLib.getDocument(url).promise;
-      const page = await pdf.getPage(1);
-      const vp = page.getViewport({ scale: 1.5 });
-      const canvas = document.createElement('canvas');
-      canvas.width = vp.width; canvas.height = vp.height;
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-      const imgData = canvas.toDataURL('image/jpeg', 0.85);
-      // Save to book object
-      const book = allBooks.find(b => b.id === bookId);
-      if (book) {
-        book.pdfCoverData = imgData;
-        localStorage.setItem('np_cover_' + bookId, imgData);
-        // Refresh detail view
-        openDetail(bookId);
-      }
-    } catch(err) { alert('No se pudo leer el PDF: ' + err.message); }
-    URL.revokeObjectURL(url);
-  };
-  inp.click();
+// ── Extrae portada de un PDF en una ruta URL y la guarda ──
+async function extractCover(bookId, pdfPath) {
+  try {
+    const pdfDoc = await pdfjsLib.getDocument(pdfPath).promise;
+    const page = await pdfDoc.getPage(1);
+    const vp = page.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    canvas.width = vp.width; canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    const imgData = canvas.toDataURL('image/jpeg', 0.88);
+    const book = allBooks.find(b => b.id === bookId);
+    if (book) {
+      book.pdfCoverData = imgData;
+      localStorage.setItem('np_cover_' + bookId, imgData);
+    }
+    return imgData;
+  } catch(e) {
+    return null; // PDF no disponible todavía en el repo
+  }
 }
 
-// Load saved PDF covers on startup
+// ── Fuerza re-extracción de portada ──
+async function refreshCover(bookId) {
+  const book = allBooks.find(b => b.id === bookId);
+  if (!book?.pdfUrl) return;
+  localStorage.removeItem('np_cover_' + bookId);
+  book.pdfCoverData = null;
+  const img = await extractCover(bookId, book.pdfUrl);
+  if (img && state.view === 'detail') openDetail(bookId, true);
+  else if (img && state.view === 'home') renderHome();
+}
+
+// ── Abre el PDF en una nueva pestaña ──
+function openPdf(bookId) {
+  const book = allBooks.find(b => b.id === bookId);
+  if (!book?.pdfUrl) return;
+  window.open(book.pdfUrl, '_blank');
+}
+
+// ── Al arrancar: carga portadas guardadas en localStorage,
+//    y para las que no hay, intenta extraerlas del repo silenciosamente ──
 function loadSavedCovers() {
   allBooks.forEach(b => {
     const saved = localStorage.getItem('np_cover_' + b.id);
-    if (saved) b.pdfCoverData = saved;
+    if (saved) {
+      b.pdfCoverData = saved;
+    } else if (b.pdfUrl) {
+      // Intento silencioso: si el PDF existe en el repo, extrae la portada
+      extractCover(b.id, b.pdfUrl).then(img => {
+        if (img) {
+          // Refresca las tarjetas si estamos en home
+          if (state.view === 'home') renderHome();
+        }
+      });
+    }
   });
 }
 
