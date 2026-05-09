@@ -262,8 +262,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .favs-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
 
 /* ── BOTTOM NAV ── */
-.bottom-nav{position:fixed;bottom:var(--player-h);left:0;right:0;z-index:100;
-  display:flex;justify-content:space-around;padding:.45rem .8rem;
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-around;padding:.45rem .8rem env(safe-area-inset-bottom,.45rem);
   background:rgba(10,10,15,.92);backdrop-filter:blur(20px);border-top:1px solid var(--border)}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
   color:var(--ink3);transition:color .2s;padding:.28rem .5rem}
@@ -371,74 +371,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 ══════════════════════════════════════════ */
 const LIBRARY = [
   { label:"Cálculo Infinitesimal", books:[
-    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
-      { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
-        latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
-<h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
-<div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que si $0<|x-a|<\\delta$, entonces $|f(x)-L|<\\varepsilon$.</div>
-<h2>Propiedades</h2><ul><li>$\\lim(f\\pm g)=L\\pm M$</li><li>$\\lim(fg)=LM$</li><li>$\\lim(f/g)=L/M$ si $M\\neq 0$</li></ul>
-<h2>Límites Notables</h2><div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\!\\left(1+\\tfrac{1}{x}\\right)^x=e$$</div>
-<div class="thm-box"><strong>TVI:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, $\\exists c\\in(a,b):f(c)=0$.</div>` },
-      { num:2, title:"Derivadas", sub:"Reglas de derivación", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"55min",
-        latex:`<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
-<h2>Definición</h2><div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
-<p>Geométricamente: pendiente de la tangente en $(a,f(a))$.</p>
-<h2>Reglas Fundamentales</h2>
-<table><tr><th>Regla</th><th>Fórmula</th></tr>
-<tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
-<tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
-<tr><td>Cociente</td><td>$(f/g)'=\\frac{f'g-fg'}{g^2}$</td></tr>
-<tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
-<h2>Derivadas Elementales</h2><div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\tfrac{1}{x}$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)\\Rightarrow h'(x)=2x\\cos(x^2)$</div>
-<div class="thm-box"><strong>Teorema del Valor Medio:</strong> $\\exists c:f'(c)=\\dfrac{f(b)-f(a)}{b-a}$</div>` },
-      { num:3, title:"Integrales", sub:"Técnicas de integración", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"55min",
-        latex:`<h1>Integrales</h1><span class="subtitle">Capítulo III · Cálculo Integral</span>
-<h2>Antiderivada</h2><p>$F'(x)=f(x)\\Rightarrow\\int f(x)\\,dx=F(x)+C$</p>
-<h2>Tabla Básica</h2>
-<table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
-<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
-<tr><td>$e^x$</td><td>$e^x+C$</td></tr>
-<tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
-<tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr></table>
-<div class="thm-box"><strong>Teorema Fundamental:</strong> $\\displaystyle\\int_a^b f\\,dx=F(b)-F(a)$</div>
-<h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
-    ]},
-    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
-      { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
-        latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
-<h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
-<div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que si $0<|x-a|<\\delta$, entonces $|f(x)-L|<\\varepsilon$.</div>
-<h2>Propiedades</h2><ul><li>$\\lim(f\\pm g)=L\\pm M$</li><li>$\\lim(fg)=LM$</li><li>$\\lim(f/g)=L/M$ si $M\\neq 0$</li></ul>
-<h2>Límites Notables</h2><div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\!\\left(1+\\tfrac{1}{x}\\right)^x=e$$</div>
-<div class="thm-box"><strong>TVI:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, $\\exists c\\in(a,b):f(c)=0$.</div>` },
-      { num:2, title:"Derivadas", sub:"Reglas de derivación", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"55min",
-        latex:`<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
-<h2>Definición</h2><div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
-<p>Geométricamente: pendiente de la tangente en $(a,f(a))$.</p>
-<h2>Reglas Fundamentales</h2>
-<table><tr><th>Regla</th><th>Fórmula</th></tr>
-<tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
-<tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
-<tr><td>Cociente</td><td>$(f/g)'=\\frac{f'g-fg'}{g^2}$</td></tr>
-<tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
-<h2>Derivadas Elementales</h2><div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\tfrac{1}{x}$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)\\Rightarrow h'(x)=2x\\cos(x^2)$</div>
-<div class="thm-box"><strong>Teorema del Valor Medio:</strong> $\\exists c:f'(c)=\\dfrac{f(b)-f(a)}{b-a}$</div>` },
-      { num:3, title:"Integrales", sub:"Técnicas de integración", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"55min",
-        latex:`<h1>Integrales</h1><span class="subtitle">Capítulo III · Cálculo Integral</span>
-<h2>Antiderivada</h2><p>$F'(x)=f(x)\\Rightarrow\\int f(x)\\,dx=F(x)+C$</p>
-<h2>Tabla Básica</h2>
-<table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
-<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
-<tr><td>$e^x$</td><td>$e^x+C$</td></tr>
-<tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
-<tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr></table>
-<div class="thm-box"><strong>Teorema Fundamental:</strong> $\\displaystyle\\int_a^b f\\,dx=F(b)-F(a)$</div>
-<h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
-    ]},
     { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
       { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
         latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
@@ -588,25 +520,7 @@ function isFav(key) { return state.favorites.has(key); }
    RENDER HOME
 ══════════════════════════════════════════ */
 function renderHome() {
-  const featured = allBooks[0];
-  const featKey = trackKey(featured.id, featured.tracks[0]?.num);
-  let html = `
-    <div class="section">
-      <div class="section-header"><span class="section-title">Destacado</span></div>
-      <div class="featured-card" onclick="openDetail('${featured.id}')">
-        <div class="featured-cover" style="background:${featured.cover}"><span>${featured.emoji}</span></div>
-        <span class="featured-badge">Nuevo</span>
-        <div class="featured-info">
-          <div class="featured-title">${featured.title}</div>
-          <div class="featured-meta">${featured.author} · ${featured.tracks.length} temas · ${featured.pages} pág.</div>
-        </div>
-        <button class="featured-fav ${isFav(featured.id)?'faved':''}" onclick="event.stopPropagation();toggleFavBook('${featured.id}',this)">
-          ${isFav(featured.id)?'♥':'♡'}
-        </button>
-      </div>
-    </div>`;
-
-  html += LIBRARY.map(cat => `
+  let html = LIBRARY.map(cat => `
     <div class="section">
       <div class="section-header">
         <span class="section-title">${cat.label}</span>
@@ -695,10 +609,8 @@ function openDetail(bookId) {
 function renderTrackItem(book, t, isActive, isOpen, key) {
   return `
     <div id="wrap-${book.id}-${t.num}">
-      <div class="ep-item ${isOpen?'open':''}" id="ep-${book.id}-${t.num}" onclick="toggleTrack('${book.id}',${t.num})">
-        <span class="ep-num">${isActive && state.isPlaying
-          ? `<span style="color:var(--accent);animation:pulse-play 1.2s ease infinite;display:inline-block">▶</span>`
-          : String(t.num).padStart(2,'0')}</span>
+      <div class="ep-item ${isActive?'open':''}" id="ep-${book.id}-${t.num}" onclick="playTrack('${book.id}',${t.num})">
+        <span class="ep-num">${String(t.num).padStart(2,'0')}</span>
         <div class="ep-info">
           <div class="ep-title">${t.title}</div>
           <div class="ep-meta">
@@ -715,9 +627,6 @@ function renderTrackItem(book, t, isActive, isOpen, key) {
               : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>'}</svg>
           </button>
         </div>
-      </div>
-      <div class="apunte-wrap ${isOpen?'open':''}" id="apunte-wrap-${book.id}-${t.num}">
-        <div class="apunte-inner" id="ai-${book.id}-${t.num}"></div>
       </div>
     </div>`;
 }
@@ -875,10 +784,6 @@ function renderNowPlaying() {
   const track = book?.tracks.find(t => t.num === parseInt(numStr));
   if (!book || !track) return;
 
-  const wbars = Array.from({length:14}, (_,i) =>
-    `<div class="wbar ${state.isPlaying?'ani':''}" style="height:${[30,55,80,65,45,90,100,50,70,40,85,60,35,75][i]}%;animation-delay:${i*0.07}s"></div>`
-  ).join('');
-
   document.getElementById('now-playing').innerHTML = `
     <div class="np-wrap">
       <div class="np-cover" style="background:${book.cover}"><span>${book.emoji}</span></div>
@@ -895,7 +800,6 @@ function renderNowPlaying() {
           <span>${track.time}</span>
         </div>
       </div>
-      <div class="waveform">${wbars}</div>
       <div class="controls">
         <button class="ctrl-btn" onclick="prevTrack()">
           <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4" fill="currentColor" stroke="none"/><rect x="5" y="4" width="3" height="16" rx="1" fill="currentColor" stroke="none"/></svg>
@@ -911,26 +815,15 @@ function renderNowPlaying() {
           <svg viewBox="0 0 24 24"><polygon points="5,20 15,12 5,4" fill="currentColor" stroke="none"/><rect x="16" y="4" width="3" height="16" rx="1" fill="currentColor" stroke="none"/></svg>
         </button>
       </div>
-      <button class="np-open-notes" onclick="openNotesFromNP('${bId}',${track.num})">
-        Abrir apuntes del tema
-      </button>
       <div id="np-notes-area" style="width:100%"></div>
     </div>`;
-}
 
-function openNotesFromNP(bookId, num) {
-  const inner = document.getElementById('np-notes-area');
-  if (!inner) return;
-  if (inner.dataset.open === '1') { inner.innerHTML = ''; inner.dataset.open = ''; return; }
-  const book = allBooks.find(b => b.id === bookId);
-  const track = book?.tracks.find(t => t.num === num);
-  if (!track) return;
-  inner.innerHTML = `<div class="np-notes"><div class="apunte-inner" id="np-ai"></div></div>`;
-  const ai = document.getElementById('np-ai');
-  ai.innerHTML = track.latex;
-  renderKaTeX(ai);
-  inner.dataset.open = '1';
-  setTimeout(() => inner.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+  // Auto-open notes immediately
+  const notesArea = document.getElementById('np-notes-area');
+  notesArea.innerHTML = `<div class="np-notes"><div class="apunte-inner" id="np-ai"></div></div>`;
+  const npAi = document.getElementById('np-ai');
+  npAi.innerHTML = track.latex;
+  renderKaTeX(npAi);
 }
 
 function seekProgress(e) {
