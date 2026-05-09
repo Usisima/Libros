@@ -2,846 +2,666 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>NotePlayer — Premium Dark</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NotePlayer · Biblioteca Matemática</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+--bg: #000;
+--s1: #080d0c;
+--s2: #0d1512;
+--s3: #121c18;
+--border: rgba(100, 220, 200, 0.08);
+--border2: rgba(100, 220, 200, 0.16);
+--ink: #e8f5f2;
+--ink2: rgba(232, 245, 242, 0.55);
+--ink3: rgba(232, 245, 242, 0.28);
+--gold: #a2e6db;
+--gold2: #93e8d8;
+--gold-dim: rgba(94, 207, 190, 0.14);
+--teal: #a8f0e2;
+--teal-dim: rgba(168, 240, 226, 0.12);
+--r: 20px;
+--r2: 12px;
+--ease: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(
-    180deg,
-    #020817 0%,
-    #0B1F63 35%,
-    #1E3A8A 60%,
-    #E8ECF5 100%
-  );
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #FFFFFF;
-  overflow-x: hidden;
+font-family: 'DM Sans', system-ui, sans-serif;
+background: var(--bg);
+color: var(--ink);
+min-height: 100vh;
+-webkit-font-smoothing: antialiased;
+padding-bottom: 4rem;
+overflow-x: hidden;
 }
 
-/* ── LAYOUT PRINCIPAL ── */
-.app-container {
-  max-width: 430px;
-  margin: 0 auto;
-  min-height: 100vh;
-  position: relative;
-  padding: 32px 20px 48px;
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── HEADER ── */
+.header {
+position: sticky;
+top: 0;
+z-index: 200;
+padding: 1.1rem 1.5rem 0.9rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1rem;
+background: rgba(0, 0, 0, 0.85);
+backdrop-filter: blur(20px) saturate(150%);
+border-bottom: 1px solid var(--border);
 }
 
-/* ── HOME VIEW ── */
+.header::after {
+content: '';
+position: absolute;
+bottom: 0; left: 5%; right: 5%;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(--gold), transparent);
+opacity: 0.3;
+}
+
+.header-logo {
+font-family: 'Playfair Display', serif;
+font-size: 1.5rem;
+font-weight: 900;
+color: var(--ink);
+line-height: 1;
+letter-spacing: -0.02em;
+}
+
+.header-sub {
+font-size: 10px;
+letter-spacing: 0.16em;
+text-transform: uppercase;
+color: var(--ink3);
+margin-top: 3px;
+font-weight: 500;
+}
+
+.back-btn {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+cursor: pointer;
+color: var(--ink2);
+font-family: 'DM Sans', sans-serif;
+font-size: 14px;
+font-weight: 500;
+background: rgba(168, 240, 226, 0.06);
+border: 1px solid var(--border2);
+padding: 0.5rem 1rem;
+border-radius: 99px;
+transition: all 0.2s;
+flex-shrink: 0;
+letter-spacing: 0.02em;
+}
+
+.back-btn:hover {
+background: rgba(168, 240, 226, 0.12);
+border-color: var(--gold);
+color: var(--gold);
+}
+
+.back-btn svg {
+width: 16px; height: 16px;
+stroke: currentColor; fill: none;
+stroke-width: 2.5; stroke-linecap: round;
+}
+
+.nav-title {
+font-family: 'Playfair Display', serif;
+font-size: 1.2rem;
+font-weight: 700;
+color: var(--ink);
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+flex: 1;
+}
+
+/* ── CONTAINER ── */
+.container {
+max-width: 600px;
+margin: 0 auto;
+padding: 0 1.2rem;
+}
+
+/* ── HOME ── */
 .home-header {
-  margin-bottom: 40px;
-  padding: 0 4px;
+padding: 2rem 0 0.5rem;
 }
 
 .logo {
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-  text-shadow: 0 2px 20px rgba(100, 140, 255, 0.25);
-  margin-bottom: 6px;
+font-family: 'Playfair Display', serif;
+font-size: 2.8rem;
+font-weight: 900;
+color: var(--ink);
+line-height: 1;
+letter-spacing: -0.03em;
+margin-bottom: 0.3rem;
 }
 
 .logo-sub {
-  font-size: 28px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.65);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+font-size: 0.85rem;
+color: var(--ink3);
+letter-spacing: 0.08em;
+font-weight: 400;
 }
 
 /* ── CATEGORÍAS ── */
 .cat-section {
-  margin-bottom: 36px;
+margin-top: 2rem;
 }
 
 .cat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  padding: 0 4px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 1rem;
+padding: 0 0.2rem;
 }
 
 .cat-label {
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.5);
+font-family: 'Playfair Display', serif;
+font-size: 0.75rem;
+font-weight: 700;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--ink);
 }
 
 .cat-nav {
-  display: flex;
-  gap: 8px;
+display: flex;
+gap: 4px;
 }
 
 .cat-nav-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+width: 32px; height: 32px;
+border-radius: 50%;
+background: transparent;
+border: 1px solid var(--border2);
+color: var(--ink3);
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
 }
 
 .cat-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
-}
-
-.cat-nav-btn:active {
-  transform: scale(0.92);
-  transition: transform 0.1s ease;
+border-color: var(--gold);
+color: var(--gold);
 }
 
 .cat-nav-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+width: 14px; height: 14px;
+stroke: currentColor; fill: none;
+stroke-width: 2; stroke-linecap: round;
 }
 
-/* ── SLIDER HORIZONTAL DE LIBROS ── */
+/* ── SLIDER DE ÁLBUMES ── */
 .slider-wrapper {
-  position: relative;
-  overflow: hidden;
-  margin: 0 -4px;
-  padding: 4px;
+position: relative;
+overflow: hidden;
+margin: 0 -0.5rem;
+padding: 0.5rem;
 }
 
-.book-slider {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 4px 4px 8px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+.album-slider {
+display: flex;
+gap: 1rem;
+overflow-x: auto;
+scroll-behavior: smooth;
+padding: 0.5rem 0.5rem 1rem;
+-webkit-overflow-scrolling: touch;
+scrollbar-width: none;
+-ms-overflow-style: none;
 }
 
-.book-slider::-webkit-scrollbar {
-  display: none;
+.album-slider::-webkit-scrollbar { display: none; }
+
+/* ── TARJETA ÁLBUM ── */
+.album-card {
+flex-shrink: 0;
+width: 155px;
+cursor: pointer;
+background: rgba(255, 255, 255, 0.025);
+border: 1px solid var(--border);
+border-radius: var(--r);
+overflow: hidden;
+transition: all 0.3s ease;
 }
 
-/* ── TARJETA LIBRO (MÁS ALTA QUE ANCHA) ── */
-.book-card {
-  flex-shrink: 0;
-  width: 148px;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.25),
-    0 8px 20px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-  position: relative;
-  overflow: hidden;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
+.album-card:hover {
+border-color: var(--border2);
+transform: translateY(-3px);
+box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
-.book-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    transparent 100%
-  );
-  pointer-events: none;
+.album-card:active { transform: scale(0.97); }
+
+.album-cover {
+width: 100%;
+aspect-ratio: 1/1;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 3rem;
+position: relative;
+background: linear-gradient(135deg, rgba(168, 240, 226, 0.06), rgba(168, 240, 226, 0.02));
+border-bottom: 1px solid var(--border);
 }
 
-.book-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.35),
-    0 10px 25px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+.album-cover::after {
+content: '';
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
 }
 
-.book-card:active {
-  transform: scale(0.96);
-  transition: transform 0.15s ease;
+.album-cover span {
+position: relative;
+z-index: 1;
+filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
 }
 
-.book-cover {
-  width: 100%;
-  aspect-ratio: 1/1;
-  border-radius: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  position: relative;
-  margin-bottom: 16px;
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  flex-shrink: 0;
+.album-info {
+padding: 0.9rem;
 }
 
-.book-cover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 22px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.05) 40%,
-    transparent 60%
-  );
+.album-title {
+font-family: 'Playfair Display', serif;
+font-size: 0.9rem;
+font-weight: 700;
+color: var(--ink);
+line-height: 1.25;
+margin-bottom: 0.3rem;
 }
 
-.book-cover span {
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-}
-
-.book-spine {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.book-title {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #FFFFFF;
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.book-meta {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: -0.01em;
-}
-
-.book-pages-indicator {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.book-page-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: all 0.2s ease;
-}
-
-.book-page-dot.active {
-  background: rgba(255, 255, 255, 0.7);
-  width: 20px;
-  border-radius: 999px;
+.album-meta {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+color: var(--ink3);
+letter-spacing: 0.04em;
 }
 
 /* ── ALBUM VIEW ── */
-.album-nav {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: rgba(2, 8, 23, 0.8);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  padding: 14px 16px;
-  margin: -32px -20px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 14px;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 8px 14px;
-  border-radius: 999px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  letter-spacing: -0.01em;
-}
-
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  transform: translateX(-2px);
-}
-
-.back-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.nav-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: #FFFFFF;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  letter-spacing: -0.02em;
-}
-
-/* ── HERO DEL ÁLBUM ── */
 .album-hero {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  margin: 28px 0 24px;
-  padding: 0 4px;
+display: flex;
+gap: 1.2rem;
+align-items: center;
+margin: 1.5rem 0;
+padding: 1.2rem;
+background: rgba(255, 255, 255, 0.025);
+border: 1px solid var(--border);
+border-radius: var(--r);
 }
 
 .hero-cover {
-  width: 100px;
-  height: 100px;
-  border-radius: 28px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.4),
-    0 8px 20px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+width: 100px; height: 100px;
+border-radius: var(--r2);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 2.5rem;
+flex-shrink: 0;
+background: linear-gradient(135deg, rgba(168, 240, 226, 0.08), rgba(168, 240, 226, 0.03));
+border: 1px solid var(--border2);
+position: relative;
+overflow: hidden;
 }
 
 .hero-cover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    transparent 55%
-  );
-  border-radius: 28px;
+content: '';
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%);
 }
 
-.hero-cover span {
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-}
+.hero-cover span { position: relative; z-index: 1; }
 
-.hero-info {
-  flex: 1;
-  min-width: 0;
-}
+.hero-info { flex: 1; min-width: 0; }
 
 .hero-type {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 6px;
+font-family: 'DM Mono', monospace;
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.12em;
+color: var(--ink3);
+margin-bottom: 0.5rem;
 }
 
 .hero-title {
-  font-size: 31px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: #FFFFFF;
-  margin-bottom: 6px;
+font-family: 'Playfair Display', serif;
+font-size: 1.6rem;
+font-weight: 900;
+color: var(--ink);
+letter-spacing: -0.02em;
+line-height: 1.15;
+margin-bottom: 0.3rem;
 }
 
 .hero-author {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: -0.01em;
-  margin-bottom: 4px;
+font-size: 0.85rem;
+color: var(--ink2);
+margin-bottom: 0.2rem;
 }
 
 .hero-stats {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.35);
-  letter-spacing: -0.01em;
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+color: var(--ink3);
 }
 
-/* ── LISTA DE TEMAS ── */
-.tracklist {
-  margin-top: 8px;
-}
+/* ── TRACKLIST ── */
+.tracklist { margin-top: 0.5rem; }
 
 .tl-header {
-  display: grid;
-  grid-template-columns: 40px 1fr 80px;
-  gap: 12px;
-  padding: 0 16px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.3);
+display: grid;
+grid-template-columns: 40px 1fr 80px;
+gap: 0.8rem;
+padding: 0.7rem 1rem;
+font-family: 'DM Mono', monospace;
+font-size: 9px;
+font-weight: 500;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(--ink3);
+border-bottom: 1px solid var(--border);
 }
 
-.track-item {
-  margin-bottom: 8px;
-}
+.track-item { margin-bottom: 0.5rem; }
 
 .track-row {
-  display: grid;
-  grid-template-columns: 40px 1fr 80px;
-  gap: 12px;
-  align-items: center;
-  padding: 18px 16px;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.2),
-    0 3px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+display: grid;
+grid-template-columns: 40px 1fr 80px;
+gap: 0.8rem;
+align-items: center;
+padding: 1rem 1rem;
+cursor: pointer;
+background: rgba(255, 255, 255, 0.02);
+border: 1px solid transparent;
+border-radius: var(--r2);
+transition: all 0.25s ease;
 }
 
 .track-row:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-1px);
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.track-row:active {
-  transform: scale(0.98);
+background: rgba(255, 255, 255, 0.04);
+border-color: var(--border);
 }
 
 .track-row.open {
-  border-radius: 24px 24px 0 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.18);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+background: rgba(168, 240, 226, 0.04);
+border-color: rgba(168, 240, 226, 0.15);
+border-radius: var(--r2) var(--r2) 0 0;
 }
 
 .t-num {
-  font-size: 15px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
-  text-align: center;
-  letter-spacing: -0.02em;
+font-family: 'Playfair Display', serif;
+font-size: 1rem;
+font-weight: 700;
+color: var(--ink3);
+text-align: center;
 }
 
+.track-row.open .t-num { color: var(--gold); }
+
 .eq-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 16px;
-  justify-content: center;
+display: flex;
+align-items: flex-end;
+gap: 2px;
+height: 16px;
+justify-content: center;
 }
 
 .eq-bar {
-  width: 3px;
-  background: #60A5FA;
-  border-radius: 2px;
-  animation: eq 0.7s ease-in-out infinite alternate;
+width: 2px;
+background: var(--gold);
+border-radius: 2px;
+animation: eq 0.7s ease-in-out infinite alternate;
 }
 
 .eq-bar:nth-child(2) { animation-delay: 0.2s; }
 .eq-bar:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes eq {
-  from { height: 4px; }
-  to { height: 16px; }
+from { height: 3px; }
+to { height: 16px; }
 }
 
-.t-info {
-  overflow: hidden;
-  min-width: 0;
-}
+.t-info { overflow: hidden; min-width: 0; }
 
 .t-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #FFFFFF;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
+font-size: 0.9rem;
+font-weight: 600;
+color: var(--ink);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 
 .t-sub {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+font-size: 0.75rem;
+color: var(--ink3);
+margin-top: 2px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 
 .t-badge {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 999px;
-  white-space: nowrap;
-  letter-spacing: -0.01em;
-  text-align: center;
+font-family: 'DM Mono', monospace;
+font-size: 9px;
+font-weight: 500;
+padding: 4px 10px;
+border-radius: 99px;
+letter-spacing: 0.04em;
+text-align: center;
+white-space: nowrap;
 }
 
 /* ── APUNTE EXPANDIBLE ── */
 .apunte-body {
-  display: none;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 0 0 24px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-top: none;
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(0, 0, 0, 0.2);
-  animation: apExpand 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+display: none;
+background: #080d0c;
+border: 1px solid rgba(168, 240, 226, 0.1);
+border-top: none;
+border-radius: 0 0 var(--r2) var(--r2);
+animation: apExpand 0.25s ease;
 }
 
-.apunte-body.open {
-  display: block;
-}
+.apunte-body.open { display: block; }
 
 @keyframes apExpand {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+from { opacity: 0; transform: translateY(-6px); }
+to { opacity: 1; transform: translateY(0); }
 }
 
 .apunte-inner {
-  padding: 32px 28px 40px;
-}
-
-/* ── TIPOGRAFÍA DEL APUNTE (MODO CLARO INTERNO) ── */
-.apunte-inner {
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  line-height: 1.7;
-  color: #111111;
+padding: 1.5rem 1.5rem 2rem;
+font-family: 'DM Sans', sans-serif;
+font-size: 14px;
+line-height: 1.7;
+color: #c4cfcb;
 }
 
 .apunte-inner h1 {
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin-bottom: 6px;
-  color: #020817;
+font-family: 'Playfair Display', serif;
+font-size: 1.8rem;
+font-weight: 900;
+color: var(--ink);
+margin-bottom: 0.3rem;
+letter-spacing: -0.02em;
 }
 
 .apunte-inner .subtitle {
-  font-size: 14px;
-  color: #6B7280;
-  font-weight: 500;
-  margin-bottom: 32px;
-  display: block;
-  letter-spacing: -0.01em;
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+color: var(--ink3);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+display: block;
+margin-bottom: 2rem;
+padding-bottom: 1rem;
+border-bottom: 1px solid var(--border);
 }
 
 .apunte-inner h2 {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 36px 0 14px;
-  color: #020817;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #E5E7EB;
-  letter-spacing: -0.02em;
+font-family: 'Playfair Display', serif;
+font-size: 1.2rem;
+font-weight: 700;
+color: var(--gold);
+margin: 1.8rem 0 0.8rem;
 }
 
 .apunte-inner h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 24px 0 10px;
-  color: #1F2937;
-  letter-spacing: -0.02em;
+font-size: 1rem;
+font-weight: 600;
+color: var(--ink2);
+margin: 1.2rem 0 0.6rem;
 }
 
-.apunte-inner p {
-  margin-bottom: 16px;
-  line-height: 1.75;
-  color: #374151;
-}
-
-.apunte-inner ul, .apunte-inner ol {
-  margin: 12px 0 18px 24px;
-  color: #374151;
-}
-
-.apunte-inner li {
-  margin-bottom: 8px;
-  line-height: 1.7;
-}
-
-.apunte-inner strong {
-  font-weight: 600;
-  color: #020817;
-}
-
-.apunte-inner em {
-  font-style: italic;
-}
+.apunte-inner p { margin-bottom: 1rem; }
+.apunte-inner ul, .apunte-inner ol { margin: 0.8rem 0 1.2rem 1.5rem; }
+.apunte-inner li { margin-bottom: 0.4rem; }
+.apunte-inner strong { color: var(--ink); font-weight: 600; }
 
 .apunte-inner code {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  background: #F3F4F6;
-  padding: 3px 8px;
-  border-radius: 8px;
-  font-size: 0.875em;
-  font-weight: 500;
-  color: #111827;
+font-family: 'DM Mono', monospace;
+background: rgba(168, 240, 226, 0.06);
+padding: 2px 8px;
+border-radius: 6px;
+font-size: 0.9em;
+color: var(--teal);
 }
 
 .apunte-inner table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 14px;
-  display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+width: 100%;
+border-collapse: collapse;
+margin: 1.5rem 0;
+font-size: 13px;
+display: block;
+overflow-x: auto;
+border: 1px solid var(--border);
+border-radius: var(--r2);
 }
 
 .apunte-inner th {
-  background: #020817;
-  color: #FFFFFF;
-  padding: 14px 16px;
-  text-align: left;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  font-weight: 600;
+background: rgba(168, 240, 226, 0.08);
+color: var(--ink);
+padding: 0.8rem 1rem;
+text-align: left;
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+border-bottom: 2px solid var(--border2);
 }
 
 .apunte-inner td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #E5E7EB;
-  vertical-align: top;
-  font-size: 14px;
-  color: #374151;
+padding: 0.7rem 1rem;
+border-bottom: 1px solid var(--border);
+color: var(--ink2);
 }
 
-.apunte-inner tr:last-child td {
-  border-bottom: none;
-}
-
-/* ── CAJAS ESPECIALES ── */
 .def-box, .thm-box, .ex-box {
-  padding: 20px 24px;
-  border-radius: 20px;
-  margin: 20px 0;
-  font-size: 0.95em;
-  line-height: 1.7;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  color: #1F2937;
+padding: 1rem 1.2rem;
+margin: 1.2rem 0;
+border-radius: var(--r2);
+font-size: 0.95em;
+line-height: 1.7;
 }
 
 .def-box {
-  background: #F5F3FF;
-  border-left: 4px solid #7C3AED;
+background: rgba(139, 157, 195, 0.08);
+border-left: 3px solid #8b9dc3;
 }
 
 .thm-box {
-  background: #ECFDF5;
-  border-left: 4px solid #059669;
+background: rgba(123, 165, 135, 0.08);
+border-left: 3px solid #7ba587;
 }
 
 .ex-box {
-  background: #FFFBEB;
-  border-left: 4px solid #D97706;
+background: rgba(201, 169, 110, 0.08);
+border-left: 3px solid #c9a96e;
 }
 
 .math-block {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 20px 0;
-  text-align: center;
-  margin: 16px 0;
+overflow-x: auto;
+padding: 1rem 0;
+text-align: center;
 }
 
-.math-block .katex-display {
-  margin: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 6px 0;
-}
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(168, 240, 226, 0.12); border-radius: 99px; }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* ── RESPONSIVE ── */
 @media (max-width: 480px) {
-  .app-container {
-    padding: 24px 14px 40px;
-  }
-  
-  .logo {
-    font-size: 38px;
-  }
-  
-  .logo-sub {
-    font-size: 22px;
-  }
-  
-  .book-card {
-    width: 134px;
-  }
-  
-  .hero-cover {
-    width: 84px;
-    height: 84px;
-    font-size: 34px;
-  }
-  
-  .hero-title {
-    font-size: 26px;
-  }
-  
-  .track-row, .tl-header {
-    grid-template-columns: 32px 1fr 70px;
-    gap: 8px;
-  }
-  
-  .apunte-inner {
-    padding: 24px 18px 32px;
-  }
-  
-  .apunte-inner h1 {
-    font-size: 28px;
-  }
-  
-  .apunte-inner .katex {
-    font-size: 0.95em !important;
-  }
+.header { padding: 0.9rem 1rem 0.7rem; }
+.header-logo { font-size: 1.2rem; }
+.container { padding: 0 0.8rem; }
+.logo { font-size: 2.2rem; }
+.album-card { width: 140px; }
+.hero-cover { width: 80px; height: 80px; font-size: 2rem; }
+.hero-title { font-size: 1.3rem; }
+.track-row, .tl-header { grid-template-columns: 32px 1fr 65px; gap: 0.5rem; padding: 0.8rem 0.8rem; }
 }
 </style>
 </head>
 <body>
 
-<div class="app-container">
+<!-- HEADER STICKY -->
+<header class="header" id="main-header">
+<div id="header-content">
+<div style="display:flex;align-items:center;gap:0.5rem;">
+<div class="header-logo">♫</div>
+<div>
+<div class="header-logo" style="font-size:1.2rem;line-height:1;">NotePlayer</div>
+<div class="header-sub">Bibliotheca Mathematica</div>
+</div>
+</div>
+</div>
+<div id="header-album" style="display:none;align-items:center;gap:0.8rem;width:100%;">
+<button class="back-btn" onclick="goHome()">
+<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+Volver
+</button>
+<span class="nav-title" id="nav-title"></span>
+</div>
+</header>
+
+<div class="container">
 
 <!-- HOME VIEW -->
 <div id="home" class="view active">
-  <div class="home-header">
-    <div class="logo">NotePlayer</div>
-    <div class="logo-sub">Tu biblioteca de apuntes</div>
-  </div>
-  <div id="home-content"></div>
+<div class="home-header">
+<div class="logo">NotePlayer</div>
+<div class="logo-sub">Tu biblioteca de apuntes matemáticos</div>
+</div>
+<div id="home-content"></div>
 </div>
 
 <!-- ALBUM VIEW -->
-<div id="album-view" class="view" style="display:none;">
-  <div class="album-nav">
-    <button class="back-btn" onclick="goHome()">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      Biblioteca
-    </button>
-    <span class="nav-title" id="nav-title"></span>
-  </div>
-  <div id="album-hero-area"></div>
-  <div class="tracklist">
-    <div class="tl-header">
-      <span style="text-align:center">#</span>
-      <span>Tema</span>
-      <span style="text-align:center">Nivel</span>
-    </div>
-    <div id="tracklist-body"></div>
-  </div>
+<div id="album-view" class="view">
+<div id="album-hero-area"></div>
+<div class="tracklist">
+<div class="tl-header">
+<span style="text-align:center">#</span>
+<span>Tema</span>
+<span style="text-align:center">Nivel</span>
+</div>
+<div id="tracklist-body"></div>
+</div>
 </div>
 
 </div>
@@ -849,117 +669,101 @@ body {
 <script>
 const CATEGORIES = [
   {
-    label: "Cálculo",
+    label: "Cálculo Infinitesimal",
     books: [
       {
-        id: "cal1", title: "Cálculo Diferencial", emoji: "∂", color: "linear-gradient(135deg, #4C1D95, #7C3AED)", author: "Sem. 2024", pages: 52,
+        id: "cal1", title: "Cálculo Diferencial", emoji: "∂", author: "Vol. I · MMXXIV", pages: 52,
         tracks: [
-          {
-            num: 1, title: "Límites y Continuidad", sub: "Definición ε-δ", diff: "Básico", diffStyle: "background:rgba(5,150,105,0.15);color:#34D399", pages: "12",
-            latex: `<h1>Límites y Continuidad</h1><span class="subtitle">Cap. 1 · Cálculo Diferencial</span>
+          { num: 1, title: "Límites y Continuidad", sub: "Definición ε-δ", diff: "Elemental", diffStyle: "background:rgba(123,165,135,0.12);color:#7ba587",
+            latex: `<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
 <h2>Definición de Límite</h2>
-<p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se acercan a $L$ conforme $x\\to a$.</p>
-<div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que $0<|x-a|<\\delta\\Rightarrow|f(x)-L|<\\varepsilon$.</div>
-<h2>Propiedades de Límites</h2>
+<p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x$ tiende a $a$.</p>
+<div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que si $0<|x-a|<\\delta$, entonces $|f(x)-L|<\\varepsilon$.</div>
+<h2>Propiedades Fundamentales</h2>
 <p>Si $\\lim_{x\\to a}f(x)=L$ y $\\lim_{x\\to a}g(x)=M$:</p>
 <ul>
-  <li>$\\lim_{x\\to a}[f\\pm g]=L\\pm M$</li>
-  <li>$\\lim_{x\\to a}[f\\cdot g]=LM$</li>
-  <li>$\\lim_{x\\to a}\\frac{f}{g}=\\frac{L}{M}$ si $M\\neq 0$</li>
+<li>$\\lim_{x\\to a}[f(x)\\pm g(x)]=L\\pm M$</li>
+<li>$\\lim_{x\\to a}[f(x)\\cdot g(x)]=LM$</li>
+<li>$\\lim_{x\\to a}\\frac{f(x)}{g(x)}=\\frac{L}{M}$, si $M\\neq 0$</li>
 </ul>
 <h2>Límites Notables</h2>
 <div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\left(1+\\frac{1}{x}\\right)^x=e$$</div>
 <h2>Continuidad</h2>
-<div class="def-box"><strong>Definición:</strong> $f$ es continua en $a$ si: (1) $f(a)$ existe, (2) $\\lim_{x\\to a}f(x)$ existe, (3) $\\lim_{x\\to a}f(x)=f(a)$.</div>
-<div class="thm-box"><strong>Teorema del Valor Intermedio:</strong> Si $f$ es continua en $[a,b]$ y $f(a)\\cdot f(b)<0$, entonces $\\exists\\,c\\in(a,b)$ con $f(c)=0$.</div>`
-          },
-          {
-            num: 2, title: "Derivadas", sub: "Reglas de derivación", diff: "Intermedio", diffStyle: "background:rgba(217,119,6,0.15);color:#FBBF24", pages: "18",
-            latex: `<h1>Derivadas</h1><span class="subtitle">Cap. 2 · Cálculo Diferencial</span>
+<div class="def-box"><strong>Definición:</strong> $f$ es continua en $a$ si y solo si $\\lim_{x\\to a}f(x)=f(a)$.</div>
+<div class="thm-box"><strong>Teorema del Valor Intermedio:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, entonces existe $c\\in(a,b)$ tal que $f(c)=0$.</div>` },
+          { num: 2, title: "Derivadas", sub: "Reglas de Derivación", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,0.12);color:#c9a96e",
+            latex: `<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
 <h2>Definición</h2>
 <p>La derivada de $f$ en $a$ es:</p>
 <div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
-<p>Geométricamente: pendiente de la recta tangente en $(a,f(a))$.</p>
 <h2>Reglas Fundamentales</h2>
 <table><tr><th>Regla</th><th>Fórmula</th></tr>
 <tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
 <tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
-<tr><td>Cociente</td><td>$\\left(\\frac{f}{g}\\right)'=\\frac{f'g-fg'}{g^2}$</td></tr>
+<tr><td>Cociente</td><td>$(\\frac{f}{g})'=\\frac{f'g-fg'}{g^2}$</td></tr>
 <tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
 <h2>Derivadas Elementales</h2>
-<div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}\\cos x=-\\sin x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\frac{1}{x}$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)$ → $h'(x)=2x\\cos(x^2)$</div>`
-          }
+<div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}\\cos x=-\\sin x\\quad\\frac{d}{dx}e^x=e^x$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)$ → $h'(x)=2x\\cos(x^2)$</div>` },
+          { num: 3, title: "Integrales", sub: "Técnicas de Integración", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,0.12);color:#8b9dc3",
+            latex: `<h1>Integrales</h1><span class="subtitle">Capítulo III · Cálculo Integral</span>
+<h2>Integral Indefinida</h2>
+<p>$\\int f(x)\\,dx=F(x)+C$ donde $F'(x)=f(x)$.</p>
+<h2>Tabla Básica</h2>
+<table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
+<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
+<tr><td>$\\frac{1}{x}$</td><td>$\\ln|x|+C$</td></tr>
+<tr><td>$e^x$</td><td>$e^x+C$</td></tr></table>
+<h2>Teorema Fundamental</h2>
+<div class="thm-box"><strong>TFC:</strong> $\\int_a^b f(x)\\,dx=F(b)-F(a)$</div>` }
         ]
       },
       {
-        id: "cal2", title: "Cálculo Integral", emoji: "∫", color: "linear-gradient(135deg, #1E3A8A, #3B82F6)", author: "Sem. 2024", pages: 38,
+        id: "cal2", title: "Cálculo Integral", emoji: "∫", author: "Vol. II · MMXXIV", pages: 44,
         tracks: [
-          {
-            num: 1, title: "Series de Taylor", sub: "Expansiones en serie", diff: "Intermedio", diffStyle: "background:rgba(217,119,6,0.15);color:#FBBF24", pages: "16",
-            latex: `<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Cálculo Integral · Sem. 2024</span>
-<h2>Serie de Taylor</h2>
-<p>Si $f$ es infinitamente diferenciable en $a$:</p>
-<div class="math-block">$$f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
-<h2>Series de Maclaurin Notables</h2>
-<table><tr><th>Función</th><th>Serie</th><th>Radio</th></tr>
-<tr><td>$e^x$</td><td>$\\sum_{n=0}^\\infty\\frac{x^n}{n!}$</td><td>$\\infty$</td></tr>
-<tr><td>$\\sin x$</td><td>$\\sum_{n=0}^\\infty\\frac{(-1)^n x^{2n+1}}{(2n+1)!}$</td><td>$\\infty$</td></tr>
-<tr><td>$\\cos x$</td><td>$\\sum_{n=0}^\\infty\\frac{(-1)^n x^{2n}}{(2n)!}$</td><td>$\\infty$</td></tr></table>`
-          }
-        ]
-      },
-      {
-        id: "cal3", title: "Cálculo Multivariable", emoji: "∇", color: "linear-gradient(135deg, #065F46, #10B981)", author: "Sem. 2025", pages: 45,
-        tracks: [
-          {
-            num: 1, title: "Derivadas Parciales", sub: "Gradiente y Hessiano", diff: "Avanzado", diffStyle: "background:rgba(220,38,38,0.15);color:#F87171", pages: "20",
-            latex: `<h1>Derivadas Parciales</h1><span class="subtitle">Cálculo Multivariable · Sem. 2025</span>
+          { num: 1, title: "Series de Taylor", sub: "Expansiones Infinitas", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,0.12);color:#c9a96e",
+            latex: `<h1>Series de Taylor</h1><span class="subtitle">Cálculo Integral · Vol. II</span>
 <h2>Definición</h2>
-<p>Derivada parcial respecto a $x$:</p>
-<div class="math-block">$$\\frac{\\partial f}{\\partial x}=\\lim_{h\\to 0}\\frac{f(x+h,y)-f(x,y)}{h}$$</div>
-<h2>Vector Gradiente</h2>
-<div class="math-block">$$\\nabla f(x,y)=\\left(\\frac{\\partial f}{\\partial x},\\frac{\\partial f}{\\partial y}\\right)$$</div>`
-          }
+<div class="math-block">$$f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
+<h2>Series Notables</h2>
+<table><tr><th>Función</th><th>Serie de Maclaurin</th></tr>
+<tr><td>$e^x$</td><td>$\\sum_{n=0}^\\infty\\frac{x^n}{n!}$</td></tr>
+<tr><td>$\\sin x$</td><td>$\\sum_{n=0}^\\infty\\frac{(-1)^n x^{2n+1}}{(2n+1)!}$</td></tr></table>` }
         ]
       }
     ]
   },
   {
-    label: "Álgebra",
+    label: "Álgebra Superior",
     books: [
       {
-        id: "alg1", title: "Álgebra Lineal", emoji: "⊗", color: "linear-gradient(135deg, #064E3B, #059669)", author: "Sem. 2024", pages: 44,
+        id: "alg1", title: "Álgebra Lineal", emoji: "⊗", author: "Vol. Único · MMXXIV", pages: 48,
         tracks: [
-          {
-            num: 1, title: "Sistemas Lineales", sub: "Eliminación Gaussiana", diff: "Básico", diffStyle: "background:rgba(5,150,105,0.15);color:#34D399", pages: "14",
-            latex: `<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
+          { num: 1, title: "Sistemas Lineales", sub: "Eliminación Gaussiana", diff: "Elemental", diffStyle: "background:rgba(123,165,135,0.12);color:#7ba587",
+            latex: `<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal · Capítulo I</span>
 <h2>Forma Matricial $Ax=b$</h2>
 <div class="math-block">$$\\begin{pmatrix}a_{11}&\\cdots&a_{1n}\\\\\\vdots&\\ddots&\\vdots\\\\a_{m1}&\\cdots&a_{mn}\\end{pmatrix}\\begin{pmatrix}x_1\\\\\\vdots\\\\x_n\\end{pmatrix}=\\begin{pmatrix}b_1\\\\\\vdots\\\\b_m\\end{pmatrix}$$</div>
 <h2>Eliminación Gaussiana</h2>
-<div class="def-box"><strong>Operaciones elementales:</strong> (1) Intercambiar filas, (2) Escalar por $k\\neq 0$, (3) Sumar múltiplo de otra fila.</div>`
-          },
-          {
-            num: 2, title: "Eigenvalores", sub: "Diagonalización", diff: "Avanzado", diffStyle: "background:rgba(220,38,38,0.15);color:#F87171", pages: "20",
-            latex: `<h1>Eigenvalores y Eigenvectores</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
+<div class="def-box"><strong>Operaciones elementales:</strong> Intercambio de filas, escalado por escalar no nulo, suma de múltiplo de una fila a otra.</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $2x+y=5$, $4x+3y=11$ → $x=2$, $y=1$.</div>` },
+          { num: 2, title: "Eigenvalores", sub: "Diagonalización", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,0.12);color:#8b9dc3",
+            latex: `<h1>Eigenvalores y Eigenvectores</h1><span class="subtitle">Álgebra Lineal · Capítulo Final</span>
 <h2>Definición</h2>
-<div class="def-box">$\\lambda$ es <strong>eigenvalor</strong> de $A$ si $\\exists\\,\\mathbf{v}\\neq\\mathbf{0}$ tal que $A\\mathbf{v}=\\lambda\\mathbf{v}$.</div>
-<h2>Diagonalización</h2>
-<div class="thm-box">$A$ diagonalizable: $A=PDP^{-1}$, $D=\\operatorname{diag}(\\lambda_i)$.</div>`
-          }
+<div class="def-box">$\\lambda$ es <strong>eigenvalor</strong> de $A$ si $\\exists\\,\\mathbf{v}\\neq\\mathbf{0}$ con $A\\mathbf{v}=\\lambda\\mathbf{v}$.</div>
+<h2>Polinomio Característico</h2>
+<div class="math-block">$$p(\\lambda)=\\det(A-\\lambda I)=0$$</div>
+<div class="thm-box"><strong>Diagonalización:</strong> $A=PDP^{-1}$ donde $D$ contiene los eigenvalores en la diagonal.</div>` }
         ]
       },
       {
-        id: "alg2", title: "Álgebra Abstracta", emoji: "Σ", color: "linear-gradient(135deg, #4C1D95, #8B5CF6)", author: "Sem. 2025", pages: 35,
+        id: "alg2", title: "Álgebra Abstracta", emoji: "Σ", author: "Vol. Único · MMXXV", pages: 35,
         tracks: [
-          {
-            num: 1, title: "Grupos", sub: "Axiomas y ejemplos", diff: "Intermedio", diffStyle: "background:rgba(217,119,6,0.15);color:#FBBF24", pages: "15",
-            latex: `<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta · Sem. 2025</span>
+          { num: 1, title: "Grupos", sub: "Axiomas y ejemplos", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,0.12);color:#c9a96e",
+            latex: `<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta · Capítulo I</span>
 <h2>Definición de Grupo</h2>
-<div class="def-box">$(G,*)$ es <strong>grupo</strong> si: cierre, asociatividad, identidad e inverso.</div>
+<div class="def-box">$(G,*)$ es <strong>grupo</strong> si: cierre, asociatividad, existencia de identidad e inversos.</div>
 <h2>Teorema de Lagrange</h2>
-<div class="thm-box">$|H|$ divide a $|G|$ para $H\\leq G$ finito.</div>`
-          }
+<div class="thm-box">Si $H$ es subgrupo de $G$ finito, entonces $|H|$ divide a $|G|$.</div>` }
         ]
       }
     ]
@@ -968,39 +772,27 @@ const CATEGORIES = [
     label: "Análisis y Probabilidad",
     books: [
       {
-        id: "anc", title: "Análisis Complejo", emoji: "ℂ", color: "linear-gradient(135deg, #7F1D1D, #DC2626)", author: "Sem. 2025", pages: 30,
+        id: "anc", title: "Análisis Complejo", emoji: "ℂ", author: "Vol. Único · MMXXV", pages: 30,
         tracks: [
-          {
-            num: 1, title: "Números Complejos", sub: "Forma polar", diff: "Básico", diffStyle: "background:rgba(5,150,105,0.15);color:#34D399", pages: "12",
-            latex: `<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo · Sem. 2025</span>
+          { num: 1, title: "Números Complejos", sub: "Forma polar y exponencial", diff: "Elemental", diffStyle: "background:rgba(123,165,135,0.12);color:#7ba587",
+            latex: `<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo · Capítulo I</span>
 <h2>Definición</h2>
 <p>$z=a+bi$, $i^2=-1$, $|z|=\\sqrt{a^2+b^2}$.</p>
 <h2>Fórmula de Euler</h2>
-<div class="thm-box">$$e^{i\\theta}=\\cos\\theta+i\\sin\\theta\\qquad e^{i\\pi}+1=0$$</div>`
-          }
+<div class="thm-box">$$e^{i\\theta}=\\cos\\theta+i\\sin\\theta\\qquad e^{i\\pi}+1=0$$</div>
+<h2>Operaciones</h2>
+<ul><li><strong>Conjugado:</strong> $\\bar z=a-bi$</li><li><strong>Multiplicación:</strong> $z_1z_2=r_1r_2e^{i(\\theta_1+\\theta_2)}$</li></ul>` }
         ]
       },
       {
-        id: "prob", title: "Probabilidad", emoji: "🎲", color: "linear-gradient(135deg, #78350F, #D97706)", author: "Sem. 2023", pages: 28,
+        id: "prob", title: "Probabilidad", emoji: "🎲", author: "Vol. Único · MMXXIII", pages: 28,
         tracks: [
-          {
-            num: 1, title: "Espacios de Probabilidad", sub: "Kolmogorov", diff: "Básico", diffStyle: "background:rgba(5,150,105,0.15);color:#34D399", pages: "14",
-            latex: `<h1>Espacios de Probabilidad</h1><span class="subtitle">Probabilidad · Sem. 2023</span>
+          { num: 1, title: "Espacios de Probabilidad", sub: "Axiomas de Kolmogorov", diff: "Elemental", diffStyle: "background:rgba(123,165,135,0.12);color:#7ba587",
+            latex: `<h1>Espacios de Probabilidad</h1><span class="subtitle">Probabilidad · Capítulo I</span>
+<h2>Axiomas de Kolmogorov</h2>
+<div class="def-box">$P(\\Omega)=1$, $P(A)\\geq 0$, $\\sigma$-aditividad para eventos disjuntos.</div>
 <h2>Teorema de Bayes</h2>
-<div class="thm-box">$$P(A_i\\mid B)=\\frac{P(B\\mid A_i)P(A_i)}{\\sum_j P(B\\mid A_j)P(A_j)}$$</div>`
-          }
-        ]
-      },
-      {
-        id: "edo", title: "Ecuaciones Diferenciales", emoji: "🔷", color: "linear-gradient(135deg, #164E63, #0891B2)", author: "Sem. 2024", pages: 34,
-        tracks: [
-          {
-            num: 1, title: "EDO Primer Orden", sub: "Variables separables", diff: "Básico", diffStyle: "background:rgba(5,150,105,0.15);color:#34D399", pages: "16",
-            latex: `<h1>EDO de Primer Orden</h1><span class="subtitle">Ecuaciones Diferenciales · Sem. 2024</span>
-<h2>Variables Separables</h2>
-<div class="math-block">$$\\int\\frac{dy}{g(y)}=\\int f(x)\\,dx+C$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $\\frac{dy}{dx}=xy$ → $y=Ae^{x^2/2}$</div>`
-          }
+<div class="thm-box">$$P(A_i\\mid B)=\\frac{P(B\\mid A_i)P(A_i)}{\\sum_j P(B\\mid A_j)P(A_j)}$$</div>` }
         ]
       }
     ]
@@ -1009,38 +801,29 @@ const CATEGORIES = [
 
 let currentBookId = null;
 
-// ── RENDER HOME ──
+/* ── RENDER HOME ── */
 function renderHome() {
-  const container = document.getElementById('home-content');
-  container.innerHTML = CATEGORIES.map((cat, catIndex) => `
+  document.getElementById('home-content').innerHTML = CATEGORIES.map((cat, ci) => `
     <div class="cat-section">
       <div class="cat-header">
         <div class="cat-label">${cat.label}</div>
         <div class="cat-nav">
-          <button class="cat-nav-btn" onclick="slideBooks('cat-${catIndex}', -1)">
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          <button class="cat-nav-btn" onclick="slideAlbums('cat-${ci}', -1)">
+            <svg viewBox="0 0 24 24"><polyline points="16 20 8 12 16 4"/></svg>
           </button>
-          <button class="cat-nav-btn" onclick="slideBooks('cat-${catIndex}', 1)">
-            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          <button class="cat-nav-btn" onclick="slideAlbums('cat-${ci}', 1)">
+            <svg viewBox="0 0 24 24"><polyline points="8 20 16 12 8 4"/></svg>
           </button>
         </div>
       </div>
       <div class="slider-wrapper">
-        <div class="book-slider" id="cat-${catIndex}">
-          ${cat.books.map((b, bookIndex) => `
-            <div class="book-card" onclick="openAlbum('${b.id}')">
-              <div class="book-cover" style="background:${b.color}">
-                <span>${b.emoji}</span>
-              </div>
-              <div class="book-spine">
-                <div class="book-title">${b.title}</div>
-                <div class="book-meta">${b.author} · ${b.tracks.length} temas</div>
-                <div class="book-pages-indicator">
-                  ${Array.from({length: Math.min(b.tracks.length, 5)}, (_, i) => `
-                    <div class="book-page-dot ${i === 0 ? 'active' : ''}"></div>
-                  `).join('')}
-                  ${b.tracks.length > 5 ? `<div class="book-meta" style="margin-left:4px">+${b.tracks.length - 5}</div>` : ''}
-                </div>
+        <div class="album-slider" id="cat-${ci}">
+          ${cat.books.map(b => `
+            <div class="album-card" onclick="openAlbum('${b.id}')">
+              <div class="album-cover"><span>${b.emoji}</span></div>
+              <div class="album-info">
+                <div class="album-title">${b.title}</div>
+                <div class="album-meta">${b.tracks.length} temas · ${b.pages} págs</div>
               </div>
             </div>
           `).join('')}
@@ -1050,48 +833,41 @@ function renderHome() {
   `).join('');
 }
 
-// ── SLIDER NAVIGATION ──
-function slideBooks(catId, direction) {
+function slideAlbums(catId, dir) {
   const slider = document.getElementById(catId);
-  const card = slider.querySelector('.book-card');
+  const card = slider.querySelector('.album-card');
   if (!card) return;
-  
-  const cardWidth = card.offsetWidth + 14; // width + gap
-  const scrollAmount = cardWidth * direction;
-  
-  slider.scrollBy({
-    left: scrollAmount,
-    behavior: 'smooth'
-  });
+  slider.scrollBy({ left: (card.offsetWidth + 16) * dir, behavior: 'smooth' });
 }
 
-// ── OPEN ALBUM ──
+/* ── OPEN ALBUM ── */
 function openAlbum(bookId) {
   const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === bookId);
   if (!book) return;
-  
   currentBookId = bookId;
-  
+
+  // Actualizar header
+  document.getElementById('header-content').style.display = 'none';
+  document.getElementById('header-album').style.display = 'flex';
   document.getElementById('nav-title').textContent = book.title;
-  
+
+  // Hero del álbum
   document.getElementById('album-hero-area').innerHTML = `
     <div class="album-hero">
-      <div class="hero-cover" style="background:${book.color}">
-        <span>${book.emoji}</span>
-      </div>
+      <div class="hero-cover"><span>${book.emoji}</span></div>
       <div class="hero-info">
-        <div class="hero-type">Libro de apuntes</div>
+        <div class="hero-type">Libro de Apuntes</div>
         <div class="hero-title">${book.title}</div>
-        <div class="hero-author">${book.author} · ${book.tracks.length} temas</div>
-        <div class="hero-stats">${book.tracks.reduce((s, t) => s + parseInt(t.pages), 0)} páginas</div>
+        <div class="hero-author">${book.author}</div>
+        <div class="hero-stats">${book.tracks.length} temas · ${book.pages} páginas</div>
       </div>
-    </div>
-  `;
-  
+    </div>`;
+
+  // Lista de temas (canciones)
   document.getElementById('tracklist-body').innerHTML = book.tracks.map(t => `
     <div class="track-item">
       <div class="track-row" id="tr-${t.num}" onclick="toggleTrack(${t.num})">
-        <div class="t-num" id="tn-${t.num}">${t.num}</div>
+        <div class="t-num" id="tn-${t.num}">${String(t.num).padStart(2,'0')}</div>
         <div class="t-info">
           <div class="t-title">${t.title}</div>
           <div class="t-sub">${t.sub}</div>
@@ -1103,40 +879,42 @@ function openAlbum(bookId) {
       </div>
     </div>
   `).join('');
-  
+
   showView('album-view');
   window.scrollTo(0, 0);
 }
 
-// ── TOGGLE TRACK ──
+/* ── TOGGLE TRACK ── */
 function toggleTrack(num) {
   const ab = document.getElementById('ab-' + num);
   const row = document.getElementById('tr-' + num);
   const numEl = document.getElementById('tn-' + num);
   const isOpen = ab.classList.contains('open');
-  
+
   if (isOpen) {
     ab.classList.remove('open');
     row.classList.remove('open');
-    numEl.textContent = num;
+    numEl.textContent = String(num).padStart(2, '0');
     return;
   }
-  
-  document.querySelectorAll('.apunte-body.open').forEach(openBody => {
-    const openId = parseInt(openBody.id.replace('ab-', ''));
-    if (openBody !== ab) {
-      openBody.classList.remove('open');
-      const openRow = document.getElementById('tr-' + openId);
-      const openNum = document.getElementById('tn-' + openId);
-      if (openRow) openRow.classList.remove('open');
-      if (openNum) openNum.textContent = openId;
+
+  // Cerrar otros tracks
+  document.querySelectorAll('.apunte-body.open').forEach(ob => {
+    const oid = parseInt(ob.id.replace('ab-', ''));
+    if (ob !== ab) {
+      ob.classList.remove('open');
+      const orow = document.getElementById('tr-' + oid);
+      const onum = document.getElementById('tn-' + oid);
+      if (orow) orow.classList.remove('open');
+      if (onum) onum.textContent = String(oid).padStart(2, '0');
     }
   });
-  
+
+  // Abrir este track
   ab.classList.add('open');
   row.classList.add('open');
   numEl.innerHTML = '<div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>';
-  
+
   const inner = document.getElementById('ai-' + num);
   if (!inner.dataset.rendered) {
     const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === currentBookId);
@@ -1145,49 +923,42 @@ function toggleTrack(num) {
     inner.dataset.rendered = '1';
     renderKaTeX(inner);
   }
-  
+
   setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 
-// ── KATEX ──
-function renderKaTeX(element) {
+/* ── KATEX ── */
+function renderKaTeX(el) {
   if (window.renderMathInElement) {
     try {
-      renderMathInElement(element, {
-        delimiters: [
-          { left: '$$', right: '$$', display: true },
-          { left: '$', right: '$', display: false }
-        ],
-        throwOnError: false,
-        strict: false,
-        trust: true
+      renderMathInElement(el, {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
+        throwOnError: false, strict: false, trust: true
       });
-    } catch (e) {
-      console.error('KaTeX error:', e);
-    }
+    } catch(e) { console.error('KaTeX:', e); }
   } else {
-    setTimeout(() => renderKaTeX(element), 100);
+    setTimeout(() => renderKaTeX(el), 100);
   }
 }
 
-// ── NAVEGACIÓN ──
+/* ── NAVEGACIÓN ── */
 function showView(id) {
-  document.getElementById('home').style.display = 'none';
-  document.getElementById('album-view').style.display = 'none';
-  document.getElementById(id).style.display = 'block';
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('album-view').classList.remove('active');
+  document.getElementById(id).classList.add('active');
 }
 
 function goHome() {
+  document.getElementById('header-content').style.display = 'flex';
+  document.getElementById('header-album').style.display = 'none';
   showView('home');
-  document.getElementById('home').style.display = 'block';
   window.scrollTo(0, 0);
 }
 
-// ── INIT ──
+/* ── INIT ── */
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('album-view').style.display = 'none';
+  window.scrollTo(0, 0);
   renderHome();
-  console.log('NotePlayer Dark Premium — Slider Ready');
 });
 </script>
 </body>
