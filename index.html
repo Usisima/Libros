@@ -3,1301 +3,1060 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NotePlayer · Podcast Matemático</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>NotePlayer · Apuntes Matemáticos</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
 :root {
---bg: #0a0a0f;
---s1: #12121a;
---s2: #1a1a24;
---s3: #222230;
---border: rgba(255, 255, 255, 0.06);
---border2: rgba(255, 255, 255, 0.1);
---ink: #f0ece4;
---ink2: rgba(240, 236, 228, 0.6);
---ink3: rgba(240, 236, 228, 0.35);
---accent: #c9a96e;
---accent2: #d4ba7c;
---accent-dim: rgba(201, 169, 110, 0.15);
---teal: #7ec8bc;
---teal-dim: rgba(126, 200, 188, 0.12);
---r: 16px;
---r-sm: 10px;
---ease: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
---player-h: 72px;
---nav-h: 64px;
+  --bg:#0a0a0f; --s1:#12121a; --s2:#1a1a24; --s3:#222230;
+  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.11);
+  --ink:#f0ece4; --ink2:rgba(240,236,228,0.62); --ink3:rgba(240,236,228,0.32);
+  --accent:#c9a96e; --accent2:#d4ba7c; --adim:rgba(201,169,110,0.14);
+  --teal:#7ec8bc; --tdim:rgba(126,200,188,0.12);
+  --r:16px; --rsm:10px;
+  --player-h:72px; --nav-h:58px;
 }
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  padding-bottom:calc(var(--player-h) + var(--nav-h) + 0.5rem)}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-
-body {
-font-family: 'DM Sans', system-ui, sans-serif;
-background: var(--bg);
-color: var(--ink);
-min-height: 100vh;
--webkit-font-smoothing: antialiased;
-overflow-x: hidden;
-padding-bottom: calc(var(--player-h) + var(--nav-h) + 1rem);
-}
-
-.view { display: none; }
-.view.active { display: block; }
+.view{display:none}.view.active{display:block}
 
 /* ── TOP BAR ── */
-.top-bar {
-position: sticky;
-top: 0;
-z-index: 100;
-padding: 0.9rem 1.2rem;
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 0.8rem;
-background: rgba(10, 10, 15, 0.9);
-backdrop-filter: blur(20px);
-border-bottom: 1px solid var(--border);
-}
+.top-bar{position:sticky;top:0;z-index:100;padding:.75rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+  background:rgba(10,10,15,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border)}
+.tb-left,.tb-right{display:flex;align-items:center;gap:.5rem}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.icon-btn{width:36px;height:36px;border-radius:50%;background:transparent;
+  border:1px solid var(--border2);color:var(--ink2);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.icon-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--adim),var(--tdim));
+  border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:.95rem;font-weight:900;color:var(--accent);cursor:pointer}
 
-.top-bar-left { display: flex; align-items: center; gap: 0.6rem; }
-.top-bar-right { display: flex; align-items: center; gap: 0.6rem; }
+/* ── SEARCH ── */
+.search-wrap{padding:.7rem 1rem .3rem}
+.search-bar{display:flex;align-items:center;gap:.6rem;padding:.65rem .95rem;
+  background:var(--s1);border:1px solid var(--border);border-radius:99px;
+  transition:border-color .2s}
+.search-bar:focus-within{border-color:var(--border2)}
+.search-bar svg{width:16px;height:16px;stroke:var(--ink3);fill:none;stroke-width:2;flex-shrink:0}
+.search-bar input{flex:1;background:none;border:none;color:var(--ink);font-family:'DM Sans',sans-serif;
+  font-size:.88rem;outline:none}
+.search-bar input::placeholder{color:var(--ink3)}
+.search-clear{cursor:pointer;color:var(--ink3);font-size:1rem;line-height:1;flex-shrink:0;display:none}
 
-.icon-btn {
-width: 38px; height: 38px;
-border-radius: 50%;
-background: transparent;
-border: 1px solid var(--border2);
-color: var(--ink2);
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: all 0.2s;
-flex-shrink: 0;
-}
+/* ── SECTIONS ── */
+.section{margin:1.2rem 0}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;margin-bottom:.7rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;letter-spacing:.01em}
+.section-link{font-size:.78rem;color:var(--accent);cursor:pointer;font-weight:500}
 
-.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
-.icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* ── FEATURED ── */
+.featured-card{margin:0 1rem;border-radius:var(--r);overflow:hidden;background:var(--s1);
+  border:1px solid var(--border);cursor:pointer;transition:all .25s;position:relative}
+.featured-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.featured-cover{width:100%;aspect-ratio:16/9;display:flex;align-items:center;
+  justify-content:center;font-size:3.8rem;position:relative}
+.featured-cover::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(10,10,15,.85) 0%,transparent 65%)}
+.featured-cover span{position:relative;z-index:1}
+.featured-badge{position:absolute;top:.9rem;left:.9rem;z-index:2;
+  font-family:'DM Mono',monospace;font-size:9px;padding:3px 9px;border-radius:99px;
+  background:var(--accent);color:#000;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.featured-info{padding:.9rem;position:relative;z-index:2;margin-top:-2.8rem}
+.featured-title{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;line-height:1.2;margin-bottom:.35rem}
+.featured-meta{font-size:.78rem;color:var(--ink2)}
+.featured-fav{position:absolute;top:.9rem;right:.9rem;z-index:2;width:34px;height:34px;
+  border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;transition:all .2s;font-size:15px}
+.featured-fav.faved{background:rgba(201,169,110,.3);border-color:var(--accent);color:var(--accent)}
 
-.avatar {
-width: 38px; height: 38px;
-border-radius: 50%;
-background: linear-gradient(135deg, var(--accent-dim), var(--teal-dim));
-border: 1px solid var(--border2);
-display: flex;
-align-items: center;
-justify-content: center;
-font-family: 'Playfair Display', serif;
-font-size: 1rem;
-font-weight: 900;
-color: var(--accent);
-cursor: pointer;
-}
-
-.logo-text {
-font-family: 'Playfair Display', serif;
-font-size: 1.2rem;
-font-weight: 900;
-color: var(--ink);
-letter-spacing: -0.02em;
-}
-
-/* ── SEARCH BAR ── */
-.search-bar {
-margin: 0.8rem 1.2rem;
-display: flex;
-align-items: center;
-gap: 0.6rem;
-padding: 0.7rem 1rem;
-background: var(--s1);
-border: 1px solid var(--border);
-border-radius: 99px;
-}
-
-.search-bar svg { width: 18px; height: 18px; stroke: var(--ink3); fill: none; stroke-width: 2; flex-shrink: 0; }
-
-.search-bar input {
-flex: 1;
-background: none;
-border: none;
-color: var(--ink);
-font-family: 'DM Sans', sans-serif;
-font-size: 0.9rem;
-outline: none;
-}
-
-.search-bar input::placeholder { color: var(--ink3); }
-
-/* ── SECTION ── */
-.section { margin: 1.5rem 0; }
-.section-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 0 1.2rem;
-margin-bottom: 0.8rem;
-}
-
-.section-title {
-font-family: 'Playfair Display', serif;
-font-size: 1.1rem;
-font-weight: 700;
-color: var(--ink);
-letter-spacing: 0.02em;
-}
-
-.section-link {
-font-size: 0.8rem;
-color: var(--accent);
-cursor: pointer;
-font-weight: 500;
-}
-
-/* ── FEATURED CARD ── */
-.featured-card {
-margin: 0 1.2rem;
-border-radius: var(--r);
-overflow: hidden;
-background: var(--s1);
-border: 1px solid var(--border);
-cursor: pointer;
-transition: all 0.3s ease;
-position: relative;
-}
-
-.featured-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-
-.featured-cover {
-width: 100%;
-aspect-ratio: 16/9;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 4rem;
-background: linear-gradient(135deg, rgba(201,169,110,0.1), rgba(126,200,188,0.08));
-position: relative;
-}
-
-.featured-cover::after {
-content: '';
-position: absolute;
-inset: 0;
-background: linear-gradient(0deg, rgba(10,10,15,0.8) 0%, transparent 60%);
-}
-
-.featured-cover span { position: relative; z-index: 1; }
-
-.featured-badge {
-position: absolute;
-top: 1rem; left: 1rem;
-z-index: 2;
-font-family: 'DM Mono', monospace;
-font-size: 9px;
-padding: 4px 10px;
-border-radius: 99px;
-background: var(--accent);
-color: #000;
-font-weight: 600;
-letter-spacing: 0.06em;
-text-transform: uppercase;
-}
-
-.featured-info {
-padding: 1rem;
-position: relative;
-z-index: 2;
-margin-top: -3rem;
-}
-
-.featured-title {
-font-family: 'Playfair Display', serif;
-font-size: 1.3rem;
-font-weight: 700;
-color: var(--ink);
-line-height: 1.2;
-margin-bottom: 0.4rem;
-}
-
-.featured-meta {
-font-size: 0.8rem;
-color: var(--ink2);
-display: flex;
-align-items: center;
-gap: 0.5rem;
-}
-
-.featured-fav {
-position: absolute;
-top: 1rem; right: 1rem;
-z-index: 2;
-width: 36px; height: 36px;
-border-radius: 50%;
-background: rgba(0,0,0,0.4);
-backdrop-filter: blur(8px);
-border: 1px solid rgba(255,255,255,0.2);
-color: #fff;
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: all 0.2s;
-}
-
-.featured-fav:hover { background: rgba(255,255,255,0.2); }
-.featured-fav svg { width: 16px; height: 16px; }
-
-/* ── HORIZONTAL SCROLL ── */
-.hscroll {
-display: flex;
-gap: 0.8rem;
-overflow-x: auto;
-scroll-behavior: smooth;
-padding: 0 1.2rem 0.5rem;
--webkit-overflow-scrolling: touch;
-scrollbar-width: none;
-}
-
-.hscroll::-webkit-scrollbar { display: none; }
+/* ── HSCROLL ── */
+.hscroll{display:flex;gap:.75rem;overflow-x:auto;padding:0 1rem .4rem;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
 
 /* ── MINI CARD ── */
-.mini-card {
-flex-shrink: 0;
-width: 140px;
-cursor: pointer;
-border-radius: var(--r-sm);
-overflow: hidden;
-background: var(--s1);
-border: 1px solid var(--border);
-transition: all 0.2s;
-}
-
-.mini-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-.mini-card:active { transform: scale(0.97); }
-
-.mini-cover {
-width: 100%;
-aspect-ratio: 1/1;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 2.5rem;
-background: linear-gradient(135deg, rgba(201,169,110,0.08), rgba(126,200,188,0.05));
-position: relative;
-}
-
-.mini-cover span { position: relative; z-index: 1; }
-
-.mini-fav {
-position: absolute;
-top: 0.5rem; right: 0.5rem;
-z-index: 2;
-width: 28px; height: 28px;
-border-radius: 50%;
-background: rgba(0,0,0,0.5);
-border: 1px solid rgba(255,255,255,0.15);
-color: #fff;
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-font-size: 12px;
-}
-
-.mini-info { padding: 0.6rem 0.7rem; }
-
-.mini-title {
-font-size: 0.8rem;
-font-weight: 600;
-color: var(--ink);
-line-height: 1.2;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.mini-meta {
-font-size: 0.7rem;
-color: var(--ink3);
-margin-top: 2px;
-}
+.mini-card{flex-shrink:0;width:138px;cursor:pointer;border-radius:var(--rsm);
+  overflow:hidden;background:var(--s1);border:1px solid var(--border);transition:all .2s}
+.mini-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.mini-card:active{transform:scale(.97)}
+.mini-cover{width:100%;aspect-ratio:1/1;display:flex;align-items:center;
+  justify-content:center;font-size:2.4rem;position:relative}
+.mini-cover::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 60%)}
+.mini-cover span{position:relative;z-index:1}
+.fav-dot{position:absolute;top:.4rem;right:.4rem;z-index:3;width:22px;height:22px;
+  border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;
+  transition:all .15s}
+.fav-dot.faved{background:rgba(201,169,110,.25);border-color:var(--accent);color:var(--accent)}
+.mini-info{padding:.55rem .65rem}
+.mini-title{font-size:.79rem;font-weight:600;color:var(--ink);line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-meta{font-size:.69rem;color:var(--ink3);margin-top:2px}
 
 /* ── CONTINUE LIST ── */
-.continue-list { padding: 0 1.2rem; }
+.continue-list{padding:0 1rem}
+.continue-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .6rem;
+  border-radius:var(--rsm);cursor:pointer;transition:background .2s}
+.continue-item:hover{background:var(--s1)}
+.c-thumb{width:46px;height:46px;border-radius:var(--rsm);display:flex;align-items:center;
+  justify-content:center;font-size:1.45rem;background:var(--s2);flex-shrink:0}
+.c-info{flex:1;min-width:0}
+.c-title{font-size:.84rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-sub{font-size:.73rem;color:var(--ink3);margin-top:1px}
+.play-btn{width:34px;height:34px;border-radius:50%;background:var(--adim);
+  border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s}
+.play-btn:hover{background:var(--accent);color:#000}
+.play-btn svg{width:13px;height:13px;fill:currentColor}
 
-.continue-item {
-display: flex;
-align-items: center;
-gap: 0.8rem;
-padding: 0.7rem;
-border-radius: var(--r-sm);
-cursor: pointer;
-transition: background 0.2s;
-}
+/* ── SEARCH RESULTS ── */
+.search-results{padding:0 1rem}
+.search-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
+.search-result-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .5rem;
+  border-radius:var(--rsm);cursor:pointer;transition:background .2s;border-bottom:1px solid var(--border)}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover{background:var(--s1)}
+.sr-cover{width:44px;height:44px;border-radius:var(--rsm);display:flex;align-items:center;
+  justify-content:center;font-size:1.35rem;flex-shrink:0}
+.sr-info{flex:1;min-width:0}
+.sr-title{font-size:.85rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
+.sr-type{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:99px;
+  background:var(--s2);color:var(--ink3);flex-shrink:0}
 
-.continue-item:hover { background: var(--s1); }
-
-.continue-thumb {
-width: 48px; height: 48px;
-border-radius: var(--r-sm);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 1.5rem;
-background: var(--s2);
-flex-shrink: 0;
-}
-
-.continue-info { flex: 1; min-width: 0; }
-
-.continue-title {
-font-size: 0.85rem;
-font-weight: 600;
-color: var(--ink);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.continue-sub {
-font-size: 0.75rem;
-color: var(--ink3);
-margin-top: 2px;
-}
-
-.continue-play {
-width: 36px; height: 36px;
-border-radius: 50%;
-background: var(--accent-dim);
-border: 1px solid var(--accent);
-color: var(--accent);
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-flex-shrink: 0;
-transition: all 0.2s;
-}
-
-.continue-play:hover { background: var(--accent); color: #000; }
-.continue-play svg { width: 14px; height: 14px; fill: currentColor; }
-
-/* ── DETAIL VIEW ── */
-.detail-header {
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 1.5rem 1.2rem;
-gap: 1rem;
-}
-
-.detail-cover {
-width: 180px; height: 180px;
-border-radius: var(--r);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 5rem;
-background: linear-gradient(135deg, rgba(201,169,110,0.12), rgba(126,200,188,0.08));
-border: 1px solid var(--border2);
-position: relative;
-overflow: hidden;
-}
-
-.detail-cover::after {
-content: '';
-position: absolute;
-inset: 0;
-background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 55%);
-}
-
-.detail-cover span { position: relative; z-index: 1; }
-
-.detail-info { text-align: center; }
-
-.detail-title {
-font-family: 'Playfair Display', serif;
-font-size: 1.5rem;
-font-weight: 900;
-color: var(--ink);
-line-height: 1.2;
-margin-bottom: 0.3rem;
-}
-
-.detail-author { font-size: 0.9rem; color: var(--ink2); }
-
-.detail-actions {
-display: flex;
-gap: 0.8rem;
-justify-content: center;
-margin-top: 0.5rem;
-}
-
-.action-btn {
-padding: 0.6rem 1.2rem;
-border-radius: 99px;
-background: var(--s1);
-border: 1px solid var(--border2);
-color: var(--ink2);
-font-family: 'DM Sans', sans-serif;
-font-size: 0.8rem;
-font-weight: 500;
-cursor: pointer;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-gap: 0.4rem;
-}
-
-.action-btn:hover { border-color: var(--accent); color: var(--accent); }
-.action-btn.primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
-.action-btn.primary:hover { background: var(--accent2); }
-
-.detail-stats {
-text-align: center;
-font-size: 0.8rem;
-color: var(--ink3);
-margin-top: 0.5rem;
-}
+/* ── DETAIL ── */
+.detail-header{display:flex;flex-direction:column;align-items:center;padding:1.3rem 1rem .5rem;gap:.9rem}
+.detail-cover{width:168px;height:168px;border-radius:var(--r);display:flex;align-items:center;
+  justify-content:center;font-size:4.8rem;border:1px solid var(--border2);
+  position:relative;overflow:hidden}
+.detail-cover::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 55%)}
+.detail-cover span{position:relative;z-index:1}
+.detail-info{text-align:center}
+.detail-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;line-height:1.2;margin-bottom:.28rem}
+.detail-author{font-size:.88rem;color:var(--ink2)}
+.detail-actions{display:flex;gap:.6rem;justify-content:center;margin-top:.4rem;flex-wrap:wrap}
+.action-btn{padding:.5rem 1rem;border-radius:99px;background:var(--s1);border:1px solid var(--border2);
+  color:var(--ink2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.35rem}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.action-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+.action-btn.primary:hover{background:var(--accent2)}
+.action-btn.faved{background:rgba(201,169,110,.15);border-color:var(--accent);color:var(--accent)}
+.detail-stats{text-align:center;font-size:.78rem;color:var(--ink3);margin-top:.4rem}
 
 /* ── EPISODE LIST ── */
-.episode-list { padding: 0 1.2rem; }
+.episode-list{padding:0 .8rem}
+.ep-item{display:flex;align-items:center;gap:.7rem;padding:.85rem .5rem;
+  border-radius:var(--rsm);cursor:pointer;transition:background .18s;
+  border-bottom:1px solid var(--border)}
+.ep-item:last-of-type{border-bottom:none}
+.ep-item:hover{background:var(--s1)}
+.ep-item.open{background:var(--adim)}
+.ep-num{font-family:'DM Mono',monospace;font-size:.73rem;color:var(--ink3);
+  width:28px;text-align:center;flex-shrink:0}
+.ep-info{flex:1;min-width:0}
+.ep-title{font-size:.88rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-meta{font-size:.72rem;color:var(--ink3);margin-top:2px;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+.ep-diff{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:99px}
+.ep-time{font-family:'DM Mono',monospace}
+.ep-actions{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+.ep-fav{width:28px;height:28px;border-radius:50%;background:transparent;border:1px solid var(--border2);
+  color:var(--ink3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;
+  transition:all .15s;flex-shrink:0}
+.ep-fav:hover,.ep-fav.faved{border-color:var(--accent);color:var(--accent)}
+.ep-play{width:34px;height:34px;border-radius:50%;background:var(--adim);border:1px solid var(--accent);
+  color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  flex-shrink:0;transition:all .2s}
+.ep-play:hover,.ep-play.active{background:var(--accent);color:#000}
+.ep-play svg{width:12px;height:12px;fill:currentColor}
 
-.episode-item {
-display: flex;
-align-items: center;
-gap: 0.8rem;
-padding: 0.9rem 0.7rem;
-border-radius: var(--r-sm);
-cursor: pointer;
-transition: background 0.2s;
-border-bottom: 1px solid var(--border);
-}
-
-.episode-item:last-child { border-bottom: none; }
-.episode-item:hover { background: var(--s1); }
-.episode-item.active { background: var(--accent-dim); border-color: transparent; }
-
-.ep-num {
-font-family: 'DM Mono', monospace;
-font-size: 0.75rem;
-color: var(--ink3);
-width: 32px;
-text-align: center;
-flex-shrink: 0;
-}
-
-.ep-info { flex: 1; min-width: 0; }
-
-.ep-title {
-font-size: 0.9rem;
-font-weight: 600;
-color: var(--ink);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.ep-meta {
-font-size: 0.75rem;
-color: var(--ink3);
-margin-top: 2px;
-display: flex;
-gap: 0.5rem;
-}
-
-.ep-diff {
-font-family: 'DM Mono', monospace;
-font-size: 9px;
-padding: 2px 8px;
-border-radius: 99px;
-}
-
-.ep-play {
-width: 36px; height: 36px;
-border-radius: 50%;
-background: var(--accent-dim);
-border: 1px solid var(--accent);
-color: var(--accent);
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-flex-shrink: 0;
-transition: all 0.2s;
-}
-
-.ep-play:hover { background: var(--accent); color: #000; }
-.ep-play.playing { background: var(--accent); color: #000; animation: pulse-play 1.5s ease infinite; }
-
-@keyframes pulse-play {
-0%, 100% { box-shadow: 0 0 0 0 rgba(201,169,110,0.4); }
-50% { box-shadow: 0 0 0 12px rgba(201,169,110,0); }
-}
+/* ── APUNTE EXPANDIBLE inline ── */
+.apunte-wrap{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.apunte-wrap.open{max-height:9999px}
+.apunte-inner{background:var(--s1);border-top:1px solid var(--border2);
+  margin:0 .3rem;border-radius:0 0 var(--rsm) var(--rsm);padding:1.3rem 1.1rem 1.4rem}
+.apunte-inner h1{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:900;color:var(--ink);margin-bottom:.4rem}
+.apunte-inner .subtitle{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink3);
+  letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:1.2rem;
+  padding-bottom:.8rem;border-bottom:1px solid var(--border)}
+.apunte-inner h2{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;
+  color:var(--accent);margin:1.3rem 0 .55rem}
+.apunte-inner h3{font-size:.9rem;font-weight:600;color:var(--ink);margin:.9rem 0 .4rem}
+.apunte-inner p{font-size:.875rem;line-height:1.75;color:var(--ink2);margin-bottom:.7rem}
+.apunte-inner ul,.apunte-inner ol{margin:.5rem 0 .8rem 1.3rem}
+.apunte-inner li{font-size:.875rem;line-height:1.7;color:var(--ink2);margin-bottom:.25rem}
+.apunte-inner strong{color:var(--ink);font-weight:600}
+.apunte-inner em{color:var(--ink2);font-style:italic}
+.apunte-inner code{font-family:'DM Mono',monospace;background:rgba(201,169,110,.09);
+  padding:2px 7px;border-radius:4px;font-size:.85em;color:var(--accent2)}
+.apunte-inner table{width:100%;border-collapse:collapse;margin:.9rem 0;font-size:.8rem;
+  display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--border);border-radius:var(--rsm)}
+.apunte-inner th{background:var(--s2);color:var(--ink);padding:.6rem .75rem;text-align:left;
+  font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:2px solid var(--border2)}
+.apunte-inner td{padding:.55rem .75rem;border-bottom:1px solid var(--border);color:var(--ink2);font-size:.82rem}
+.apunte-inner tr:last-child td{border-bottom:none}
+.def-box{background:rgba(139,157,195,.07);border-left:3px solid #8b9dc3;
+  padding:.75rem .9rem;margin:.85rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.86em;line-height:1.65;color:var(--ink2)}
+.thm-box{background:rgba(123,165,135,.07);border-left:3px solid #7ba587;
+  padding:.75rem .9rem;margin:.85rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.86em;line-height:1.65;color:var(--ink2)}
+.ex-box{background:rgba(201,169,110,.07);border-left:3px solid var(--accent);
+  padding:.75rem .9rem;margin:.85rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.86em;line-height:1.65;color:var(--ink2)}
+.math-block{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.65rem 0;text-align:center;margin:.7rem 0}
+.math-block .katex-display{margin:0;overflow-x:auto;overflow-y:hidden}
 
 /* ── NOW PLAYING ── */
-.now-playing {
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 2rem 1.5rem;
-gap: 1.5rem;
-min-height: 60vh;
-justify-content: center;
-}
+.np-wrap{display:flex;flex-direction:column;align-items:center;padding:1.8rem 1.2rem;
+  gap:1.4rem;min-height:60vh;justify-content:center}
+.np-cover{width:clamp(200px,60vw,270px);height:clamp(200px,60vw,270px);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;font-size:clamp(5rem,16vw,7rem);
+  border:1px solid var(--border2);position:relative;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.np-cover::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 55%)}
+.np-cover span{position:relative;z-index:1}
+.np-info{text-align:center;width:100%}
+.np-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;margin-bottom:.3rem}
+.np-author{font-size:.88rem;color:var(--ink2)}
+.progress-wrap{width:100%}
+.progress-bar{width:100%;height:4px;background:var(--s2);border-radius:99px;cursor:pointer;position:relative}
+.progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s linear}
+.progress-times{display:flex;justify-content:space-between;margin-top:.35rem;
+  font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3)}
+.waveform{width:100%;height:38px;display:flex;align-items:flex-end;justify-content:center;gap:3px}
+.wbar{width:3px;background:var(--accent);border-radius:2px;opacity:.7}
+.wbar.ani{animation:wave .7s ease-in-out infinite alternate}
+@keyframes wave{from{height:15%}to{height:100%}}
+.controls{display:flex;align-items:center;justify-content:center;gap:1.3rem}
+.ctrl-btn{width:42px;height:42px;border-radius:50%;background:transparent;border:1px solid var(--border2);
+  color:var(--ink2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ctrl-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ctrl-play{width:62px;height:62px;border-radius:50%;background:var(--accent);border:none;color:#000;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;
+  box-shadow:0 8px 28px rgba(201,169,110,.32)}
+.ctrl-play:hover{transform:scale(1.05);box-shadow:0 12px 38px rgba(201,169,110,.42)}
+.ctrl-play svg{width:25px;height:25px;fill:currentColor}
+.np-open-notes{margin-top:.3rem;padding:.55rem 1.1rem;border-radius:99px;
+  background:var(--adim);border:1px solid var(--accent);color:var(--accent);
+  font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.np-open-notes:hover{background:var(--accent);color:#000}
+.np-notes{width:100%;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--s1)}
 
-.np-cover {
-width: 260px; height: 260px;
-border-radius: var(--r);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 7rem;
-background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(126,200,188,0.1));
-border: 1px solid var(--border2);
-position: relative;
-overflow: hidden;
-box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-
-.np-cover::after {
-content: '';
-position: absolute;
-inset: 0;
-background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%);
-}
-
-.np-cover span { position: relative; z-index: 1; }
-
-.np-info { text-align: center; }
-
-.np-title {
-font-family: 'Playfair Display', serif;
-font-size: 1.4rem;
-font-weight: 700;
-color: var(--ink);
-margin-bottom: 0.3rem;
-}
-
-.np-author { font-size: 0.9rem; color: var(--ink2); }
-
-/* Progress bar */
-.progress-wrap { width: 100%; }
-
-.progress-bar {
-width: 100%;
-height: 4px;
-background: var(--s2);
-border-radius: 99px;
-overflow: hidden;
-cursor: pointer;
-position: relative;
-}
-
-.progress-fill {
-height: 100%;
-background: var(--accent);
-border-radius: 99px;
-transition: width 0.3s;
-width: 35%;
-}
-
-.progress-times {
-display: flex;
-justify-content: space-between;
-margin-top: 0.4rem;
-font-family: 'DM Mono', monospace;
-font-size: 10px;
-color: var(--ink3);
-}
-
-/* Waveform */
-.waveform {
-width: 100%;
-height: 40px;
-display: flex;
-align-items: flex-end;
-justify-content: center;
-gap: 3px;
-}
-
-.wave-bar {
-width: 3px;
-background: var(--accent);
-border-radius: 2px;
-animation: wave 0.8s ease-in-out infinite alternate;
-}
-
-.wave-bar:nth-child(1) { height: 30%; animation-delay: 0s; }
-.wave-bar:nth-child(2) { height: 60%; animation-delay: 0.1s; }
-.wave-bar:nth-child(3) { height: 90%; animation-delay: 0.2s; }
-.wave-bar:nth-child(4) { height: 70%; animation-delay: 0.3s; }
-.wave-bar:nth-child(5) { height: 40%; animation-delay: 0.4s; }
-.wave-bar:nth-child(6) { height: 80%; animation-delay: 0.5s; }
-.wave-bar:nth-child(7) { height: 100%; animation-delay: 0.6s; }
-.wave-bar:nth-child(8) { height: 50%; animation-delay: 0.7s; }
-.wave-bar:nth-child(9) { height: 65%; animation-delay: 0.1s; }
-.wave-bar:nth-child(10) { height: 35%; animation-delay: 0.3s; }
-
-@keyframes wave {
-from { height: 20%; }
-to { height: 100%; }
-}
-
-/* Controls */
-.controls {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 1.5rem;
-}
-
-.ctrl-btn {
-width: 44px; height: 44px;
-border-radius: 50%;
-background: transparent;
-border: 1px solid var(--border2);
-color: var(--ink2);
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: all 0.2s;
-}
-
-.ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
-.ctrl-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
-
-.ctrl-play {
-width: 64px; height: 64px;
-border-radius: 50%;
-background: var(--accent);
-border: none;
-color: #000;
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: all 0.2s;
-box-shadow: 0 8px 30px rgba(201,169,110,0.3);
-}
-
-.ctrl-play:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(201,169,110,0.4); }
-.ctrl-play svg { width: 26px; height: 26px; fill: currentColor; }
-
-.up-next {
-text-align: center;
-font-size: 0.8rem;
-color: var(--accent);
-cursor: pointer;
-font-weight: 500;
-margin-top: 0.5rem;
-}
-
-/* ── APUNTE EXPANDIBLE ── */
-.apunte-body {
-display: none;
-background: var(--s1);
-border: 1px solid var(--border);
-border-radius: 0 0 var(--r-sm) var(--r-sm);
-animation: apExpand 0.25s ease;
-margin: 0 0.7rem;
-}
-
-.apunte-body.open { display: block; }
-
-@keyframes apExpand {
-from { opacity: 0; transform: translateY(-6px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-.apunte-inner {
-padding: 1.5rem;
-font-size: 14px;
-line-height: 1.7;
-color: var(--ink2);
-}
-
-.apunte-inner h1 {
-font-family: 'Playfair Display', serif;
-font-size: 1.5rem;
-font-weight: 900;
-color: var(--ink);
-margin-bottom: 0.5rem;
-}
-
-.apunte-inner .subtitle {
-font-family: 'DM Mono', monospace;
-font-size: 10px;
-color: var(--ink3);
-letter-spacing: 0.08em;
-text-transform: uppercase;
-display: block;
-margin-bottom: 1.5rem;
-padding-bottom: 1rem;
-border-bottom: 1px solid var(--border);
-}
-
-.apunte-inner h2 {
-font-family: 'Playfair Display', serif;
-font-size: 1.1rem;
-font-weight: 700;
-color: var(--accent);
-margin: 1.5rem 0 0.7rem;
-}
-
-.apunte-inner h3 { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin: 1rem 0 0.5rem; }
-.apunte-inner p { margin-bottom: 0.8rem; }
-.apunte-inner ul, .apunte-inner ol { margin: 0.6rem 0 1rem 1.5rem; }
-.apunte-inner li { margin-bottom: 0.3rem; }
-.apunte-inner strong { color: var(--ink); font-weight: 600; }
-
-.apunte-inner code {
-font-family: 'DM Mono', monospace;
-background: rgba(201,169,110,0.08);
-padding: 2px 8px;
-border-radius: 4px;
-font-size: 0.9em;
-color: var(--accent2);
-}
-
-.apunte-inner table {
-width: 100%;
-border-collapse: collapse;
-margin: 1rem 0;
-font-size: 12px;
-display: block;
-overflow-x: auto;
-border: 1px solid var(--border);
-border-radius: var(--r-sm);
-}
-
-.apunte-inner th {
-background: var(--s2);
-color: var(--ink);
-padding: 0.7rem 0.8rem;
-text-align: left;
-font-family: 'DM Mono', monospace;
-font-size: 9px;
-text-transform: uppercase;
-letter-spacing: 0.06em;
-border-bottom: 2px solid var(--border2);
-}
-
-.apunte-inner td {
-padding: 0.6rem 0.8rem;
-border-bottom: 1px solid var(--border);
-}
-
-.def-box, .thm-box, .ex-box {
-padding: 0.8rem 1rem;
-margin: 1rem 0;
-border-radius: var(--r-sm);
-font-size: 0.9em;
-line-height: 1.6;
-}
-
-.def-box { background: rgba(139,157,195,0.08); border-left: 3px solid #8b9dc3; }
-.thm-box { background: rgba(123,165,135,0.08); border-left: 3px solid #7ba587; }
-.ex-box { background: rgba(201,169,110,0.08); border-left: 3px solid var(--accent); }
-
-.math-block { overflow-x: auto; padding: 0.8rem 0; text-align: center; }
+/* ── FAVS VIEW ── */
+.favs-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
 
 /* ── BOTTOM NAV ── */
-.bottom-nav {
-position: fixed;
-bottom: var(--player-h);
-left: 0; right: 0;
-z-index: 100;
-display: flex;
-justify-content: space-around;
-padding: 0.5rem 1rem;
-background: rgba(10, 10, 15, 0.9);
-backdrop-filter: blur(20px);
-border-top: 1px solid var(--border);
-}
-
-.nav-item {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 4px;
-cursor: pointer;
-color: var(--ink3);
-transition: color 0.2s;
-padding: 0.3rem;
-}
-
-.nav-item.active { color: var(--accent); }
-.nav-item:hover { color: var(--ink2); }
-
-.nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
-
-.nav-label {
-font-size: 10px;
-font-weight: 500;
-letter-spacing: 0.04em;
-}
+.bottom-nav{position:fixed;bottom:var(--player-h);left:0;right:0;z-index:100;
+  display:flex;justify-content:space-around;padding:.45rem .8rem;
+  background:rgba(10,10,15,.92);backdrop-filter:blur(20px);border-top:1px solid var(--border)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  color:var(--ink3);transition:color .2s;padding:.28rem .5rem}
+.nav-item.active{color:var(--accent)}
+.nav-item svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2}
+.nav-label{font-size:9.5px;font-weight:500;letter-spacing:.04em}
 
 /* ── MINI PLAYER ── */
-.mini-player {
-position: fixed;
-bottom: var(--nav-h);
-left: 0; right: 0;
-z-index: 100;
-height: var(--player-h);
-padding: 0 1rem;
-display: flex;
-align-items: center;
-gap: 0.8rem;
-background: rgba(10, 10, 15, 0.95);
-backdrop-filter: blur(20px);
-border-top: 1px solid var(--border);
-cursor: pointer;
-transition: background 0.2s;
-}
+.mini-player{position:fixed;bottom:var(--nav-h);left:0;right:0;z-index:100;
+  height:var(--player-h);padding:0 .9rem;display:flex;align-items:center;gap:.75rem;
+  background:rgba(10,10,15,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border2);
+  cursor:pointer;transition:background .2s}
+.mini-player:hover{background:var(--s1)}
+.mp-cover{width:42px;height:42px;border-radius:var(--rsm);display:flex;align-items:center;
+  justify-content:center;font-size:1.4rem;background:var(--s2);flex-shrink:0}
+.mp-info{flex:1;min-width:0}
+.mp-title{font-size:.79rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-sub{font-size:.69rem;color:var(--ink3);margin-top:1px}
+.mp-progress{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--s2)}
+.mp-progress-fill{height:100%;background:var(--accent);transition:width .4s linear}
+.mp-controls{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+.mp-btn{width:34px;height:34px;border-radius:50%;background:var(--adim);border:1px solid var(--accent);
+  color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:all .2s;flex-shrink:0}
+.mp-btn:hover{background:var(--accent);color:#000}
+.mp-btn svg{width:13px;height:13px;fill:currentColor;stroke:none}
 
-.mini-player:hover { background: var(--s1); }
-
-.mini-player-thumb {
-width: 44px; height: 44px;
-border-radius: var(--r-sm);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 1.5rem;
-background: var(--s2);
-flex-shrink: 0;
-}
-
-.mini-player-info { flex: 1; min-width: 0; }
-
-.mini-player-title {
-font-size: 0.8rem;
-font-weight: 600;
-color: var(--ink);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.mini-player-sub {
-font-size: 0.7rem;
-color: var(--ink3);
-margin-top: 1px;
-}
-
-.mini-player-controls { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-
-@media (max-width: 380px) {
-.np-cover { width: 200px; height: 200px; font-size: 5rem; }
-.detail-cover { width: 140px; height: 140px; font-size: 4rem; }
-}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
 </style>
 </head>
 <body>
 
 <!-- TOP BAR -->
-<header class="top-bar" id="top-bar">
-<div class="top-bar-left" id="tb-left">
-<button class="icon-btn" id="btn-menu" onclick="goHome()">
-<svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
-<span class="logo-text" id="tb-logo">NotePlayer</span>
-</div>
-<div class="top-bar-left" id="tb-back" style="display:none;">
-<button class="icon-btn" onclick="goHome()">
-<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-</button>
-<span class="logo-text" id="tb-title" style="font-size:0.95rem;"></span>
-</div>
-<div class="top-bar-right">
-<button class="icon-btn">
-<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-</button>
-<div class="avatar">Ж</div>
-</div>
+<header class="top-bar">
+  <div class="tb-left" id="tb-left">
+    <span class="logo-text">NotePlayer</span>
+  </div>
+  <div class="tb-left" id="tb-back" style="display:none">
+    <button class="icon-btn" id="btn-back" onclick="navBack()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span id="tb-title" style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700"></span>
+  </div>
+  <div class="tb-right">
+    <button class="icon-btn" onclick="showSearch()">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <div class="avatar">N</div>
+  </div>
 </header>
 
-<!-- MAIN CONTENT -->
-<div style="padding-bottom:0.5rem;">
-
-<!-- HOME VIEW -->
-<div id="home" class="view active">
-<div class="search-bar">
-<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" placeholder="Buscar apuntes, temas, materias...">
-</div>
-
-<div class="section">
-<div class="section-header"><span class="section-title">Destacado</span></div>
-<div class="featured-card" onclick="openDetail('cal1')">
-<div class="featured-cover"><span>∂</span></div>
-<span class="featured-badge">Nuevo</span>
-<div class="featured-info">
-<div class="featured-title">Cálculo Diferencial</div>
-<div class="featured-meta">Vol. I · 3 temas · 52 páginas</div>
-</div>
-<button class="featured-fav" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-</div>
-</div>
-
-<div id="home-content"></div>
-
-<div class="section">
-<div class="section-header"><span class="section-title">Continuar Escuchando</span></div>
-<div class="continue-list" id="continue-list"></div>
-</div>
-</div>
-
-<!-- DETAIL VIEW -->
-<div id="detail" class="view">
-<div id="detail-content"></div>
-</div>
-
-<!-- NOW PLAYING -->
-<div id="now-playing" class="view">
-<div id="np-content"></div>
-</div>
-
-</div>
+<!-- VIEWS -->
+<div id="home" class="view active"></div>
+<div id="search-view" class="view"></div>
+<div id="detail" class="view"></div>
+<div id="favs-view" class="view"></div>
+<div id="now-playing" class="view"></div>
 
 <!-- MINI PLAYER -->
-<div class="mini-player" id="mini-player" onclick="openNowPlaying()">
-<div class="mini-player-thumb" id="mp-thumb">∂</div>
-<div class="mini-player-info">
-<div class="mini-player-title" id="mp-title">Selecciona un tema</div>
-<div class="mini-player-sub" id="mp-sub">NotePlayer</div>
-</div>
-<div class="mini-player-controls">
-<button class="continue-play" id="mp-play" onclick="event.stopPropagation();toggleMiniPlay()">
-<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-</button>
-</div>
+<div class="mini-player" id="mini-player" onclick="openNowPlayingView()">
+  <div class="mp-cover" id="mp-cover">♩</div>
+  <div class="mp-info">
+    <div class="mp-title" id="mp-title">Selecciona un tema para estudiar</div>
+    <div class="mp-sub" id="mp-sub">NotePlayer</div>
+  </div>
+  <div class="mp-controls" onclick="event.stopPropagation()">
+    <button class="mp-btn" id="mp-prev" onclick="prevTrack()">
+      <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4" fill="currentColor"/><rect x="5" y="4" width="3" height="16" rx="1" fill="currentColor"/></svg>
+    </button>
+    <button class="mp-btn" id="mp-play" onclick="togglePlay()">
+      <svg viewBox="0 0 24 24" id="mp-icon"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+    </button>
+    <button class="mp-btn" id="mp-next" onclick="nextTrack()">
+      <svg viewBox="0 0 24 24"><polygon points="5,20 15,12 5,4" fill="currentColor"/><rect x="16" y="4" width="3" height="16" rx="1" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <div class="mp-progress"><div class="mp-progress-fill" id="mp-prog"></div></div>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-<div class="nav-item active" data-nav="home" onclick="goHome()">
-<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-<span class="nav-label">Inicio</span>
-</div>
-<div class="nav-item" data-nav="search">
-<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<span class="nav-label">Buscar</span>
-</div>
-<div class="nav-item" data-nav="favs">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-<span class="nav-label">Favoritos</span>
-</div>
-<div class="nav-item" data-nav="profile">
-<div class="avatar" style="width:24px;height:24px;font-size:0.7rem;">Ж</div>
-<span class="nav-label">Perfil</span>
-</div>
+  <div class="nav-item active" data-nav="home" onclick="goHome()">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <span class="nav-label">Inicio</span>
+  </div>
+  <div class="nav-item" data-nav="search-view" onclick="showSearch()">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span class="nav-label">Buscar</span>
+  </div>
+  <div class="nav-item" data-nav="favs-view" onclick="showFavs()">
+    <svg viewBox="0 0 24 24" id="nav-fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span class="nav-label">Favoritos</span>
+  </div>
+  <div class="nav-item" data-nav="now-playing" onclick="openNowPlayingView()">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
+    <span class="nav-label">Reproducir</span>
+  </div>
 </nav>
 
 <script>
-const CATEGORIES = [
-  {
-    label: "Cálculo Infinitesimal",
-    books: [
-      {
-        id: "cal1", title: "Cálculo Diferencial", emoji: "∂", author: "Vol. I", pages: 52, totalTime: "2h 35min",
-        tracks: [
-          { num: 1, title: "Límites y Continuidad", sub: "Definición ε-δ", diff: "Elemental", diffStyle: "background:rgba(123,165,135,0.12);color:#7ba587", time: "45min",
-            latex: `<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
-<h2>Definición de Límite</h2>
-<p>$\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x$ tiende a $a$.</p>
+/* ══════════════════════════════════════════
+   LIBRARY DATA
+══════════════════════════════════════════ */
+const LIBRARY = [
+  { label:"Cálculo Infinitesimal", books:[
+    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
+      { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
+        latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
+<h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
 <div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que si $0<|x-a|<\\delta$, entonces $|f(x)-L|<\\varepsilon$.</div>
-<h2>Propiedades</h2>
-<ul><li>$\\lim(f\\pm g)=L\\pm M$</li><li>$\\lim(f\\cdot g)=LM$</li></ul>
-<h2>Límites Notables</h2>
-<div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to\\infty}\\left(1+\\frac{1}{x}\\right)^x=e$$</div>
-<div class="thm-box"><strong>Teorema del Valor Intermedio:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, entonces $\\exists c\\in(a,b):f(c)=0$.</div>` },
-          { num: 2, title: "Derivadas", sub: "Reglas de Derivación", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,0.12);color:#c9a96e", time: "55min",
-            latex: `<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
-<h2>Definición</h2>
-<div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
+<h2>Propiedades</h2><ul><li>$\\lim(f\\pm g)=L\\pm M$</li><li>$\\lim(fg)=LM$</li><li>$\\lim(f/g)=L/M$ si $M\\neq 0$</li></ul>
+<h2>Límites Notables</h2><div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\!\\left(1+\\tfrac{1}{x}\\right)^x=e$$</div>
+<div class="thm-box"><strong>TVI:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, $\\exists c\\in(a,b):f(c)=0$.</div>` },
+      { num:2, title:"Derivadas", sub:"Reglas de derivación", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"55min",
+        latex:`<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
+<h2>Definición</h2><div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
+<p>Geométricamente: pendiente de la tangente en $(a,f(a))$.</p>
 <h2>Reglas Fundamentales</h2>
-<table><tr><th>Regla</th><th>Fórmula</th></tr><tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr><tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr></table>
-<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)$ → $h'(x)=2x\\cos(x^2)$</div>` },
-          { num: 3, title: "Integrales", sub: "Técnicas de Integración", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,0.12);color:#8b9dc3", time: "55min",
-            latex: `<h1>Integrales</h1><span class="subtitle">Capítulo III</span>
-<h2>Integral Indefinida</h2><p>$\\int f(x)dx=F(x)+C$</p>
-<h2>Teorema Fundamental</h2><div class="thm-box">$\\int_a^b f(x)dx=F(b)-F(a)$</div>` }
-        ]
-      },
-      {
-        id: "cal2", title: "Cálculo Integral", emoji: "∫", author: "Vol. II", pages: 44, totalTime: "1h 48min",
-        tracks: [
-          { num: 1, title: "Series de Taylor", sub: "Expansiones Infinitas", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,0.12);color:#c9a96e", time: "48min",
-            latex: `<h1>Series de Taylor</h1><span class="subtitle">Vol. II</span>
+<table><tr><th>Regla</th><th>Fórmula</th></tr>
+<tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
+<tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
+<tr><td>Cociente</td><td>$(f/g)'=\\frac{f'g-fg'}{g^2}$</td></tr>
+<tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
+<h2>Derivadas Elementales</h2><div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\tfrac{1}{x}$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)\\Rightarrow h'(x)=2x\\cos(x^2)$</div>
+<div class="thm-box"><strong>Teorema del Valor Medio:</strong> $\\exists c:f'(c)=\\dfrac{f(b)-f(a)}{b-a}$</div>` },
+      { num:3, title:"Integrales", sub:"Técnicas de integración", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"55min",
+        latex:`<h1>Integrales</h1><span class="subtitle">Capítulo III · Cálculo Integral</span>
+<h2>Antiderivada</h2><p>$F'(x)=f(x)\\Rightarrow\\int f(x)\\,dx=F(x)+C$</p>
+<h2>Tabla Básica</h2>
+<table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
+<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
+<tr><td>$e^x$</td><td>$e^x+C$</td></tr>
+<tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
+<tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr></table>
+<div class="thm-box"><strong>Teorema Fundamental:</strong> $\\displaystyle\\int_a^b f\\,dx=F(b)-F(a)$</div>
+<h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
+    ]},
+    { id:"cal2", title:"Cálculo Integral", emoji:"∫", cover:"linear-gradient(135deg,#0a2540,#1a6fbf)", author:"Vol. II", pages:44, totalTime:"1h 48min", tracks:[
+      { num:1, title:"Series de Taylor", sub:"Expansiones en serie", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"48min",
+        latex:`<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Vol. II · Cálculo Integral</span>
 <h2>Definición</h2><div class="math-block">$$f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
-<table><tr><th>Función</th><th>Serie</th></tr><tr><td>$e^x$</td><td>$\\sum_{n=0}^\\infty\\frac{x^n}{n!}$</td></tr></table>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Álgebra Superior",
-    books: [
-      {
-        id: "alg1", title: "Álgebra Lineal", emoji: "⊗", author: "Vol. Único", pages: 48, totalTime: "2h 10min",
-        tracks: [
-          { num: 1, title: "Sistemas Lineales", sub: "Eliminación Gaussiana", diff: "Elemental", diffStyle: "background:rgba(123,165,135,0.12);color:#7ba587", time: "40min",
-            latex: `<h1>Sistemas Lineales</h1><span class="subtitle">Capítulo I</span>
+<h2>Series Notables</h2>
+<table><tr><th>Función</th><th>Serie</th><th>Radio</th></tr>
+<tr><td>$e^x$</td><td>$\\sum\\frac{x^n}{n!}$</td><td>$\\infty$</td></tr>
+<tr><td>$\\sin x$</td><td>$\\sum\\frac{(-1)^n x^{2n+1}}{(2n+1)!}$</td><td>$\\infty$</td></tr>
+<tr><td>$\\frac{1}{1-x}$</td><td>$\\sum x^n$</td><td>$|x|<1$</td></tr></table>
+<div class="thm-box"><strong>Resto de Lagrange:</strong> $|R_n|\\leq\\dfrac{M|x-a|^{n+1}}{(n+1)!}$</div>` },
+      { num:2, title:"Ecuaciones Diferenciales", sub:"EDO de primer orden", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"1h",
+        latex:`<h1>EDO de Primer Orden</h1><span class="subtitle">Vol. II · Apéndice</span>
+<h2>Variables Separables</h2><div class="math-block">$$\\frac{dy}{dx}=f(x)g(y)\\Rightarrow\\int\\frac{dy}{g(y)}=\\int f(x)\\,dx$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $y'=xy\\Rightarrow y=Ae^{x^2/2}$</div>
+<h2>Ecuaciones Lineales</h2><p>Forma: $y'+P(x)y=Q(x)$. Factor integrante $\\mu=e^{\\int P\\,dx}$:</p>
+<div class="math-block">$$y=\\frac{1}{\\mu}\\!\\left[\\int\\mu Q\\,dx+C\\right]$$</div>` }
+    ]}
+  ]},
+  { label:"Álgebra Superior", books:[
+    { id:"alg1", title:"Álgebra Lineal", emoji:"⊗", cover:"linear-gradient(135deg,#0d2f1f,#1d9e6a)", author:"Vol. Único", pages:48, totalTime:"2h 10min", tracks:[
+      { num:1, title:"Sistemas Lineales", sub:"Eliminación Gaussiana", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"40min",
+        latex:`<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal</span>
 <h2>Forma Matricial</h2><div class="math-block">$$A\\mathbf{x}=\\mathbf{b}$$</div>
-<div class="def-box"><strong>Operaciones elementales:</strong> Intercambio, escalado, suma de múltiplos.</div>` },
-          { num: 2, title: "Eigenvalores", sub: "Diagonalización", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,0.12);color:#8b9dc3", time: "50min",
-            latex: `<h1>Eigenvalores</h1><span class="subtitle">Capítulo Final</span>
+<div class="def-box"><strong>Operaciones elementales:</strong> (1) Intercambiar filas, (2) Escalar una fila por $k\\neq 0$, (3) Sumar múltiplo de una fila a otra.</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $2x+y=5,\\;4x+3y=11$<br>$\\left[\\begin{array}{cc|c}2&1&5\\\\4&3&11\\end{array}\\right]\\xrightarrow{R_2-2R_1}\\left[\\begin{array}{cc|c}2&1&5\\\\0&1&1\\end{array}\\right]\\Rightarrow y=1,\\,x=2$</div>
+<div class="thm-box"><strong>Rouché-Frobenius:</strong> $Ax=b$ tiene solución $\\iff\\operatorname{rango}(A)=\\operatorname{rango}(A|b)$.</div>` },
+      { num:2, title:"Determinantes", sub:"Propiedades y cálculo", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"30min",
+        latex:`<h1>Determinantes</h1><span class="subtitle">Álgebra Lineal</span>
+<h2>Expansión por Cofactores</h2><div class="math-block">$$\\det(A)=\\sum_{j=1}^n a_{ij}C_{ij},\\quad C_{ij}=(-1)^{i+j}M_{ij}$$</div>
+<div class="math-block">$$\\det\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}=ad-bc$$</div>
+<h2>Propiedades</h2><ul><li>$\\det(AB)=\\det(A)\\det(B)$</li><li>$\\det(A^T)=\\det(A)$</li><li>$A$ invertible $\\iff\\det(A)\\neq 0$</li></ul>` },
+      { num:3, title:"Eigenvalores", sub:"Diagonalización", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"1h",
+        latex:`<h1>Eigenvalores y Eigenvectores</h1><span class="subtitle">Álgebra Lineal</span>
 <div class="def-box">$\\lambda$ es <strong>eigenvalor</strong> de $A$ si $\\exists\\mathbf{v}\\neq\\mathbf{0}:A\\mathbf{v}=\\lambda\\mathbf{v}$.</div>
-<div class="thm-box">$A=PDP^{-1}$ con $D$ diagonal de eigenvalores.</div>` }
-        ]
-      }
-    ]
-  }
+<h2>Polinomio Característico</h2><div class="math-block">$$p(\\lambda)=\\det(A-\\lambda I)=0$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $A=\\begin{pmatrix}3&1\\\\0&2\\end{pmatrix}\\Rightarrow\\lambda_1=3,\\,\\lambda_2=2$</div>
+<div class="thm-box">$A=PDP^{-1}$ si tiene $n$ eigenvectores L.I.<br>$A^k=PD^kP^{-1}=P\\operatorname{diag}(\\lambda_1^k,\\ldots,\\lambda_n^k)P^{-1}$</div>` }
+    ]},
+    { id:"alg2", title:"Álgebra Abstracta", emoji:"Σ", cover:"linear-gradient(135deg,#1a0a30,#6b21a8)", author:"Vol. I", pages:36, totalTime:"1h 30min", tracks:[
+      { num:1, title:"Grupos", sub:"Axiomas y ejemplos", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"45min",
+        latex:`<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta</span>
+<div class="def-box">$(G,*)$ es <strong>grupo</strong> si: cierre, asociatividad, identidad $e$, inverso $a^{-1}$.</div>
+<h2>Ejemplos</h2>
+<table><tr><th>Grupo</th><th>Operación</th><th>Orden</th></tr>
+<tr><td>$(\\mathbb{Z},+)$</td><td>Suma</td><td>$\\infty$</td></tr>
+<tr><td>$(\\mathbb{Z}_n,+)$</td><td>Módulo $n$</td><td>$n$</td></tr>
+<tr><td>$S_n$</td><td>Composición</td><td>$n!$</td></tr></table>
+<div class="thm-box"><strong>Lagrange:</strong> Si $H\\leq G$ finito, entonces $|H|\\mid|G|$.</div>` }
+    ]}
+  ]},
+  { label:"Análisis Matemático", books:[
+    { id:"anc", title:"Análisis Complejo", emoji:"ℂ", cover:"linear-gradient(135deg,#1a0d0d,#b03030)", author:"Vol. Único", pages:40, totalTime:"1h 55min", tracks:[
+      { num:1, title:"Números Complejos", sub:"Polar y exponencial", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"30min",
+        latex:`<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo</span>
+<p>$z=a+bi$, $i^2=-1$. Módulo $|z|=\\sqrt{a^2+b^2}$.</p>
+<div class="math-block">$$z=re^{i\\theta}=r(\\cos\\theta+i\\sin\\theta)$$</div>
+<div class="thm-box"><strong>Euler:</strong> $e^{i\\theta}=\\cos\\theta+i\\sin\\theta$<br>Identidad: $e^{i\\pi}+1=0$</div>
+<ul><li>Conjugado: $\\bar{z}=a-bi$, $|z|^2=z\\bar{z}$</li><li>De Moivre: $z^n=r^ne^{in\\theta}$</li></ul>` },
+      { num:2, title:"Funciones Holomorfas", sub:"Cauchy-Riemann", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"1h 25min",
+        latex:`<h1>Funciones Analíticas</h1><span class="subtitle">Análisis Complejo</span>
+<h2>Diferenciabilidad Compleja</h2><div class="math-block">$$f'(z_0)=\\lim_{h\\to 0}\\frac{f(z_0+h)-f(z_0)}{h},\\;h\\in\\mathbb{C}$$</div>
+<h2>Ecuaciones de Cauchy-Riemann</h2><p>Si $f=u+iv$ es diferenciable:</p>
+<div class="math-block">$$\\frac{\\partial u}{\\partial x}=\\frac{\\partial v}{\\partial y}\\qquad\\frac{\\partial u}{\\partial y}=-\\frac{\\partial v}{\\partial x}$$</div>
+<div class="thm-box">$f$ es <strong>holomorfa</strong> en $D$ si es diferenciable en todo punto de $D$.</div>` }
+    ]},
+    { id:"anr", title:"Análisis Real", emoji:"ℝ", cover:"linear-gradient(135deg,#0a1a0a,#2a7a2a)", author:"Vol. I", pages:38, totalTime:"1h 40min", tracks:[
+      { num:1, title:"Sucesiones y Series", sub:"Criterios de convergencia", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"50min",
+        latex:`<h1>Sucesiones y Series</h1><span class="subtitle">Análisis Real</span>
+<div class="def-box">$\\{a_n\\}\\to L$: $\\forall\\varepsilon>0\\,\\exists N:\\,n>N\\Rightarrow|a_n-L|<\\varepsilon$.</div>
+<h2>Criterios para $\\sum a_n$</h2>
+<table><tr><th>Criterio</th><th>Condición</th></tr>
+<tr><td>D'Alembert</td><td>$L=\\lim|a_{n+1}/a_n|<1$</td></tr>
+<tr><td>Cauchy</td><td>$L=\\lim\\sqrt[n]{|a_n|}<1$</td></tr>
+<tr><td>Comparación</td><td>$|a_n|\\leq b_n$, $\\sum b_n$ conv.</td></tr></table>
+<div class="thm-box"><strong>Necesario:</strong> $\\sum a_n$ conv. $\\Rightarrow a_n\\to 0$. (El recíproco es falso: $\\sum 1/n$ diverge.)</div>` }
+    ]}
+  ]},
+  { label:"Probabilidad y Estadística", books:[
+    { id:"prob", title:"Probabilidad", emoji:"🎲", cover:"linear-gradient(135deg,#1a1200,#8a6a00)", author:"Vol. Único", pages:45, totalTime:"2h", tracks:[
+      { num:1, title:"Espacios de Probabilidad", sub:"Axiomas de Kolmogorov", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"40min",
+        latex:`<h1>Probabilidad</h1><span class="subtitle">Axiomas de Kolmogorov</span>
+<div class="def-box">$( \\Omega,\\mathcal{F},P)$: espacio muestral, $\\sigma$-álgebra, medida de probabilidad con $P(\\Omega)=1$.</div>
+<div class="math-block">$$P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}\\qquad P(B)>0$$</div>
+<div class="thm-box"><strong>Bayes:</strong> $P(A_i\\mid B)=\\dfrac{P(B\\mid A_i)P(A_i)}{\\sum_j P(B\\mid A_j)P(A_j)}$</div>
+<h2>Variables Aleatorias</h2><div class="math-block">$$\\mathbb{E}[X]=\\int x\\,f_X(x)\\,dx\\qquad\\operatorname{Var}(X)=\\mathbb{E}[X^2]-(\\mathbb{E}[X])^2$$</div>` }
+    ]}
+  ]}
 ];
 
-let currentBook = null;
-let currentTrack = null;
-let isPlaying = false;
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const allBooks = LIBRARY.flatMap(c => c.books);
+const allTracks = allBooks.flatMap(b => b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover })));
 
-/* ── RENDER HOME ── */
+let state = {
+  view: 'home',
+  prevView: null,
+  currentBookId: null,
+  currentTrackKey: null, // "bookId:trackNum"
+  isPlaying: false,
+  favorites: new Set(JSON.parse(localStorage.getItem('np_favs') || '[]')),
+  openTracks: new Set(),
+  progress: 0,
+  progressTimer: null,
+};
+
+function saveFavs() { localStorage.setItem('np_favs', JSON.stringify([...state.favorites])); }
+function trackKey(bookId, num) { return `${bookId}:${num}`; }
+function isFav(key) { return state.favorites.has(key); }
+
+/* ══════════════════════════════════════════
+   RENDER HOME
+══════════════════════════════════════════ */
 function renderHome() {
-  const allBooks = CATEGORIES.flatMap(c => c.books);
   const featured = allBooks[0];
+  const featKey = trackKey(featured.id, featured.tracks[0]?.num);
+  let html = `
+    <div class="section">
+      <div class="section-header"><span class="section-title">Destacado</span></div>
+      <div class="featured-card" onclick="openDetail('${featured.id}')">
+        <div class="featured-cover" style="background:${featured.cover}"><span>${featured.emoji}</span></div>
+        <span class="featured-badge">Nuevo</span>
+        <div class="featured-info">
+          <div class="featured-title">${featured.title}</div>
+          <div class="featured-meta">${featured.author} · ${featured.tracks.length} temas · ${featured.pages} pág.</div>
+        </div>
+        <button class="featured-fav ${isFav(featured.id)?'faved':''}" onclick="event.stopPropagation();toggleFavBook('${featured.id}',this)">
+          ${isFav(featured.id)?'♥':'♡'}
+        </button>
+      </div>
+    </div>`;
 
-  document.getElementById('home-content').innerHTML = CATEGORIES.map(cat => `
+  html += LIBRARY.map(cat => `
     <div class="section">
       <div class="section-header">
         <span class="section-title">${cat.label}</span>
-        <span class="section-link">Ver todo</span>
       </div>
       <div class="hscroll">
         ${cat.books.map(b => `
           <div class="mini-card" onclick="openDetail('${b.id}')">
-            <div class="mini-cover"><span>${b.emoji}</span></div>
+            <div class="mini-cover" style="background:${b.cover}">
+              <span>${b.emoji}</span>
+              <div class="fav-dot ${isFav(b.id)?'faved':''}" onclick="event.stopPropagation();toggleFavBook('${b.id}',this)">
+                ${isFav(b.id)?'♥':'♡'}
+              </div>
+            </div>
             <div class="mini-info">
               <div class="mini-title">${b.title}</div>
               <div class="mini-meta">${b.tracks.length} temas</div>
             </div>
-          </div>
-        `).join('')}
+          </div>`).join('')}
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  // Continue listening
+  // Recently played
   const recent = allBooks.slice(0, 4);
-  document.getElementById('continue-list').innerHTML = recent.map(b => `
-    <div class="continue-item" onclick="openDetail('${b.id}')">
-      <div class="continue-thumb">${b.emoji}</div>
-      <div class="continue-info">
-        <div class="continue-title">${b.title}</div>
-        <div class="continue-sub">${b.author} · ${b.tracks.length} temas</div>
+  html += `
+    <div class="section">
+      <div class="section-header"><span class="section-title">Continuar</span></div>
+      <div class="continue-list">
+        ${recent.map(b => `
+          <div class="continue-item" onclick="openDetail('${b.id}')">
+            <div class="c-thumb" style="background:${b.cover}">${b.emoji}</div>
+            <div class="c-info">
+              <div class="c-title">${b.title}</div>
+              <div class="c-sub">${b.author} · ${b.tracks.length} temas</div>
+            </div>
+            <button class="play-btn" onclick="event.stopPropagation();playTrack('${b.id}',1)">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </button>
+          </div>`).join('')}
       </div>
-      <button class="continue-play" onclick="event.stopPropagation();openNowPlaying()">
-        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-      </button>
-    </div>
-  `).join('');
+    </div>`;
+
+  document.getElementById('home').innerHTML = html;
 }
 
-/* ── OPEN DETAIL ── */
+/* ══════════════════════════════════════════
+   DETAIL VIEW
+══════════════════════════════════════════ */
 function openDetail(bookId) {
-  const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === bookId);
+  const book = allBooks.find(b => b.id === bookId);
   if (!book) return;
-  currentBook = book;
+  state.currentBookId = bookId;
+  state.openTracks.clear();
 
-  document.getElementById('tb-left').style.display = 'none';
-  document.getElementById('tb-back').style.display = 'flex';
-  document.getElementById('tb-title').textContent = book.title;
+  setTopBar(book.title, true);
 
-  document.getElementById('detail-content').innerHTML = `
+  let html = `
     <div class="detail-header">
-      <div class="detail-cover"><span>${book.emoji}</span></div>
+      <div class="detail-cover" style="background:${book.cover}"><span>${book.emoji}</span></div>
       <div class="detail-info">
         <div class="detail-title">${book.title}</div>
         <div class="detail-author">${book.author} · ${book.pages} páginas</div>
       </div>
       <div class="detail-actions">
-        <button class="action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Me gusta</button>
-        <button class="action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Compartir</button>
-        <button class="action-btn primary">Following</button>
+        <button class="action-btn ${isFav(book.id)?'faved':''}" id="fav-btn" onclick="toggleFavBook('${book.id}',this,true)">
+          ${isFav(book.id)?'♥ Guardado':'♡ Guardar'}
+        </button>
+        <button class="action-btn primary" onclick="playTrack('${book.id}',1)">▶ Reproducir</button>
       </div>
       <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
     </div>
-    <div class="section-header"><span class="section-title">Temas</span></div>
-    <div class="episode-list">
-      ${book.tracks.map(t => `
-        <div class="episode-item" id="ep-${t.num}" onclick="openTrack('${book.id}',${t.num})">
-          <span class="ep-num">${String(t.num).padStart(2,'0')}</span>
-          <div class="ep-info">
-            <div class="ep-title">${t.title}</div>
-            <div class="ep-meta"><span>${t.sub}</span><span class="ep-diff" style="${t.diffStyle}">${t.diff}</span></div>
+    <div class="section-header" style="padding:0 1rem .4rem"><span class="section-title">Temas</span></div>
+    <div class="episode-list" id="ep-list">`;
+
+  book.tracks.forEach(t => {
+    const key = trackKey(book.id, t.num);
+    const isActive = state.currentTrackKey === key;
+    const isOpen = state.openTracks.has(key);
+    html += renderTrackItem(book, t, isActive, isOpen, key);
+  });
+
+  html += `</div>`;
+  document.getElementById('detail').innerHTML = html;
+  showView('detail');
+}
+
+function renderTrackItem(book, t, isActive, isOpen, key) {
+  return `
+    <div id="wrap-${book.id}-${t.num}">
+      <div class="ep-item ${isOpen?'open':''}" id="ep-${book.id}-${t.num}" onclick="toggleTrack('${book.id}',${t.num})">
+        <span class="ep-num">${isActive && state.isPlaying
+          ? `<span style="color:var(--accent);animation:pulse-play 1.2s ease infinite;display:inline-block">▶</span>`
+          : String(t.num).padStart(2,'0')}</span>
+        <div class="ep-info">
+          <div class="ep-title">${t.title}</div>
+          <div class="ep-meta">
+            <span>${t.sub}</span>
+            <span class="ep-diff" style="${t.diffStyle}">${t.diff}</span>
+            <span class="ep-time">${t.time}</span>
           </div>
-          <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3)">${t.time}</span>
-          <button class="ep-play" onclick="event.stopPropagation();openNowPlaying('${book.id}',${t.num})">
-            <svg width="14" height="14" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+        </div>
+        <div class="ep-actions">
+          <button class="ep-fav ${isFav(key)?'faved':''}" onclick="event.stopPropagation();toggleFavTrack('${book.id}',${t.num},this)">${isFav(key)?'♥':'♡'}</button>
+          <button class="ep-play ${isActive && state.isPlaying?'active':''}" onclick="event.stopPropagation();playTrack('${book.id}',${t.num})">
+            <svg viewBox="0 0 24 24">${isActive && state.isPlaying
+              ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
+              : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>'}</svg>
           </button>
         </div>
-      `).join('')}
-    </div>
-    <div style="padding:0 1.2rem;margin-top:0.5rem;" id="apunte-area"></div>
-  `;
-
-  showView('detail');
-  window.scrollTo(0, 0);
+      </div>
+      <div class="apunte-wrap ${isOpen?'open':''}" id="apunte-wrap-${book.id}-${t.num}">
+        <div class="apunte-inner" id="ai-${book.id}-${t.num}"></div>
+      </div>
+    </div>`;
 }
 
-/* ── OPEN TRACK (expandir apunte) ── */
-function openTrack(bookId, num) {
-  const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === bookId);
-  if (!book) return;
-  const track = book.tracks.find(t => t.num === num);
-  if (!track) return;
+/* ══════════════════════════════════════════
+   TOGGLE TRACK (expand/collapse apunte)
+══════════════════════════════════════════ */
+function toggleTrack(bookId, num) {
+  const key = trackKey(bookId, num);
+  const wrap = document.getElementById(`apunte-wrap-${bookId}-${num}`);
+  const epEl = document.getElementById(`ep-${bookId}-${num}`);
+  const inner = document.getElementById(`ai-${bookId}-${num}`);
+  if (!wrap) return;
 
-  const area = document.getElementById('apunte-area');
-  const existing = document.getElementById(`apunte-${num}`);
-
-  if (existing) {
-    existing.classList.toggle('open');
-    return;
+  const isOpen = state.openTracks.has(key);
+  if (isOpen) {
+    state.openTracks.delete(key);
+    wrap.classList.remove('open');
+    epEl?.classList.remove('open');
+  } else {
+    state.openTracks.add(key);
+    wrap.classList.add('open');
+    epEl?.classList.add('open');
+    if (!inner.dataset.rendered) {
+      const book = allBooks.find(b => b.id === bookId);
+      const track = book?.tracks.find(t => t.num === num);
+      inner.innerHTML = track?.latex || '';
+      inner.dataset.rendered = '1';
+      renderKaTeX(inner);
+    }
+    setTimeout(() => epEl?.scrollIntoView({ behavior:'smooth', block:'nearest' }), 200);
   }
-
-  area.innerHTML = `
-    <div class="apunte-body open" id="apunte-${num}">
-      <div class="apunte-inner" id="ai-${num}"></div>
-    </div>
-  `;
-
-  const ai = document.getElementById(`ai-${num}`);
-  ai.innerHTML = track.latex;
-  renderKaTeX(ai);
-
-  // Highlight episode
-  document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('active'));
-  document.getElementById(`ep-${num}`)?.classList.add('active');
-
-  setTimeout(() => document.getElementById(`apunte-${num}`).scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
 }
 
-/* ── NOW PLAYING ── */
-function openNowPlaying(bookId, num) {
-  let track = null;
-  if (bookId && num) {
-    const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === bookId);
-    track = book?.tracks.find(t => t.num === num);
-  }
-  if (!track) {
-    currentBook = CATEGORIES.flatMap(c => c.books)[0];
-    track = currentBook.tracks[0];
-  }
-  currentTrack = track;
-  isPlaying = true;
+/* ══════════════════════════════════════════
+   PLAY TRACK
+══════════════════════════════════════════ */
+function playTrack(bookId, num) {
+  const book = allBooks.find(b => b.id === bookId);
+  const track = book?.tracks.find(t => t.num === num);
+  if (!book || !track) return;
 
-  document.getElementById('tb-left').style.display = 'none';
-  document.getElementById('tb-back').style.display = 'flex';
-  document.getElementById('tb-title').textContent = 'Now Playing';
-
-  document.getElementById('np-content').innerHTML = `
-    <div class="now-playing">
-      <div class="np-cover"><span>${currentBook?.emoji || '∂'}</span></div>
-      <div class="np-info">
-        <div class="np-title">${track.title}</div>
-        <div class="np-author">${track.sub} · ${currentBook?.title || ''}</div>
-      </div>
-      <div class="progress-wrap">
-        <div class="progress-bar"><div class="progress-fill"></div></div>
-        <div class="progress-times"><span>12:34</span><span>${track.time}</span></div>
-      </div>
-      <div class="waveform">
-        ${Array.from({length:12}, () => '<div class="wave-bar"></div>').join('')}
-      </div>
-      <div class="controls">
-        <button class="ctrl-btn"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg></button>
-        <button class="ctrl-btn"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
-        <button class="ctrl-play" onclick="togglePlay()">
-          <svg viewBox="0 0 24 24" id="play-icon"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
-        </button>
-        <button class="ctrl-btn"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
-        <button class="ctrl-btn"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg></button>
-      </div>
-      <div class="up-next">Up Next · ${currentBook?.tracks[1]?.title || 'Derivadas'}</div>
-    </div>
-  `;
+  state.currentBookId = bookId;
+  state.currentTrackKey = trackKey(bookId, num);
+  state.isPlaying = true;
+  state.progress = 0;
 
   // Update mini player
-  document.getElementById('mp-thumb').textContent = currentBook?.emoji || '∂';
+  document.getElementById('mp-cover').textContent = book.emoji;
+  document.getElementById('mp-cover').style.background = book.cover;
   document.getElementById('mp-title').textContent = track.title;
-  document.getElementById('mp-sub').textContent = track.sub;
+  document.getElementById('mp-sub').textContent = `${book.title} · ${track.sub}`;
+  updateMiniPlayBtn();
 
+  // Fake progress
+  clearInterval(state.progressTimer);
+  state.progressTimer = setInterval(() => {
+    state.progress = Math.min(state.progress + 0.2, 100);
+    document.getElementById('mp-prog').style.width = state.progress + '%';
+    if (state.isPlaying && document.getElementById('np-progress-fill')) {
+      document.getElementById('np-progress-fill').style.width = state.progress + '%';
+    }
+    if (state.progress >= 100) { clearInterval(state.progressTimer); nextTrack(); }
+  }, 500);
+
+  // Refresh detail view buttons if visible
+  if (state.view === 'detail' && state.currentBookId === bookId) {
+    refreshDetailButtons();
+  }
+
+  // Open now playing
+  renderNowPlaying();
   showView('now-playing');
-  window.scrollTo(0, 0);
+  setTopBar('Reproduciendo', true);
+}
+
+function refreshDetailButtons() {
+  document.querySelectorAll('.ep-item').forEach(el => {
+    const id = el.id.replace('ep-','');
+    const parts = id.split('-');
+    const bId = parts.slice(0,-1).join('-');
+    const n = parseInt(parts[parts.length-1]);
+    const key = trackKey(bId, n);
+    const isActive = state.currentTrackKey === key;
+    const playBtn = el.querySelector('.ep-play');
+    const numEl = el.querySelector('.ep-num');
+    if (playBtn) {
+      playBtn.classList.toggle('active', isActive && state.isPlaying);
+      playBtn.innerHTML = `<svg viewBox="0 0 24 24">${isActive && state.isPlaying
+        ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
+        : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>'}</svg>`;
+    }
+  });
+}
+
+function prevTrack() {
+  if (!state.currentTrackKey) return;
+  const [bId, numStr] = state.currentTrackKey.split(':');
+  const book = allBooks.find(b => b.id === bId);
+  if (!book) return;
+  const idx = book.tracks.findIndex(t => t.num === parseInt(numStr));
+  if (idx > 0) playTrack(bId, book.tracks[idx-1].num);
+}
+
+function nextTrack() {
+  if (!state.currentTrackKey) return;
+  const [bId, numStr] = state.currentTrackKey.split(':');
+  const book = allBooks.find(b => b.id === bId);
+  if (!book) return;
+  const idx = book.tracks.findIndex(t => t.num === parseInt(numStr));
+  if (idx < book.tracks.length - 1) playTrack(bId, book.tracks[idx+1].num);
 }
 
 function togglePlay() {
-  isPlaying = !isPlaying;
-  const icon = document.getElementById('play-icon');
-  if (icon) {
-    icon.innerHTML = isPlaying
-      ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+  state.isPlaying = !state.isPlaying;
+  if (state.isPlaying) {
+    state.progressTimer = setInterval(() => {
+      state.progress = Math.min(state.progress + 0.2, 100);
+      document.getElementById('mp-prog').style.width = state.progress + '%';
+      if (document.getElementById('np-progress-fill')) document.getElementById('np-progress-fill').style.width = state.progress + '%';
+    }, 500);
+  } else {
+    clearInterval(state.progressTimer);
+  }
+  updateMiniPlayBtn();
+  if (document.getElementById('np-play-icon')) {
+    document.getElementById('np-play-icon').innerHTML = state.isPlaying
+      ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
       : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>';
   }
 }
 
-function toggleMiniPlay() {
-  isPlaying = !isPlaying;
-  const btn = document.getElementById('mp-play');
-  btn.innerHTML = isPlaying
-    ? '<svg viewBox="0 0 24 24" width="14" height="14"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>'
-    : '<svg viewBox="0 0 24 24" width="14" height="14"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>';
+function updateMiniPlayBtn() {
+  const icon = document.getElementById('mp-icon');
+  if (!icon) return;
+  icon.innerHTML = state.isPlaying
+    ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
+    : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>';
 }
 
-/* ── KATEX ── */
+/* ══════════════════════════════════════════
+   NOW PLAYING VIEW
+══════════════════════════════════════════ */
+function openNowPlayingView() {
+  if (!state.currentTrackKey) return;
+  renderNowPlaying();
+  showView('now-playing');
+  setTopBar('Reproduciendo', true);
+}
+
+function renderNowPlaying() {
+  if (!state.currentTrackKey) return;
+  const [bId, numStr] = state.currentTrackKey.split(':');
+  const book = allBooks.find(b => b.id === bId);
+  const track = book?.tracks.find(t => t.num === parseInt(numStr));
+  if (!book || !track) return;
+
+  const wbars = Array.from({length:14}, (_,i) =>
+    `<div class="wbar ${state.isPlaying?'ani':''}" style="height:${[30,55,80,65,45,90,100,50,70,40,85,60,35,75][i]}%;animation-delay:${i*0.07}s"></div>`
+  ).join('');
+
+  document.getElementById('now-playing').innerHTML = `
+    <div class="np-wrap">
+      <div class="np-cover" style="background:${book.cover}"><span>${book.emoji}</span></div>
+      <div class="np-info">
+        <div class="np-title">${track.title}</div>
+        <div class="np-author">${book.title} · ${track.sub}</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" onclick="seekProgress(event)">
+          <div class="progress-fill" id="np-progress-fill" style="width:${state.progress}%"></div>
+        </div>
+        <div class="progress-times">
+          <span id="np-elapsed">—</span>
+          <span>${track.time}</span>
+        </div>
+      </div>
+      <div class="waveform">${wbars}</div>
+      <div class="controls">
+        <button class="ctrl-btn" onclick="prevTrack()">
+          <svg viewBox="0 0 24 24"><polygon points="19,20 9,12 19,4" fill="currentColor" stroke="none"/><rect x="5" y="4" width="3" height="16" rx="1" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="ctrl-play" onclick="togglePlay()">
+          <svg viewBox="0 0 24 24" id="np-play-icon">
+            ${state.isPlaying
+              ? '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
+              : '<polygon points="5,3 19,12 5,21" fill="currentColor"/>'}
+          </svg>
+        </button>
+        <button class="ctrl-btn" onclick="nextTrack()">
+          <svg viewBox="0 0 24 24"><polygon points="5,20 15,12 5,4" fill="currentColor" stroke="none"/><rect x="16" y="4" width="3" height="16" rx="1" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+      <button class="np-open-notes" onclick="openNotesFromNP('${bId}',${track.num})">
+        Abrir apuntes del tema
+      </button>
+      <div id="np-notes-area" style="width:100%"></div>
+    </div>`;
+}
+
+function openNotesFromNP(bookId, num) {
+  const inner = document.getElementById('np-notes-area');
+  if (!inner) return;
+  if (inner.dataset.open === '1') { inner.innerHTML = ''; inner.dataset.open = ''; return; }
+  const book = allBooks.find(b => b.id === bookId);
+  const track = book?.tracks.find(t => t.num === num);
+  if (!track) return;
+  inner.innerHTML = `<div class="np-notes"><div class="apunte-inner" id="np-ai"></div></div>`;
+  const ai = document.getElementById('np-ai');
+  ai.innerHTML = track.latex;
+  renderKaTeX(ai);
+  inner.dataset.open = '1';
+  setTimeout(() => inner.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+}
+
+function seekProgress(e) {
+  const bar = e.currentTarget;
+  const ratio = e.offsetX / bar.offsetWidth;
+  state.progress = ratio * 100;
+  document.getElementById('np-progress-fill').style.width = state.progress + '%';
+  document.getElementById('mp-prog').style.width = state.progress + '%';
+}
+
+/* ══════════════════════════════════════════
+   SEARCH
+══════════════════════════════════════════ */
+function showSearch() {
+  setTopBar('Buscar', true);
+  document.getElementById('search-view').innerHTML = `
+    <div class="search-wrap">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="Buscar libros, temas, materias..." autofocus oninput="doSearch(this.value)">
+        <span class="search-clear" id="search-clear" onclick="clearSearch()">✕</span>
+      </div>
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="search-empty">Escribe para buscar en tu biblioteca</div>
+    </div>`;
+  showView('search-view');
+  setTimeout(() => document.getElementById('search-input')?.focus(), 100);
+}
+
+function doSearch(q) {
+  const clear = document.getElementById('search-clear');
+  if (clear) clear.style.display = q ? 'block' : 'none';
+  const res = document.getElementById('search-results');
+  if (!q.trim()) { res.innerHTML = '<div class="search-empty">Escribe para buscar en tu biblioteca</div>'; return; }
+  const qL = q.toLowerCase();
+
+  let matches = [];
+  allBooks.forEach(b => {
+    if (b.title.toLowerCase().includes(qL)) matches.push({ type:'book', bookId:b.id, title:b.title, sub:b.author, emoji:b.emoji, cover:b.cover });
+    b.tracks.forEach(t => {
+      if (t.title.toLowerCase().includes(qL) || t.sub.toLowerCase().includes(qL))
+        matches.push({ type:'track', bookId:b.id, num:t.num, title:t.title, sub:`${b.title} · ${t.sub}`, emoji:b.emoji, cover:b.cover });
+    });
+  });
+
+  if (!matches.length) { res.innerHTML = `<div class="search-empty">Sin resultados para "<strong>${q}</strong>"</div>`; return; }
+
+  res.innerHTML = matches.map(m => `
+    <div class="search-result-item" onclick="${m.type==='book'?`openDetail('${m.bookId}')`:`openDetailAndExpand('${m.bookId}',${m.num})`}">
+      <div class="sr-cover" style="background:${m.cover}">${m.emoji}</div>
+      <div class="sr-info">
+        <div class="sr-title">${m.title}</div>
+        <div class="sr-sub">${m.sub}</div>
+      </div>
+      <span class="sr-type">${m.type==='book'?'Libro':'Tema'}</span>
+    </div>`).join('');
+}
+
+function clearSearch() {
+  const inp = document.getElementById('search-input');
+  if (inp) { inp.value = ''; inp.focus(); }
+  document.getElementById('search-clear').style.display = 'none';
+  document.getElementById('search-results').innerHTML = '<div class="search-empty">Escribe para buscar en tu biblioteca</div>';
+}
+
+function openDetailAndExpand(bookId, num) {
+  openDetail(bookId);
+  setTimeout(() => toggleTrack(bookId, num), 300);
+}
+
+/* ══════════════════════════════════════════
+   FAVORITES
+══════════════════════════════════════════ */
+function toggleFavBook(bookId, el, isText) {
+  const key = bookId;
+  if (isFav(key)) { state.favorites.delete(key); }
+  else { state.favorites.add(key); }
+  saveFavs();
+  if (el) {
+    el.classList.toggle('faved', isFav(key));
+    if (isText) el.textContent = isFav(key) ? '♥ Guardado' : '♡ Guardar';
+    else el.textContent = isFav(key) ? '♥' : '♡';
+  }
+  updateNavFavBadge();
+}
+
+function toggleFavTrack(bookId, num, el) {
+  const key = trackKey(bookId, num);
+  if (isFav(key)) state.favorites.delete(key);
+  else state.favorites.add(key);
+  saveFavs();
+  if (el) { el.classList.toggle('faved', isFav(key)); el.textContent = isFav(key)?'♥':'♡'; }
+}
+
+function updateNavFavBadge() {
+  const icon = document.getElementById('nav-fav-icon');
+  if (icon) icon.style.fill = state.favorites.size ? 'var(--accent)' : 'none';
+}
+
+function showFavs() {
+  setTopBar('Favoritos', false);
+  const favBooks = allBooks.filter(b => isFav(b.id));
+  const favTracks = allTracks.filter(t => isFav(trackKey(t.bookId, t.num)));
+
+  let html = '';
+  if (!favBooks.length && !favTracks.length) {
+    html = '<div class="favs-empty">Aún no tienes favoritos.<br>Guarda libros o temas con ♡</div>';
+  } else {
+    if (favBooks.length) {
+      html += `<div class="section"><div class="section-header"><span class="section-title">Libros guardados</span></div>
+        <div class="hscroll">${favBooks.map(b=>`
+          <div class="mini-card" onclick="openDetail('${b.id}')">
+            <div class="mini-cover" style="background:${b.cover}"><span>${b.emoji}</span></div>
+            <div class="mini-info"><div class="mini-title">${b.title}</div><div class="mini-meta">${b.author}</div></div>
+          </div>`).join('')}
+        </div></div>`;
+    }
+    if (favTracks.length) {
+      html += `<div class="section"><div class="section-header"><span class="section-title">Temas guardados</span></div>
+        <div class="continue-list">${favTracks.map(t=>`
+          <div class="continue-item" onclick="openDetailAndExpand('${t.bookId}',${t.num})">
+            <div class="c-thumb" style="background:${t.bookCover}">${t.bookEmoji}</div>
+            <div class="c-info"><div class="c-title">${t.title}</div><div class="c-sub">${t.bookTitle} · ${t.sub}</div></div>
+            <button class="play-btn" onclick="event.stopPropagation();playTrack('${t.bookId}',${t.num})">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </button>
+          </div>`).join('')}
+        </div></div>`;
+    }
+  }
+  document.getElementById('favs-view').innerHTML = html;
+  showView('favs-view');
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+  state.prevView = state.view;
+  state.view = id;
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.nav === id);
+  });
+  window.scrollTo(0, 0);
+}
+
+function setTopBar(title, showBack) {
+  document.getElementById('tb-left').style.display = showBack ? 'none' : 'flex';
+  document.getElementById('tb-back').style.display = showBack ? 'flex' : 'none';
+  document.getElementById('tb-title').textContent = title;
+}
+
+function navBack() {
+  const prev = state.prevView || 'home';
+  if (prev === 'home' || prev === state.view) { goHome(); return; }
+  showView(prev);
+  if (prev === 'home') { setTopBar('', false); }
+  else if (prev === 'detail') {
+    const book = allBooks.find(b => b.id === state.currentBookId);
+    setTopBar(book?.title || '', true);
+  } else { setTopBar('', false); }
+}
+
+function goHome() {
+  setTopBar('', false);
+  renderHome();
+  showView('home');
+}
+
+/* ══════════════════════════════════════════
+   KATEX
+══════════════════════════════════════════ */
 function renderKaTeX(el) {
   if (window.renderMathInElement) {
     try {
       renderMathInElement(el, {
-        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
-        throwOnError: false, strict: false, trust: true
+        delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+        throwOnError:false, strict:false, trust:true
       });
-    } catch(e) {}
+    } catch(e) { console.warn('KaTeX error', e); }
   } else {
-    setTimeout(() => renderKaTeX(el), 100);
+    setTimeout(() => renderKaTeX(el), 150);
   }
 }
 
-/* ── NAV ── */
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navMap = { home: 'home', detail: 'home', 'now-playing': 'home' };
-  document.querySelector(`[data-nav="${navMap[id] || 'home'}"]`)?.classList.add('active');
-}
-
-function goHome() {
-  document.getElementById('tb-left').style.display = 'flex';
-  document.getElementById('tb-back').style.display = 'none';
-  currentBook = null;
-  currentTrack = null;
-  showView('home');
-  window.scrollTo(0, 0);
-}
-
-/* ── INIT ── */
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  window.scrollTo(0, 0);
   renderHome();
+  updateNavFavBadge();
 });
 </script>
 </body>
