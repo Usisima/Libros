@@ -3,135 +3,684 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>NotePlayer</title>
+<title>NotePlayer — Rediseño Premium</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
-/* ... (tu CSS existente, sin cambios) ... */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#09090d;--bg2:#111118;--bg3:#1a1a24;--bg4:#23232f;
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
-  --text:#eeeae4;--text2:#8e8a99;--text3:#4e4b5a;
-  --accent:#b8a4f8;--gold:#e2c36a;--teal:#4ec9a0;--coral:#f09070;
-  --r:14px;--rsm:8px;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-html{height:100%;-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
-body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
-.view{display:none;min-height:100vh}
-.view.active{display:block}
 
-/* ── HOME ── */
-.home-header{padding:clamp(20px,5vw,40px) clamp(16px,5vw,40px) 0;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:clamp(18px,4vw,24px);font-weight:700;letter-spacing:-0.5px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.logo-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;-webkit-text-fill-color:var(--text3);margin-top:2px}
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(
+    180deg,
+    #8DB9D6 0%,
+    #BFD2E4 35%,
+    #E9EEF5 70%,
+    #F7F8FB 100%
+  );
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #111111;
+}
 
-.cat-section{padding:clamp(24px,5vw,40px) clamp(16px,5vw,40px) 0}
-.cat-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.cat-label::after{content:'';flex:1;height:1px;background:var(--border2)}
+/* ── LAYOUT PRINCIPAL ── */
+.app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding: 32px 24px 48px;
+}
 
-.album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(148px,calc(50vw - 20px)),1fr));gap:clamp(10px,3vw,18px)}
-.album-card{cursor:pointer;border-radius:var(--r);overflow:hidden;background:var(--bg3);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;-webkit-tap-highlight-color:transparent}
-.album-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 48px rgba(0,0,0,.55)}
-.album-card:active{transform:scale(0.97)}
-.album-cover{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(36px,9vw,56px);position:relative;overflow:hidden}
-.album-cover::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.14) 0%,transparent 60%)}
-.album-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.3) 0%,transparent 60%)}
-.album-card-info{padding:10px 12px 13px}
-.album-card-title{font-size:clamp(12px,2.5vw,14px);font-weight:600;line-height:1.3;color:var(--text)}
-.album-card-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:3px}
+/* ── HOME VIEW ── */
+.home-header {
+  margin-bottom: 48px;
+}
+
+.logo {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  text-shadow: 0 2px 12px rgba(60, 90, 120, 0.15);
+  margin-bottom: 4px;
+}
+
+.logo-sub {
+  font-size: 28px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* ── CATEGORÍAS ── */
+.cat-section {
+  margin-bottom: 32px;
+}
+
+.cat-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.4);
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+/* ── GRID DE ÁLBUMES ── */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.album-card {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 32px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.08),
+    0 8px 20px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.album-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 28px 60px rgba(15, 23, 42, 0.12),
+    0 10px 25px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.album-card:active {
+  transform: scale(0.97);
+  transition: transform 0.15s ease;
+}
+
+.album-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  position: relative;
+  margin-bottom: 16px;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+.album-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+}
+
+.album-cover span {
+  position: relative;
+  z-index: 1;
+}
+
+.album-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #111111;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.album-card-meta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8B95A5;
+  letter-spacing: -0.01em;
+}
 
 /* ── ALBUM VIEW ── */
-.album-nav{position:sticky;top:0;z-index:20;background:rgba(9,9,13,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:10px clamp(14px,4vw,36px);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
-.back-btn{display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;background:none;border:none;padding:6px 10px;margin:-6px -10px;border-radius:var(--rsm);transition:background .15s;flex-shrink:0}
-.back-btn:hover{background:rgba(255,255,255,.06)}
-.back-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.nav-title{font-size:14px;font-weight:600;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.album-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(141, 185, 214, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 16px 20px;
+  margin: -32px -24px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+}
 
-.album-hero{padding:clamp(22px,5vw,44px) clamp(16px,5vw,40px) clamp(18px,4vw,32px);display:flex;gap:clamp(14px,4vw,28px);align-items:flex-end;flex-wrap:wrap}
-.hero-cover{width:clamp(96px,22vw,148px);height:clamp(96px,22vw,148px);border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:clamp(42px,10vw,64px);position:relative;overflow:hidden;box-shadow:0 20px 56px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.07)}
-.hero-cover::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%)}
-.hero-info{flex:1;min-width:160px}
-.hero-type{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:7px}
-.hero-title{font-size:clamp(20px,5vw,32px);font-weight:700;letter-spacing:-0.5px;line-height:1.15}
-.hero-author{font-size:13px;color:var(--text2);margin-top:7px}
-.hero-stats{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:9px}
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 16px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+}
 
-.tracklist{padding:0 clamp(10px,4vw,28px) 60px}
-.tl-head{display:grid;grid-template-columns:36px 1fr auto 52px;gap:8px;padding:0 12px 10px;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:6px}
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateX(-2px);
+}
 
-.track-item{border-radius:var(--r);overflow:hidden;margin-bottom:4px}
-.track-row{display:grid;grid-template-columns:36px 1fr auto 52px;gap:8px;align-items:center;padding:12px 12px;cursor:pointer;border-radius:var(--r);transition:background .12s}
-.track-row:hover,.track-row:active{background:var(--bg3)}
-.track-row.open{background:var(--bg3);border-radius:var(--r) var(--r) 0 0}
+.back-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
-.t-num{font-size:13px;color:var(--text3);font-family:'DM Mono',monospace;text-align:center;line-height:1}
-.eq-bars{display:flex;align-items:flex-end;gap:2px;height:14px;justify-content:center}
-.eq-bar{width:3px;background:var(--accent);border-radius:1px;animation:eq .6s ease-in-out infinite alternate}
-.eq-bar:nth-child(2){animation-delay:.2s}.eq-bar:nth-child(3){animation-delay:.4s}
-@keyframes eq{from{height:3px}to{height:14px}}
-.t-info{overflow:hidden;min-width:0}
-.t-title{font-size:clamp(13px,3vw,15px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.t-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.t-badge{font-size:11px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:20px;white-space:nowrap}
-.t-pages{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-align:right}
+.nav-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ── HERO DEL ÁLBUM ── */
+.album-hero {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin: 32px 0 28px;
+}
+
+.hero-cover {
+  width: 120px;
+  height: 120px;
+  border-radius: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.15),
+    0 8px 20px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 55%);
+  border-radius: 32px;
+}
+
+.hero-cover span {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-type {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.45);
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: #111111;
+  margin-bottom: 8px;
+}
+
+.hero-author {
+  font-size: 15px;
+  font-weight: 500;
+  color: #8B95A5;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.hero-stats {
+  font-size: 14px;
+  font-weight: 500;
+  color: #A0A7B4;
+  letter-spacing: -0.01em;
+}
+
+/* ── LISTA DE TEMAS ── */
+.tracklist {
+  margin-top: 8px;
+}
+
+.tl-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px;
+  gap: 12px;
+  padding: 0 16px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.track-item {
+  margin-bottom: 8px;
+}
+
+.track-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px;
+  gap: 12px;
+  align-items: center;
+  padding: 18px 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.05),
+    0 3px 8px rgba(15, 23, 42, 0.03);
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.track-row:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 32px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.track-row:active {
+  transform: scale(0.98);
+}
+
+.track-row.open {
+  border-radius: 24px 24px 0 0;
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.t-num {
+  font-size: 15px;
+  font-weight: 600;
+  color: #A0A7B4;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.eq-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+  justify-content: center;
+}
+
+.eq-bar {
+  width: 3px;
+  background: #FF0000;
+  border-radius: 2px;
+  animation: eq 0.7s ease-in-out infinite alternate;
+}
+
+.eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.eq-bar:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes eq {
+  from { height: 4px; }
+  to { height: 16px; }
+}
+
+.t-info {
+  overflow: hidden;
+  min-width: 0;
+}
+
+.t-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.t-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8B95A5;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.t-badge {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
 
 /* ── APUNTE EXPANDIBLE ── */
-.apunte-body{display:none;background:#f9f7f2;border-top:1px solid rgba(0,0,0,.08);border-radius:0 0 var(--r) var(--r);animation:apExpand .22s ease}
-.apunte-body.open{display:block}
-@keyframes apExpand{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.apunte-inner{padding:clamp(18px,5vw,38px) clamp(16px,5vw,44px) clamp(22px,5vw,40px)}
+.apunte-body {
+  display: none;
+  background: #FFFFFF;
+  border-radius: 0 0 24px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: none;
+  box-shadow:
+    0 12px 32px rgba(15, 23, 42, 0.06),
+    0 4px 12px rgba(15, 23, 42, 0.03);
+  animation: apExpand 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
 
-/* ── APUNTE TYPOGRAPHY ── */
-.apunte-inner{font-family:'Inter',sans-serif;font-size:clamp(14px,2.5vw,16px);line-height:1.82;color:#1a1a24}
-.apunte-inner h1{font-size:clamp(19px,4.5vw,27px);font-weight:700;letter-spacing:-0.4px;line-height:1.2;margin-bottom:5px;color:#0e0e16}
-.apunte-inner .subtitle{font-size:12px;color:#888;font-family:'DM Mono',monospace;margin-bottom:26px;display:block}
-.apunte-inner h2{font-size:clamp(15px,3.5vw,19px);font-weight:700;margin:30px 0 11px;color:#0e0e16;padding-bottom:6px;border-bottom:2px solid #e6e2da}
-.apunte-inner h3{font-size:clamp(14px,3vw,16px);font-weight:600;margin:20px 0 8px;color:#28283a}
-.apunte-inner p{margin-bottom:13px}
-.apunte-inner ul,.apunte-inner ol{margin:10px 0 14px 20px}
-.apunte-inner li{margin-bottom:6px;line-height:1.7}
-.apunte-inner strong{font-weight:600}
-.apunte-inner em{font-style:italic}
-.apunte-inner code{font-family:'DM Mono',monospace;background:rgba(0,0,0,.07);padding:2px 6px;border-radius:5px;font-size:.875em}
-.apunte-inner table{width:100%;border-collapse:collapse;margin:16px 0;font-size:clamp(12px,2vw,14px);display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.apunte-inner th{background:#1a1a24;color:#eeeae4;padding:9px 13px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;font-family:'DM Mono',monospace}
-.apunte-inner td{padding:9px 13px;border-bottom:1px solid rgba(0,0,0,.07);vertical-align:top}
-.apunte-inner tr:last-child td{border-bottom:none}
+.apunte-body.open {
+  display: block;
+}
 
-.def-box{background:#f0ecff;border-left:3px solid #7c5cdb;padding:13px 17px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.95em;line-height:1.72}
-.thm-box{background:#e8f5ef;border-left:3px solid #2a9d6e;padding:13px 17px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.95em;line-height:1.72}
-.ex-box{background:#fff8ea;border-left:3px solid #c49400;padding:13px 17px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.95em;line-height:1.72}
+@keyframes apExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-.math-block{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:14px 0;text-align:center;margin:14px 0}
-.math-block .katex-display{margin:0;overflow-x:auto;overflow-y:hidden;padding:4px 0}
+.apunte-inner {
+  padding: 32px 28px 40px;
+}
 
-@media(max-width:480px){
-  .apunte-inner .katex{font-size:1em!important}
-  .tl-head span:last-child,.t-pages{display:none}
-  .track-row,.tl-head{grid-template-columns:32px 1fr auto}
+/* ── TIPOGRAFÍA DEL APUNTE ── */
+.apunte-inner {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #1a1a24;
+}
+
+.apunte-inner h1 {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  color: #111111;
+}
+
+.apunte-inner .subtitle {
+  font-size: 14px;
+  color: #8B95A5;
+  font-weight: 500;
+  margin-bottom: 32px;
+  display: block;
+  letter-spacing: -0.01em;
+}
+
+.apunte-inner h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 36px 0 14px;
+  color: #111111;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #E9EEF5;
+  letter-spacing: -0.02em;
+}
+
+.apunte-inner h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 24px 0 10px;
+  color: #2d2d3a;
+  letter-spacing: -0.02em;
+}
+
+.apunte-inner p {
+  margin-bottom: 16px;
+  line-height: 1.75;
+}
+
+.apunte-inner ul, .apunte-inner ol {
+  margin: 12px 0 18px 24px;
+}
+
+.apunte-inner li {
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.apunte-inner strong {
+  font-weight: 600;
+}
+
+.apunte-inner em {
+  font-style: italic;
+}
+
+.apunte-inner code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  background: #F1F5F9;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+.apunte-inner table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.apunte-inner th {
+  background: #111111;
+  color: #FFFFFF;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.apunte-inner td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #E9EEF5;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.apunte-inner tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── CAJAS ESPECIALES ── */
+.def-box, .thm-box, .ex-box {
+  padding: 20px 24px;
+  border-radius: 20px;
+  margin: 20px 0;
+  font-size: 0.95em;
+  line-height: 1.7;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.def-box {
+  background: #F5F3FF;
+  border-left: 4px solid #7C3AED;
+}
+
+.thm-box {
+  background: #ECFDF5;
+  border-left: 4px solid #059669;
+}
+
+.ex-box {
+  background: #FFFBEB;
+  border-left: 4px solid #D97706;
+}
+
+.math-block {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 0;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.math-block .katex-display {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 24px 16px 40px;
+  }
+  
+  .logo {
+    font-size: 38px;
+  }
+  
+  .logo-sub {
+    font-size: 22px;
+  }
+  
+  .hero-cover {
+    width: 96px;
+    height: 96px;
+    font-size: 38px;
+  }
+  
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .track-row, .tl-header {
+    grid-template-columns: 32px 1fr 70px;
+    gap: 8px;
+  }
+  
+  .apunte-inner {
+    padding: 24px 18px 32px;
+  }
+  
+  .apunte-inner h1 {
+    font-size: 28px;
+  }
+  
+  .apunte-inner .katex {
+    font-size: 0.95em !important;
+  }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 </style>
 </head>
 <body>
 
-<!-- HOME -->
+<div class="app-container">
+
+<!-- HOME VIEW -->
 <div id="home" class="view active">
   <div class="home-header">
-    <div>
-      <div class="logo">♫ NotePlayer</div>
-      <div class="logo-sub">Tu biblioteca de apuntes</div>
-    </div>
+    <div class="logo">NotePlayer</div>
+    <div class="logo-sub">Tu biblioteca de apuntes</div>
   </div>
   <div id="home-content"></div>
-  <div style="height:40px"></div>
 </div>
 
 <!-- ALBUM VIEW -->
-<div id="album-view" class="view">
+<div id="album-view" class="view" style="display:none;">
   <div class="album-nav">
     <button class="back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -141,22 +690,28 @@ body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',
   </div>
   <div id="album-hero-area"></div>
   <div class="tracklist">
-    <div class="tl-head">
-      <span>#</span><span>Tema</span><span>Nivel</span><span style="text-align:right">Págs</span>
+    <div class="tl-header">
+      <span style="text-align:center">#</span>
+      <span>Tema</span>
+      <span style="text-align:center">Nivel</span>
     </div>
     <div id="tracklist-body"></div>
   </div>
 </div>
 
+</div>
+
 <script>
-const CATEGORIES=[
+const CATEGORIES = [
   {
-    label:"Cálculo",
-    books:[
-      {id:"cal1",title:"Cálculo Diferencial",emoji:"∂",color:"linear-gradient(135deg,#2d0a6e,#7c3aed)",author:"Apuntes · Sem. 2024",
-       tracks:[
-        {num:1,title:"Límites y Continuidad",sub:"Definición ε-δ",diff:"Básico",diffStyle:"background:#0d2b0d;color:#4ec9a0",pages:"12",
-         latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Cap. 1 · Cálculo Diferencial</span>
+    label: "Cálculo",
+    books: [
+      {
+        id: "cal1", title: "Cálculo Diferencial", emoji: "∂", color: "linear-gradient(135deg, #7C3AED, #A78BFA)", author: "Apuntes · Sem. 2024",
+        tracks: [
+          {
+            num: 1, title: "Límites y Continuidad", sub: "Definición ε-δ", diff: "Básico", diffStyle: "background:#ECFDF5;color:#059669", pages: "12",
+            latex: `<h1>Límites y Continuidad</h1><span class="subtitle">Cap. 1 · Cálculo Diferencial</span>
 <h2>Definición de Límite</h2>
 <p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se acercan a $L$ conforme $x\\to a$.</p>
 <div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que $0<|x-a|<\\delta\\Rightarrow|f(x)-L|<\\varepsilon$.</div>
@@ -165,303 +720,224 @@ const CATEGORIES=[
 <ul>
   <li>$\\lim_{x\\to a}[f\\pm g]=L\\pm M$</li>
   <li>$\\lim_{x\\to a}[f\\cdot g]=LM$</li>
-  <li>$\\lim_{x\\to a}\\dfrac{f}{g}=\\dfrac{L}{M}$ si $M\\neq 0$</li>
+  <li>$\\lim_{x\\to a}\\frac{f}{g}=\\frac{L}{M}$ si $M\\neq 0$</li>
 </ul>
 <h2>Límites Notables</h2>
-<div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\!\\left(1+\\tfrac{1}{x}\\right)^x=e$$</div>
+<div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\left(1+\\frac{1}{x}\\right)^x=e$$</div>
 <h2>Continuidad</h2>
 <div class="def-box"><strong>Definición:</strong> $f$ es continua en $a$ si: (1) $f(a)$ existe, (2) $\\lim_{x\\to a}f(x)$ existe, (3) $\\lim_{x\\to a}f(x)=f(a)$.</div>
-<div class="thm-box"><strong>Teorema del Valor Intermedio:</strong> Si $f$ es continua en $[a,b]$ y $f(a)\\cdot f(b)<0$, entonces $\\exists\\,c\\in(a,b)$ con $f(c)=0$.</div>`},
-        {num:2,title:"Derivadas",sub:"Reglas de derivación",diff:"Intermedio",diffStyle:"background:#2a1f00;color:#e2c36a",pages:"18",
-         latex:`<h1>Derivadas</h1><span class="subtitle">Cap. 2 · Cálculo Diferencial</span>
+<div class="thm-box"><strong>Teorema del Valor Intermedio:</strong> Si $f$ es continua en $[a,b]$ y $f(a)\\cdot f(b)<0$, entonces $\\exists\\,c\\in(a,b)$ con $f(c)=0$.</div>`
+          },
+          {
+            num: 2, title: "Derivadas", sub: "Reglas de derivación", diff: "Intermedio", diffStyle: "background:#FFFBEB;color:#D97706", pages: "18",
+            latex: `<h1>Derivadas</h1><span class="subtitle">Cap. 2 · Cálculo Diferencial</span>
 <h2>Definición</h2>
 <p>La derivada de $f$ en $a$ es:</p>
 <div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
 <p>Geométricamente: pendiente de la recta tangente en $(a,f(a))$.</p>
 <h2>Reglas Fundamentales</h2>
 <table><tr><th>Regla</th><th>Fórmula</th></tr>
-<tr><td>Potencia</td><td>$\\dfrac{d}{dx}x^n=nx^{n-1}$</td></tr>
+<tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
 <tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
-<tr><td>Cociente</td><td>$\\!\\left(\\tfrac{f}{g}\\right)'=\\tfrac{f'g-fg'}{g^2}$</td></tr>
+<tr><td>Cociente</td><td>$\\left(\\frac{f}{g}\\right)'=\\frac{f'g-fg'}{g^2}$</td></tr>
 <tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
 <h2>Derivadas Elementales</h2>
 <div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}\\cos x=-\\sin x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\frac{1}{x}$$</div>
 <div class="ex-box"><strong>Ejemplo (regla de la cadena):</strong> $h(x)=\\sin(x^2)$<br>$h'(x)=\\cos(x^2)\\cdot 2x=2x\\cos(x^2)$</div>
 <h2>Teorema del Valor Medio</h2>
-<div class="thm-box">Si $f$ es continua en $[a,b]$ y diferenciable en $(a,b)$, $\\exists\\,c$ tal que $f'(c)=\\dfrac{f(b)-f(a)}{b-a}$.</div>`},
-        {num:3,title:"Integrales",sub:"Técnicas de integración",diff:"Avanzado",diffStyle:"background:#2a0e0e;color:#f09070",pages:"22",
-         latex:`<h1>Integral Definida e Indefinida</h1><span class="subtitle">Cap. 3 · Cálculo Integral</span>
+<div class="thm-box">Si $f$ es continua en $[a,b]$ y diferenciable en $(a,b)$, $\\exists\\,c$ tal que $f'(c)=\\frac{f(b)-f(a)}{b-a}$.</div>`
+          },
+          {
+            num: 3, title: "Integrales", sub: "Técnicas de integración", diff: "Avanzado", diffStyle: "background:#FEF2F2;color:#DC2626", pages: "22",
+            latex: `<h1>Integral Definida e Indefinida</h1><span class="subtitle">Cap. 3 · Cálculo Integral</span>
 <h2>Integral Indefinida</h2>
 <p>La antiderivada de $f$ satisface $F'(x)=f(x)$. Se denota $\\int f(x)\\,dx=F(x)+C$.</p>
 <h2>Tabla Básica</h2>
 <table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
-<tr><td>$x^n$</td><td>$\\dfrac{x^{n+1}}{n+1}+C$</td></tr>
-<tr><td>$\\dfrac{1}{x}$</td><td>$\\ln|x|+C$</td></tr>
+<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
+<tr><td>$\\frac{1}{x}$</td><td>$\\ln|x|+C$</td></tr>
 <tr><td>$e^x$</td><td>$e^x+C$</td></tr>
 <tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
 <tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr></table>
 <h2>Integral Definida — Riemann</h2>
 <div class="math-block">$$\\int_a^b f(x)\\,dx=\\lim_{n\\to\\infty}\\sum_{i=1}^n f(x_i^*)\\,\\Delta x$$</div>
 <h2>Teorema Fundamental del Cálculo</h2>
-<div class="thm-box"><strong>TFC I:</strong> Si $F(x)=\\int_a^x f(t)\\,dt$ entonces $F'(x)=f(x)$.<br><br><strong>TFC II:</strong> $\\displaystyle\\int_a^b f(x)\\,dx=F(b)-F(a)$</div>
+<div class="thm-box"><strong>TFC I:</strong> Si $F(x)=\\int_a^x f(t)\\,dt$ entonces $F'(x)=f(x)$.<br><br><strong>TFC II:</strong> $\\int_a^b f(x)\\,dx=F(b)-F(a)$</div>
 <h2>Integración por Partes</h2>
 <div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx$ con $u=x$, $dv=e^x dx$:<br>$=xe^x-\\int e^x dx=e^x(x-1)+C$</div>`},
+<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx$ con $u=x$, $dv=e^x dx$:<br>$=xe^x-\\int e^x dx=e^x(x-1)+C$</div>`
+          }
       ]},
-      {id:"cal2",title:"Cálculo Integral",emoji:"∫",color:"linear-gradient(135deg,#0a2540,#1a6fbf)",author:"Apuntes · Sem. 2024",
-       tracks:[
-        {num:1,title:"Series de Taylor",sub:"Expansiones en serie",diff:"Intermedio",diffStyle:"background:#2a1f00;color:#e2c36a",pages:"16",
-         latex:`<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Cálculo Integral · Sem. 2024</span>
+      {
+        id: "cal2", title: "Cálculo Integral", emoji: "∫", color: "linear-gradient(135deg, #2563EB, #60A5FA)", author: "Apuntes · Sem. 2024",
+        tracks: [
+          {
+            num: 1, title: "Series de Taylor", sub: "Expansiones en serie", diff: "Intermedio", diffStyle: "background:#FFFBEB;color:#D97706", pages: "16",
+            latex: `<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Cálculo Integral · Sem. 2024</span>
 <h2>Serie de Taylor</h2>
 <p>Si $f$ es infinitamente diferenciable en $a$:</p>
 <div class="math-block">$$f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
 <h2>Series de Maclaurin Notables</h2>
 <table><tr><th>Función</th><th>Serie</th><th>Radio</th></tr>
-<tr><td>$e^x$</td><td>$\\sum_{n=0}^\\infty\\dfrac{x^n}{n!}$</td><td>$\\infty$</td></tr>
-<tr><td>$\\sin x$</td><td>$\\sum_{n=0}^\\infty\\dfrac{(-1)^n x^{2n+1}}{(2n+1)!}$</td><td>$\\infty$</td></tr>
-<tr><td>$\\cos x$</td><td>$\\sum_{n=0}^\\infty\\dfrac{(-1)^n x^{2n}}{(2n)!}$</td><td>$\\infty$</td></tr>
-<tr><td>$\\dfrac{1}{1-x}$</td><td>$\\sum_{n=0}^\\infty x^n$</td><td>$|x|<1$</td></tr></table>
-<h2>Resto de Lagrange</h2>
-<div class="thm-box">$|R_n(x)|\\leq\\dfrac{M|x-a|^{n+1}}{(n+1)!}$ donde $M=\\max|f^{(n+1)}|$ en el intervalo.</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $e^{0.1}\\approx 1+0.1+\\dfrac{(0.1)^2}{2}=1.105$<br>Error $\\leq\\dfrac{e^{0.1}(0.1)^3}{6}\\approx 0.000185$</div>`},
-      ]},
+<tr><td>$e^x$</td><td>$\\sum_{n=0}^\\infty\\frac{x^n}{n!}$</td><td>$\\infty$</td></tr>
+<tr><td>$\\sin x$</td><td>$\\sum_{n=0}^\\infty\\frac{(-1)^n x^{2n+1}}{(2n+1)!}$</td><td>$\\infty$</td></tr>
+<tr><td>$\\cos x$</td><td>$\\sum_{n=0}^\\infty\\frac{(-1)^n x^{2n}}{(2n)!}$</td><td>$\\infty$</td></tr></table>
+<div class="thm-box"><strong>Resto de Lagrange:</strong> $|R_n(x)|\\leq\\frac{M|x-a|^{n+1}}{(n+1)!}$ con $M=\\max|f^{(n+1)}|$.</div>`
+          }
+      ]}
     ]
   },
   {
-    label:"Álgebra",
-    books:[
-      {id:"alg1",title:"Álgebra Lineal",emoji:"⊗",color:"linear-gradient(135deg,#0d2f1f,#1d9e6a)",author:"Apuntes · Sem. 2024",
-       tracks:[
-        {num:1,title:"Sistemas Lineales",sub:"Eliminación Gaussiana",diff:"Básico",diffStyle:"background:#0d2b0d;color:#4ec9a0",pages:"14",
-         latex:`<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
+    label: "Álgebra",
+    books: [
+      {
+        id: "alg1", title: "Álgebra Lineal", emoji: "⊗", color: "linear-gradient(135deg, #059669, #34D399)", author: "Apuntes · Sem. 2024",
+        tracks: [
+          {
+            num: 1, title: "Sistemas Lineales", sub: "Eliminación Gaussiana", diff: "Básico", diffStyle: "background:#ECFDF5;color:#059669", pages: "14",
+            latex: `<h1>Sistemas de Ecuaciones Lineales</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
 <h2>Forma Matricial $Ax=b$</h2>
 <div class="math-block">$$\\begin{pmatrix}a_{11}&\\cdots&a_{1n}\\\\\\vdots&\\ddots&\\vdots\\\\a_{m1}&\\cdots&a_{mn}\\end{pmatrix}\\begin{pmatrix}x_1\\\\\\vdots\\\\x_n\\end{pmatrix}=\\begin{pmatrix}b_1\\\\\\vdots\\\\b_m\\end{pmatrix}$$</div>
 <h2>Eliminación Gaussiana</h2>
-<div class="def-box"><strong>Operaciones elementales de fila:</strong> (1) Intercambiar filas, (2) Escalar una fila por $k\\neq 0$, (3) Sumar un múltiplo de una fila a otra. No alteran el conjunto solución.</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $2x+y=5$, $4x+3y=11$<br>
-$\\left[\\begin{array}{cc|c}2&1&5\\\\4&3&11\\end{array}\\right]\\rightarrow{R_2-2R_1}\\left[\\begin{array}{cc|c}2&1&5\\\\0&1&1\\end{array}\\right]$<br>Solución: $y=1$, $x=2$.</div>
-<h2>Teorema de Rouché-Frobenius</h2>
-<div class="thm-box">$Ax=b$ tiene solución $\\iff\\operatorname{rango}(A)=\\operatorname{rango}(A|b)$.<ul style="margin-top:9px"><li>$\\operatorname{rango}(A)=n$: solución <strong>única</strong></li><li>$\\operatorname{rango}(A)<n$: infinitas soluciones</li></ul></div>`},
-        {num:2,title:"Determinantes",sub:"Propiedades y cálculo",diff:"Básico",diffStyle:"background:#0d2b0d;color:#4ec9a0",pages:"10",
-         latex:`<h1>Determinantes</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
-<h2>Expansión por Cofactores</h2>
-<div class="math-block">$$\\det(A)=\\sum_{j=1}^n a_{ij}\\,C_{ij}\\quad C_{ij}=(-1)^{i+j}M_{ij}$$</div>
-<h2>Caso $2\\times 2$</h2>
-<div class="math-block">$$\\det\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}=ad-bc$$</div>
-<h2>Propiedades</h2>
-<ul>
-  <li>$\\det(AB)=\\det(A)\\det(B)$</li>
-  <li>$\\det(A^T)=\\det(A)$</li>
-  <li>$\\det(A^{-1})=1/\\det(A)$</li>
-  <li>Fila/columna de ceros $\\Rightarrow\\det=0$</li>
-</ul>
-<div class="thm-box">$A$ es invertible $\\iff\\det(A)\\neq 0$.</div>
-<div class="ex-box"><strong>Regla de Cramer:</strong> $x_i=\\dfrac{\\det(A_i)}{\\det(A)}$ donde $A_i$ es $A$ con la columna $i$ reemplazada por $b$.</div>`},
-        {num:3,title:"Eigenvalores",sub:"Diagonalización",diff:"Avanzado",diffStyle:"background:#2a0e0e;color:#f09070",pages:"20",
-         latex:`<h1>Eigenvalores y Eigenvectores</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
+<div class="def-box"><strong>Operaciones elementales de fila:</strong> (1) Intercambiar filas, (2) Escalar por $k\\neq 0$, (3) Sumar múltiplo de otra fila. No alteran la solución.</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $2x+y=5$, $4x+3y=11$ → Solución: $x=2$, $y=1$.</div>`
+          },
+          {
+            num: 2, title: "Eigenvalores", sub: "Diagonalización", diff: "Avanzado", diffStyle: "background:#FEF2F2;color:#DC2626", pages: "20",
+            latex: `<h1>Eigenvalores y Eigenvectores</h1><span class="subtitle">Álgebra Lineal · Sem. 2024</span>
 <h2>Definición</h2>
-<div class="def-box">$\\lambda$ es <strong>eigenvalor</strong> de $A$ si $\\exists\\,\\mathbf{v}\\neq\\mathbf{0}$ tal que $A\\mathbf{v}=\\lambda\\mathbf{v}$. El vector $\\mathbf{v}$ se llama <strong>eigenvector</strong>.</div>
+<div class="def-box">$\\lambda$ es <strong>eigenvalor</strong> de $A$ si $\\exists\\,\\mathbf{v}\\neq\\mathbf{0}$ tal que $A\\mathbf{v}=\\lambda\\mathbf{v}$.</div>
 <h2>Polinomio Característico</h2>
 <div class="math-block">$$p(\\lambda)=\\det(A-\\lambda I)=0$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $A=\\begin{pmatrix}3&1\\\\0&2\\end{pmatrix}$<br>$p(\\lambda)=(3-\\lambda)(2-\\lambda)=0\\Rightarrow\\lambda_1=3,\\,\\lambda_2=2$</div>
-<h2>Diagonalización</h2>
-<div class="thm-box">$A$ es diagonalizable $\\iff$ tiene $n$ eigenvectores L.I. Entonces $A=PDP^{-1}$ con $D=\\operatorname{diag}(\\lambda_1,\\ldots,\\lambda_n)$.</div>
-<div class="math-block">$$A^k=PD^kP^{-1}=P\\operatorname{diag}(\\lambda_1^k,\\ldots,\\lambda_n^k)P^{-1}$$</div>`},
+<div class="thm-box">$A$ es diagonalizable si tiene $n$ eigenvectores L.I.: $A=PDP^{-1}$, $D=\\operatorname{diag}(\\lambda_1,\\ldots,\\lambda_n)$.</div>`
+          }
       ]},
-      {id:"alg2",title:"Álgebra Abstracta",emoji:"Σ",color:"linear-gradient(135deg,#1a0a30,#6b21a8)",author:"Apuntes · Sem. 2025",
-       tracks:[
-        {num:1,title:"Grupos",sub:"Axiomas y ejemplos",diff:"Intermedio",diffStyle:"background:#2a1f00;color:#e2c36a",pages:"15",
-         latex:`<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta · Sem. 2025</span>
+      {
+        id: "alg2", title: "Álgebra Abstracta", emoji: "Σ", color: "linear-gradient(135deg, #7C3AED, #C084FC)", author: "Apuntes · Sem. 2025",
+        tracks: [
+          {
+            num: 1, title: "Grupos", sub: "Axiomas y ejemplos", diff: "Intermedio", diffStyle: "background:#FFFBEB;color:#D97706", pages: "15",
+            latex: `<h1>Teoría de Grupos</h1><span class="subtitle">Álgebra Abstracta · Sem. 2025</span>
 <h2>Definición de Grupo</h2>
-<div class="def-box">$(G,*)$ es un <strong>grupo</strong> si satisface:<ol style="margin-top:8px;padding-left:18px"><li><strong>Cierre:</strong> $a*b\\in G$</li><li><strong>Asociatividad:</strong> $(a*b)*c=a*(b*c)$</li><li><strong>Identidad:</strong> $\\exists e: e*a=a*e=a$</li><li><strong>Inverso:</strong> $\\exists a^{-1}: a*a^{-1}=e$</li></ol></div>
-<h2>Ejemplos Clásicos</h2>
-<table><tr><th>Grupo</th><th>Operación</th><th>Orden</th></tr>
-<tr><td>$(\\mathbb{Z},+)$</td><td>Suma</td><td>$\\infty$</td></tr>
-<tr><td>$(\\mathbb{Z}_n,+)$</td><td>Suma mod $n$</td><td>$n$</td></tr>
-<tr><td>$S_n$</td><td>Composición</td><td>$n!$</td></tr>
-<tr><td>$GL_n(\\mathbb{R})$</td><td>Matricial</td><td>$\\infty$</td></tr></table>
+<div class="def-box">$(G,*)$ es <strong>grupo</strong> si: cierre, asociatividad, identidad e inverso.</div>
 <h2>Teorema de Lagrange</h2>
-<div class="thm-box">Si $H$ es subgrupo de $G$ finito, entonces $|H|$ divide a $|G|$. El índice $[G:H]=|G|/|H|$.</div>`},
-      ]},
+<div class="thm-box">Si $H$ es subgrupo de $G$ finito, $|H|$ divide a $|G|$. $[G:H]=|G|/|H|$.</div>`
+          }
+      ]}
     ]
   },
   {
-    label:"Análisis",
-    books:[
-      {id:"anc",title:"Análisis Complejo",emoji:"ℂ",color:"linear-gradient(135deg,#1a0d0d,#b03030)",author:"Apuntes · Sem. 2025",
-       tracks:[
-        {num:1,title:"Números Complejos",sub:"Forma polar y exponencial",diff:"Básico",diffStyle:"background:#0d2b0d;color:#4ec9a0",pages:"12",
-         latex:`<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo · Sem. 2025</span>
+    label: "Análisis y Probabilidad",
+    books: [
+      {
+        id: "anc", title: "Análisis Complejo", emoji: "ℂ", color: "linear-gradient(135deg, #DC2626, #F87171)", author: "Apuntes · Sem. 2025",
+        tracks: [
+          {
+            num: 1, title: "Números Complejos", sub: "Forma polar y exponencial", diff: "Básico", diffStyle: "background:#ECFDF5;color:#059669", pages: "12",
+            latex: `<h1>Números Complejos</h1><span class="subtitle">Análisis Complejo · Sem. 2025</span>
 <h2>Definición</h2>
-<p>$z=a+bi$ con $i^2=-1$, donde $a=\\operatorname{Re}(z)$, $b=\\operatorname{Im}(z)$.</p>
-<h2>Representaciones</h2>
-<div class="math-block">$$z=a+bi=r(\\cos\\theta+i\\sin\\theta)=re^{i\\theta}$$</div>
-<p>Módulo $r=|z|=\\sqrt{a^2+b^2}$, argumento $\\theta=\\arg(z)=\\arctan(b/a)$.</p>
+<p>$z=a+bi$, $i^2=-1$, $|z|=\\sqrt{a^2+b^2}$.</p>
 <h2>Fórmula de Euler</h2>
-<div class="thm-box">$$e^{i\\theta}=\\cos\\theta+i\\sin\\theta$$
-Identidad de Euler ($\\theta=\\pi$): $\\;e^{i\\pi}+1=0$</div>
-<h2>Operaciones</h2>
-<ul>
-  <li><strong>Conjugado:</strong> $\\bar z=a-bi$, $\\;|z|^2=z\\bar z$</li>
-  <li><strong>Multiplicación:</strong> $z_1z_2=r_1r_2\\,e^{i(\\theta_1+\\theta_2)}$</li>
-  <li><strong>De Moivre:</strong> $z^n=r^n e^{in\\theta}$</li>
-</ul>
-<div class="ex-box"><strong>Raíces n-ésimas:</strong> $z_k=\\sqrt[n]{r}\\,e^{i(\\theta+2\\pi k)/n}$, $k=0,\\ldots,n-1$.</div>`},
-        {num:2,title:"Funciones Analíticas",sub:"Cauchy-Riemann",diff:"Avanzado",diffStyle:"background:#2a0e0e;color:#f09070",pages:"18",
-         latex:`<h1>Funciones Analíticas</h1><span class="subtitle">Análisis Complejo · Sem. 2025</span>
-<h2>Diferenciabilidad Compleja</h2>
-<div class="math-block">$$f'(z_0)=\\lim_{h\\to 0}\\frac{f(z_0+h)-f(z_0)}{h},\\quad h\\in\\mathbb{C}$$</div>
-<h2>Ecuaciones de Cauchy-Riemann</h2>
-<p>Si $f=u+iv$ es diferenciable, entonces:</p>
-<div class="math-block">$$\\frac{\\partial u}{\\partial x}=\\frac{\\partial v}{\\partial y}\\qquad\\frac{\\partial u}{\\partial y}=-\\frac{\\partial v}{\\partial x}$$</div>
-<div class="thm-box">$f$ es <strong>holomorfa</strong> (analítica) en $D$ si es diferenciable en todo punto de $D$. Las ecuaciones de C-R son condición necesaria y (con derivadas parciales continuas) suficiente.</div>
-<h2>Funciones Elementales</h2>
-<table><tr><th>Función</th><th>Definición compleja</th></tr>
-<tr><td>$e^z$</td><td>$e^x(\\cos y+i\\sin y)$</td></tr>
-<tr><td>$\\sin z$</td><td>$\\dfrac{e^{iz}-e^{-iz}}{2i}$</td></tr>
-<tr><td>$\\ln z$</td><td>$\\ln|z|+i\\arg(z)$</td></tr></table>`},
+<div class="thm-box">$$e^{i\\theta}=\\cos\\theta+i\\sin\\theta$$ $$e^{i\\pi}+1=0$$</div>`
+          }
       ]},
-      {id:"anr",title:"Análisis Real",emoji:"ℝ",color:"linear-gradient(135deg,#0a1a0a,#2a7a2a)",author:"Apuntes · Sem. 2025",
-       tracks:[
-        {num:1,title:"Sucesiones y Series",sub:"Criterios de convergencia",diff:"Intermedio",diffStyle:"background:#2a1f00;color:#e2c36a",pages:"16",
-         latex:`<h1>Sucesiones y Series</h1><span class="subtitle">Análisis Real · Sem. 2025</span>
-<h2>Convergencia de Sucesiones</h2>
-<div class="def-box">$\\{a_n\\}\\to L$ si para todo $\\varepsilon>0$ existe $N\\in\\mathbb{N}$ tal que $n>N\\Rightarrow|a_n-L|<\\varepsilon$.</div>
-<h2>Criterios para Series $\\sum a_n$</h2>
-<table><tr><th>Criterio</th><th>Condición</th></tr>
-<tr><td>D'Alembert</td><td>$L=\\lim\\left|\\frac{a_{n+1}}{a_n}\\right|$: converge si $L<1$</td></tr>
-<tr><td>Cauchy</td><td>$L=\\lim\\sqrt[n]{|a_n|}$: converge si $L<1$</td></tr>
-<tr><td>Comparación</td><td>$|a_n|\\leq b_n$ y $\\sum b_n$ converge $\\Rightarrow\\sum a_n$ converge</td></tr>
-<tr><td>Integral</td><td>$\\sum a_n$ conv. $\\iff\\int_1^\\infty f\\,dx$ converge</td></tr></table>
-<div class="thm-box"><strong>Criterio necesario:</strong> $\\sum a_n$ converge $\\Rightarrow\\lim a_n=0$.<br>El recíproco es <em>falso</em>: $\\sum\\frac{1}{n}$ diverge aunque $\\frac{1}{n}\\to 0$.</div>`},
-      ]},
-    ]
-  },
-  {
-    label:"Probabilidad y Ecuaciones Diferenciales",
-    books:[
-      {id:"prob",title:"Probabilidad",emoji:"🎲",color:"linear-gradient(135deg,#1a1200,#8a6a00)",author:"Apuntes · Sem. 2023",
-       tracks:[
-        {num:1,title:"Espacios de Probabilidad",sub:"Axiomas de Kolmogorov",diff:"Básico",diffStyle:"background:#0d2b0d;color:#4ec9a0",pages:"14",
-         latex:`<h1>Espacios de Probabilidad</h1><span class="subtitle">Probabilidad · Sem. 2023</span>
+      {
+        id: "prob", title: "Probabilidad", emoji: "🎲", color: "linear-gradient(135deg, #D97706, #FBBF24)", author: "Apuntes · Sem. 2023",
+        tracks: [
+          {
+            num: 1, title: "Espacios de Probabilidad", sub: "Axiomas de Kolmogorov", diff: "Básico", diffStyle: "background:#ECFDF5;color:#059669", pages: "14",
+            latex: `<h1>Espacios de Probabilidad</h1><span class="subtitle">Probabilidad · Sem. 2023</span>
 <h2>Axiomas de Kolmogorov</h2>
-<div class="def-box">Un espacio $(\\Omega,\\mathcal{F},P)$ donde:<ul style="margin-top:8px"><li>$\\Omega$: espacio muestral</li><li>$\\mathcal{F}$: $\\sigma$-álgebra de eventos</li><li>$P(\\Omega)=1$, $P(A)\\geq 0$, $\\sigma$-aditividad</li></ul></div>
-<h2>Probabilidad Condicional</h2>
-<div class="math-block">$$P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)},\\quad P(B)>0$$</div>
+<div class="def-box">$P(\\Omega)=1$, $P(A)\\geq 0$, $\\sigma$-aditividad.</div>
 <h2>Teorema de Bayes</h2>
-<div class="thm-box">$$P(A_i\\mid B)=\\frac{P(B\\mid A_i)P(A_i)}{\\sum_j P(B\\mid A_j)P(A_j)}$$</div>
-<h2>Variables Aleatorias</h2>
-<div class="math-block">$$\\mathbb{E}[X]=\\int_{-\\infty}^{\\infty}x\\,f_X(x)\\,dx\\qquad\\operatorname{Var}(X)=\\mathbb{E}[X^2]-(\\mathbb{E}[X])^2$$</div>`},
+<div class="thm-box">$$P(A_i\\mid B)=\\frac{P(B\\mid A_i)P(A_i)}{\\sum_j P(B\\mid A_j)P(A_j)}$$</div>`
+          }
       ]},
-      {id:"edo",title:"Ecuaciones Diferenciales",emoji:"∇",color:"linear-gradient(135deg,#001a1a,#005f5f)",author:"Apuntes · Sem. 2024",
-       tracks:[
-        {num:1,title:"EDO de Primer Orden",sub:"Variables separables",diff:"Básico",diffStyle:"background:#0d2b0d;color:#4ec9a0",pages:"16",
-         latex:`<h1>EDO de Primer Orden</h1><span class="subtitle">Ecuaciones Diferenciales · Sem. 2024</span>
+      {
+        id: "edo", title: "Ecuaciones Diferenciales", emoji: "∇", color: "linear-gradient(135deg, #0891B2, #22D3EE)", author: "Apuntes · Sem. 2024",
+        tracks: [
+          {
+            num: 1, title: "EDO de Primer Orden", sub: "Variables separables", diff: "Básico", diffStyle: "background:#ECFDF5;color:#059669", pages: "16",
+            latex: `<h1>EDO de Primer Orden</h1><span class="subtitle">Ecuaciones Diferenciales · Sem. 2024</span>
 <h2>Variables Separables</h2>
-<p>Dada $\\dfrac{dy}{dx}=f(x)g(y)$, separamos variables:</p>
+<p>Dada $\\frac{dy}{dx}=f(x)g(y)$:</p>
 <div class="math-block">$$\\int\\frac{dy}{g(y)}=\\int f(x)\\,dx+C$$</div>
-<div class="ex-box"><strong>Ejemplo:</strong> $\\dfrac{dy}{dx}=xy$<br>$\\dfrac{dy}{y}=x\\,dx\\Rightarrow\\ln|y|=\\dfrac{x^2}{2}+C\\Rightarrow y=Ae^{x^2/2}$</div>
-<h2>Ecuaciones Lineales</h2>
-<p>Forma estándar: $y'+P(x)y=Q(x)$. Factor integrante $\\mu=e^{\\int P\\,dx}$:</p>
-<div class="math-block">$$y=\\frac{1}{\\mu}\\!\\left[\\int\\mu Q\\,dx+C\\right]$$</div>
-<h2>Ecuación de Bernoulli</h2>
-<div class="def-box">$y'+P(x)y=Q(x)y^n$. La sustitución $v=y^{1-n}$ la transforma en lineal.</div>`},
-        {num:2,title:"EDO de Segundo Orden",sub:"Coeficientes constantes",diff:"Intermedio",diffStyle:"background:#2a1f00;color:#e2c36a",pages:"18",
-         latex:`<h1>EDO de Segundo Orden</h1><span class="subtitle">Ecuaciones Diferenciales · Sem. 2024</span>
-<h2>Ecuación Homogénea</h2>
-<p>$ay''+by'+cy=0$. Se busca solución $y=e^{rx}$, lo que da la <strong>ecuación característica</strong>:</p>
-<div class="math-block">$$ar^2+br+c=0\\quad\\Rightarrow\\quad r=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}$$</div>
-<h2>Casos según el Discriminante</h2>
-<table><tr><th>$\\Delta=b^2-4ac$</th><th>Solución general</th></tr>
-<tr><td>$\\Delta>0$</td><td>$y=C_1e^{r_1x}+C_2e^{r_2x}$</td></tr>
-<tr><td>$\\Delta=0$</td><td>$y=(C_1+C_2x)e^{rx}$</td></tr>
-<tr><td>$\\Delta<0$</td><td>$y=e^{\\alpha x}(C_1\\cos\\beta x+C_2\\sin\\beta x)$</td></tr></table>
-<div class="ex-box"><strong>Ejemplo:</strong> $y''-5y'+6y=0$<br>$r^2-5r+6=0\\Rightarrow r=2,3$<br>$y=C_1e^{2x}+C_2e^{3x}$</div>
-<h2>Variación de Parámetros</h2>
-<p>Para la ecuación no homogénea $y''+p(x)y'+q(x)y=g(x)$, la solución particular es:</p>
-<div class="math-block">$$y_p=-y_1\\int\\frac{y_2 g}{W}\\,dx+y_2\\int\\frac{y_1 g}{W}\\,dx$$</div>
-<p>donde $W=y_1y_2'-y_1'y_2$ es el Wronskiano.</p>`},
-      ]},
+<div class="ex-box"><strong>Ejemplo:</strong> $\\frac{dy}{dx}=xy$ → $y=Ae^{x^2/2}$</div>`
+          }
+      ]}
     ]
-  },
+  }
 ];
 
-/* ── RENDER HOME ── */
-function renderHome(){
-  const c=document.getElementById('home-content');
-  c.innerHTML=CATEGORIES.map(cat=>`
+// Variables globales para seguimiento
+let currentBookId = null;
+
+// Renderizar página principal
+function renderHome() {
+  const container = document.getElementById('home-content');
+  container.innerHTML = CATEGORIES.map(cat => `
     <div class="cat-section">
       <div class="cat-label">${cat.label}</div>
       <div class="album-grid">
-        ${cat.books.map(b=>`
+        ${cat.books.map(b => `
           <div class="album-card" onclick="openAlbum('${b.id}')">
             <div class="album-cover" style="background:${b.color}">
-              <span style="position:relative;z-index:1">${b.emoji}</span>
+              <span>${b.emoji}</span>
             </div>
-            <div class="album-card-info">
-              <div class="album-card-title">${b.title}</div>
-              <div class="album-card-meta">${b.tracks.length} tema${b.tracks.length!==1?'s':''}</div>
-            </div>
-          </div>`).join('')}
+            <div class="album-card-title">${b.title}</div>
+            <div class="album-card-meta">${b.tracks.length} tema${b.tracks.length !== 1 ? 's' : ''}</div>
+          </div>
+        `).join('')}
       </div>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
 
-/* ── OPEN ALBUM ── */
-function openAlbum(bookId){
-  const book=CATEGORIES.flatMap(c=>c.books).find(b=>b.id===bookId);
-  if(!book)return;
-  document.getElementById('nav-title').textContent=book.title;
-  document.getElementById('album-hero-area').innerHTML=`
+// Abrir álbum
+function openAlbum(bookId) {
+  const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === bookId);
+  if (!book) return;
+  
+  currentBookId = bookId;
+  
+  document.getElementById('nav-title').textContent = book.title;
+  
+  document.getElementById('album-hero-area').innerHTML = `
     <div class="album-hero">
-      <div class="hero-cover" style="background:${book.color}">${book.emoji}</div>
+      <div class="hero-cover" style="background:${book.color}">
+        <span>${book.emoji}</span>
+      </div>
       <div class="hero-info">
         <div class="hero-type">Libro de apuntes</div>
         <div class="hero-title">${book.title}</div>
         <div class="hero-author">${book.author}</div>
-        <div class="hero-stats">${book.tracks.length} temas · ${book.tracks.reduce((s,t)=>s+parseInt(t.pages),0)} páginas</div>
+        <div class="hero-stats">${book.tracks.length} temas · ${book.tracks.reduce((s, t) => s + parseInt(t.pages), 0)} págs</div>
       </div>
-    </div>`;
-  document.getElementById('tracklist-body').innerHTML=book.tracks.map(t=>`
+    </div>
+  `;
+  
+  document.getElementById('tracklist-body').innerHTML = book.tracks.map(t => `
     <div class="track-item">
-      <div class="track-row" id="tr-${t.num}" onclick="toggleTrack(${t.num},'${book.id}')">
+      <div class="track-row" id="tr-${t.num}" onclick="toggleTrack(${t.num})">
         <div class="t-num" id="tn-${t.num}">${t.num}</div>
         <div class="t-info">
           <div class="t-title">${t.title}</div>
           <div class="t-sub">${t.sub}</div>
         </div>
         <div><span class="t-badge" style="${t.diffStyle}">${t.diff}</span></div>
-        <div class="t-pages">${t.pages} p.</div>
       </div>
       <div class="apunte-body" id="ab-${t.num}">
         <div class="apunte-inner" id="ai-${t.num}"></div>
       </div>
-    </div>`).join('');
+    </div>
+  `).join('');
+  
   showView('album-view');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
-/* ── TOGGLE TRACK ── */
-// Función auxiliar para renderizar KaTeX
-function renderKaTeX(element) {
-  if (window.renderMathInElement) {
-    try {
-      renderMathInElement(element, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError: false,
-        strict: false,
-        trust: true
-      });
-    } catch(e) {
-      console.error('Error rendering KaTeX:', e);
-    }
-  }
-}
-
-function toggleTrack(num, bookId) {
+// Toggle de temas
+function toggleTrack(num) {
   const ab = document.getElementById('ab-' + num);
   const row = document.getElementById('tr-' + num);
   const numEl = document.getElementById('tn-' + num);
@@ -474,9 +950,9 @@ function toggleTrack(num, bookId) {
     return;
   }
   
-  // Cerrar otros tracks abiertos
+  // Cerrar otros tracks
   document.querySelectorAll('.apunte-body.open').forEach(openBody => {
-    const openId = openBody.id.replace('ab-', '');
+    const openId = parseInt(openBody.id.replace('ab-', ''));
     const openRow = document.getElementById('tr-' + openId);
     const openNum = document.getElementById('tn-' + openId);
     if (openBody !== ab) {
@@ -486,19 +962,17 @@ function toggleTrack(num, bookId) {
     }
   });
   
-  // Abrir el track seleccionado
+  // Abrir track
   ab.classList.add('open');
   row.classList.add('open');
   numEl.innerHTML = '<div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>';
   
   const inner = document.getElementById('ai-' + num);
   if (!inner.dataset.rendered) {
-    const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === bookId);
+    const book = CATEGORIES.flatMap(c => c.books).find(b => b.id === currentBookId);
     const track = book.tracks.find(t => t.num === num);
     inner.innerHTML = track.latex;
     inner.dataset.rendered = '1';
-    
-    // Renderizar KaTeX
     renderKaTeX(inner);
   }
   
@@ -507,21 +981,45 @@ function toggleTrack(num, bookId) {
   }, 100);
 }
 
-/* ── NAVIGATION ── */
+// Renderizar KaTeX
+function renderKaTeX(element) {
+  if (window.renderMathInElement) {
+    try {
+      renderMathInElement(element, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
+        ],
+        throwOnError: false,
+        strict: false,
+        trust: true
+      });
+    } catch (e) {
+      console.error('Error rendering KaTeX:', e);
+    }
+  } else {
+    setTimeout(() => renderKaTeX(element), 100);
+  }
+}
+
+// Navegación
 function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('album-view').style.display = 'none';
+  document.getElementById(id).style.display = 'block';
 }
 
 function goHome() {
   showView('home');
+  document.getElementById('home').style.display = 'block';
   window.scrollTo(0, 0);
 }
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('album-view').style.display = 'none';
   renderHome();
-  console.log('NotePlayer initialized successfully');
+  console.log('NotePlayer Premium — Initialized');
 });
 </script>
 </body>
