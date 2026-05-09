@@ -405,6 +405,74 @@ const LIBRARY = [
 <h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
 <div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
     ]},
+    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
+      { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
+        latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
+<h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
+<div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que si $0<|x-a|<\\delta$, entonces $|f(x)-L|<\\varepsilon$.</div>
+<h2>Propiedades</h2><ul><li>$\\lim(f\\pm g)=L\\pm M$</li><li>$\\lim(fg)=LM$</li><li>$\\lim(f/g)=L/M$ si $M\\neq 0$</li></ul>
+<h2>Límites Notables</h2><div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\!\\left(1+\\tfrac{1}{x}\\right)^x=e$$</div>
+<div class="thm-box"><strong>TVI:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, $\\exists c\\in(a,b):f(c)=0$.</div>` },
+      { num:2, title:"Derivadas", sub:"Reglas de derivación", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"55min",
+        latex:`<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
+<h2>Definición</h2><div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
+<p>Geométricamente: pendiente de la tangente en $(a,f(a))$.</p>
+<h2>Reglas Fundamentales</h2>
+<table><tr><th>Regla</th><th>Fórmula</th></tr>
+<tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
+<tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
+<tr><td>Cociente</td><td>$(f/g)'=\\frac{f'g-fg'}{g^2}$</td></tr>
+<tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
+<h2>Derivadas Elementales</h2><div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\tfrac{1}{x}$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)\\Rightarrow h'(x)=2x\\cos(x^2)$</div>
+<div class="thm-box"><strong>Teorema del Valor Medio:</strong> $\\exists c:f'(c)=\\dfrac{f(b)-f(a)}{b-a}$</div>` },
+      { num:3, title:"Integrales", sub:"Técnicas de integración", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"55min",
+        latex:`<h1>Integrales</h1><span class="subtitle">Capítulo III · Cálculo Integral</span>
+<h2>Antiderivada</h2><p>$F'(x)=f(x)\\Rightarrow\\int f(x)\\,dx=F(x)+C$</p>
+<h2>Tabla Básica</h2>
+<table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
+<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
+<tr><td>$e^x$</td><td>$e^x+C$</td></tr>
+<tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
+<tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr></table>
+<div class="thm-box"><strong>Teorema Fundamental:</strong> $\\displaystyle\\int_a^b f\\,dx=F(b)-F(a)$</div>
+<h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
+    ]},
+    { id:"cal1", title:"Cálculo Diferencial", emoji:"∂", cover:"linear-gradient(135deg,#2d0a6e,#7c3aed)", author:"Vol. I", pages:52, totalTime:"2h 35min", tracks:[
+      { num:1, title:"Límites y Continuidad", sub:"Definición ε-δ", diff:"Elemental", diffStyle:"background:rgba(123,165,135,.14);color:#7ba587", time:"45min",
+        latex:`<h1>Límites y Continuidad</h1><span class="subtitle">Capítulo I · Cálculo Diferencial</span>
+<h2>Definición de Límite</h2><p>Escribimos $\\lim_{x\\to a}f(x)=L$ cuando los valores de $f(x)$ se aproximan a $L$ conforme $x\\to a$.</p>
+<div class="def-box"><strong>Definición (ε-δ):</strong> Para todo $\\varepsilon>0$ existe $\\delta>0$ tal que si $0<|x-a|<\\delta$, entonces $|f(x)-L|<\\varepsilon$.</div>
+<h2>Propiedades</h2><ul><li>$\\lim(f\\pm g)=L\\pm M$</li><li>$\\lim(fg)=LM$</li><li>$\\lim(f/g)=L/M$ si $M\\neq 0$</li></ul>
+<h2>Límites Notables</h2><div class="math-block">$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1\\qquad\\lim_{x\\to 0}\\frac{1-\\cos x}{x}=0\\qquad\\lim_{x\\to\\infty}\\!\\left(1+\\tfrac{1}{x}\\right)^x=e$$</div>
+<div class="thm-box"><strong>TVI:</strong> Si $f$ es continua en $[a,b]$ y $f(a)f(b)<0$, $\\exists c\\in(a,b):f(c)=0$.</div>` },
+      { num:2, title:"Derivadas", sub:"Reglas de derivación", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"55min",
+        latex:`<h1>Derivadas</h1><span class="subtitle">Capítulo II · Cálculo Diferencial</span>
+<h2>Definición</h2><div class="math-block">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
+<p>Geométricamente: pendiente de la tangente en $(a,f(a))$.</p>
+<h2>Reglas Fundamentales</h2>
+<table><tr><th>Regla</th><th>Fórmula</th></tr>
+<tr><td>Potencia</td><td>$\\frac{d}{dx}x^n=nx^{n-1}$</td></tr>
+<tr><td>Producto</td><td>$(fg)'=f'g+fg'$</td></tr>
+<tr><td>Cociente</td><td>$(f/g)'=\\frac{f'g-fg'}{g^2}$</td></tr>
+<tr><td>Cadena</td><td>$(f\\circ g)'=f'(g)\\cdot g'$</td></tr></table>
+<h2>Derivadas Elementales</h2><div class="math-block">$$\\frac{d}{dx}\\sin x=\\cos x\\quad\\frac{d}{dx}e^x=e^x\\quad\\frac{d}{dx}\\ln x=\\tfrac{1}{x}$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $h(x)=\\sin(x^2)\\Rightarrow h'(x)=2x\\cos(x^2)$</div>
+<div class="thm-box"><strong>Teorema del Valor Medio:</strong> $\\exists c:f'(c)=\\dfrac{f(b)-f(a)}{b-a}$</div>` },
+      { num:3, title:"Integrales", sub:"Técnicas de integración", diff:"Avanzado", diffStyle:"background:rgba(139,157,195,.14);color:#8b9dc3", time:"55min",
+        latex:`<h1>Integrales</h1><span class="subtitle">Capítulo III · Cálculo Integral</span>
+<h2>Antiderivada</h2><p>$F'(x)=f(x)\\Rightarrow\\int f(x)\\,dx=F(x)+C$</p>
+<h2>Tabla Básica</h2>
+<table><tr><th>$f(x)$</th><th>$\\int f(x)\\,dx$</th></tr>
+<tr><td>$x^n$</td><td>$\\frac{x^{n+1}}{n+1}+C$</td></tr>
+<tr><td>$e^x$</td><td>$e^x+C$</td></tr>
+<tr><td>$\\sin x$</td><td>$-\\cos x+C$</td></tr>
+<tr><td>$\\cos x$</td><td>$\\sin x+C$</td></tr></table>
+<div class="thm-box"><strong>Teorema Fundamental:</strong> $\\displaystyle\\int_a^b f\\,dx=F(b)-F(a)$</div>
+<h2>Integración por Partes</h2><div class="math-block">$$\\int u\\,dv=uv-\\int v\\,du$$</div>
+<div class="ex-box"><strong>Ejemplo:</strong> $\\int xe^x\\,dx=e^x(x-1)+C$</div>` }
+    ]},
     { id:"cal2", title:"Cálculo Integral", emoji:"∫", cover:"linear-gradient(135deg,#0a2540,#1a6fbf)", author:"Vol. II", pages:44, totalTime:"1h 48min", tracks:[
       { num:1, title:"Series de Taylor", sub:"Expansiones en serie", diff:"Intermedio", diffStyle:"background:rgba(201,169,110,.14);color:#c9a96e", time:"48min",
         latex:`<h1>Series de Taylor y Maclaurin</h1><span class="subtitle">Vol. II · Cálculo Integral</span>
