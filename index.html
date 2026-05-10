@@ -9,300 +9,1092 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
+/* ═══════════════════════════════════════
+   DESIGN SYSTEM & CSS VARIABLES
+═══════════════════════════════════════ */
 :root {
   --bg:#000000; --s1:#12121a; --s2:#1a1a24; --s3:#222230;
   --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.11);
   --ink:#f0ece4; --ink2:rgba(240,236,228,0.62); --ink3:rgba(240,236,228,0.32);
   --accent:#c9a96e; --accent2:#d4ba7c; --adim:rgba(201,169,110,0.14);
   --teal:#7ec8bc; --tdim:rgba(126,200,188,0.12);
-  --r:16px; --rsm:10px;
-  --nav-h:58px;
+  --success:rgba(123,165,135,0.14); --success-text:#7ba587;
+  --info:rgba(139,157,195,0.14); --info-text:#8b9dc3;
+  --warning:rgba(201,169,110,0.14); --warning-text:#c9a96e;
+  --r:16px; --rsm:10px; --nav-h:58px;
+  --transition-fast: 0.15s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-tap-highlight-color:transparent}
-/* FIX 1: scroll starts at top — no scroll-behavior on html, body starts at 0 */
-body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);
-  min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
-  padding-bottom:calc(var(--nav-h) + 1rem)}
+html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  padding-bottom:calc(var(--nav-h) + 1rem);
+  line-height:1.5;
+}
+img{max-width:100%;height:auto;display:block}
 
-.view{display:none}.view.active{display:block}
+/* ═══════════════════════════════════════
+   LAYOUT - VIEWS
+═══════════════════════════════════════ */
+.view{display:none;animation:fadeIn .3s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── TOP BAR ── */
-.top-bar{position:sticky;top:0;z-index:100;padding:.7rem 1rem;
+/* ═══════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════ */
+.top-bar{
+  position:sticky;top:0;z-index:100;
+  padding:.7rem 1rem;
   display:flex;align-items:center;justify-content:space-between;gap:.6rem;
-  background:rgba(0,0,0,.93);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border)}
-.top-bar::after{content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;
+  background:rgba(0,0,0,.93);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all .3s ease;
+}
+.top-bar::after{
+  content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;
   background:linear-gradient(90deg,transparent,var(--accent),transparent);
-  opacity:.28;pointer-events:none}
+  opacity:.28;pointer-events:none;
+}
+
+/* Top Bar Components */
 .tb-left,.tb-right{display:flex;align-items:center;gap:.5rem}
-.logo-text{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1;flex-shrink:0}
-.tb-divider{width:1px;height:22px;background:rgba(255,255,255,.13);flex-shrink:0;margin:0 .1rem}
+.tb-right{gap:.8rem}
+.logo-text{
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;font-weight:900;
+  color:var(--ink);
+  letter-spacing:-.02em;line-height:1;
+  flex-shrink:0;
+  cursor:pointer;
+  transition:color .2s;
+}
+.logo-text:hover{color:var(--accent)}
+.tb-divider{
+  width:1px;height:22px;
+  background:rgba(255,255,255,.13);
+  flex-shrink:0;margin:0 .1rem;
+}
 .tb-institution{display:flex;flex-direction:column;gap:1px}
-.tb-inst-title{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:900;color:var(--ink);line-height:1.1;letter-spacing:-.01em}
-.tb-inst-sub{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);font-weight:500}
-.icon-btn{width:36px;height:36px;border-radius:50%;background:transparent;
-  border:1px solid var(--border2);color:var(--ink2);display:flex;align-items:center;
-  justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
-.icon-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tb-inst-title{
+  font-family:'Playfair Display',serif;
+  font-size:.95rem;font-weight:900;
+  color:var(--ink);
+  line-height:1.1;letter-spacing:-.01em;
+}
+.tb-inst-sub{
+  font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink3);font-weight:500;
+}
 
-/* ── SECTIONS ── */
-.section{margin:1.2rem 0}
-.section-header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;margin-bottom:.7rem}
-.section-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;letter-spacing:.01em}
+/* Back Button */
+.back-btn-container{
+  display:flex;align-items:center;gap:.5rem;
+  flex:1;min-width:0;
+}
+.back-title{
+  font-family:'Playfair Display',serif;
+  font-size:.95rem;font-weight:700;
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:200px;
+}
 
-/* ── HSCROLL ── */
-.hscroll{display:flex;gap:.75rem;overflow-x:auto;padding:0 1rem .4rem;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+/* Icon Buttons */
+.icon-btn{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--ink2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  flex-shrink:0;
+  position:relative;
+}
+.icon-btn:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  transform:scale(1.05);
+}
+.icon-btn:active{transform:scale(.95)}
+.icon-btn svg{
+  width:17px;height:17px;
+  stroke:currentColor;
+  fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.icon-btn.active{
+  background:var(--adim);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+/* Badge for icons */
+.icon-btn .badge{
+  position:absolute;top:-2px;right:-2px;
+  min-width:18px;height:18px;
+  background:var(--accent);
+  color:#000;
+  border-radius:9px;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;
+  border:2px solid var(--bg);
+}
+
+/* ═══════════════════════════════════════
+   SECTIONS & HEADERS
+═══════════════════════════════════════ */
+.section{margin:1.5rem 0}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1rem;margin-bottom:.8rem;
+}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;font-weight:700;
+  letter-spacing:.01em;
+  position:relative;
+  padding-left:12px;
+}
+.section-title::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:16px;background:var(--accent);border-radius:2px;
+}
+
+/* ═══════════════════════════════════════
+   HORIZONTAL SCROLL CONTAINER
+═══════════════════════════════════════ */
+.hscroll{
+  display:flex;gap:.75rem;
+  overflow-x:auto;
+  padding:0 1rem .5rem;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  scroll-snap-type:x proximity;
+}
 .hscroll::-webkit-scrollbar{display:none}
+.hscroll::after{
+  content:'';flex:0 0 1px;
+}
 
-/* ── MINI CARD ── */
-.mini-card{flex-shrink:0;width:138px;cursor:pointer;border-radius:var(--rsm);
-  overflow:hidden;background:var(--s1);border:1px solid var(--border);transition:all .2s}
-.mini-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+/* ═══════════════════════════════════════
+   CARDS - Mini, Grid, Continue
+═══════════════════════════════════════ */
+.mini-card{
+  flex-shrink:0;width:138px;
+  cursor:pointer;
+  border-radius:var(--rsm);
+  overflow:hidden;
+  background:var(--s1);
+  border:1px solid var(--border);
+  transition:all var(--transition-fast);
+  scroll-snap-align:start;
+}
+.mini-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+}
 .mini-card:active{transform:scale(.97)}
-.mini-cover{width:100%;aspect-ratio:2/3;display:flex;align-items:center;
-  justify-content:center;font-size:2.4rem;position:relative;overflow:hidden}
-.mini-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0}
+
+.mini-cover{
+  width:100%;aspect-ratio:2/3;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.4rem;position:relative;overflow:hidden;
+  background:var(--s2);
+}
+.mini-cover img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  transition:transform .3s ease;
+}
+.mini-card:hover .mini-cover img{transform:scale(1.05)}
 .mini-cover span{position:relative;z-index:1}
-.fav-dot{position:absolute;top:.4rem;right:.4rem;z-index:3;width:22px;height:22px;
-  border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;
-  transition:all .15s}
-.fav-dot.faved{background:rgba(201,169,110,.25);border-color:var(--accent);color:var(--accent)}
-.mini-info{padding:.55rem .65rem}
-.mini-title{font-size:.79rem;font-weight:600;color:var(--ink);line-height:1.2;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini-meta{font-size:.69rem;color:var(--ink3);margin-top:2px}
 
-/* ── CONTINUE LIST ── */
+/* Favorite Dot on Cards */
+.fav-dot{
+  position:absolute;top:.4rem;right:.4rem;z-index:3;
+  width:24px;height:24px;
+  border-radius:50%;
+  background:rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  font-size:13px;color:var(--ink2);
+  transition:all var(--transition-fast);
+  backdrop-filter:blur(4px);
+}
+.fav-dot:hover{
+  transform:scale(1.1);
+  border-color:var(--accent);
+}
+.fav-dot.faved{
+  background:var(--adim);
+  border-color:var(--accent);
+  color:var(--accent);
+  animation:favPop .3s ease;
+}
+@keyframes favPop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.3)}
+  100%{transform:scale(1)}
+}
+
+.mini-info{padding:.6rem .7rem}
+.mini-title{
+  font-size:.79rem;font-weight:600;
+  color:var(--ink);line-height:1.2;
+  display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.mini-meta{
+  font-size:.69rem;color:var(--ink3);
+  margin-top:3px;
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* Continue Reading List */
 .continue-list{padding:0 1rem}
-.continue-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .6rem;
-  border-radius:var(--rsm);cursor:pointer;transition:background .2s}
-.continue-item:hover{background:var(--s1)}
-.c-thumb{width:46px;height:46px;border-radius:var(--rsm);display:flex;align-items:center;
-  justify-content:center;font-size:1.45rem;background:var(--s2);flex-shrink:0;overflow:hidden;position:relative}
-.c-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.continue-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.7rem .6rem;
+  border-radius:var(--rsm);
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  animation:slideUp .3s ease backwards;
+}
+.continue-item:hover{
+  background:var(--s1);
+  transform:translateX(4px);
+}
+.continue-item:active{transform:scale(.98)}
+.continue-item:nth-child(1){animation-delay:0s}
+.continue-item:nth-child(2){animation-delay:.05s}
+.continue-item:nth-child(3){animation-delay:.1s}
+.continue-item:nth-child(4){animation-delay:.15s}
+
+.c-thumb{
+  width:48px;height:48px;
+  border-radius:var(--rsm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  background:var(--s2);
+  flex-shrink:0;
+  overflow:hidden;position:relative;
+}
+.c-thumb img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+}
 .c-info{flex:1;min-width:0}
-.c-title{font-size:.84rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.c-sub{font-size:.73rem;color:var(--ink3);margin-top:1px}
+.c-title{
+  font-size:.85rem;font-weight:600;
+  color:var(--ink);
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;
+}
+.c-sub{
+  font-size:.73rem;color:var(--ink3);
+  margin-top:2px;
+}
 
-/* ── SEARCH RESULTS ── */
-.search-wrap{padding:.7rem 1rem .3rem}
-.search-bar{display:flex;align-items:center;gap:.6rem;padding:.65rem .95rem;
-  background:var(--s1);border:1px solid var(--border);border-radius:99px;transition:border-color .2s}
-.search-bar:focus-within{border-color:var(--border2)}
-.search-bar svg{width:16px;height:16px;stroke:var(--ink3);fill:none;stroke-width:2;flex-shrink:0}
-.search-bar input{flex:1;background:none;border:none;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none}
+/* ═══════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════ */
+.search-wrap{padding:.7rem 1rem .3rem;animation:fadeIn .3s ease}
+.search-bar{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.7rem 1rem;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:99px;
+  transition:all var(--transition-fast);
+}
+.search-bar:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px var(--adim);
+}
+.search-bar svg{
+  width:16px;height:16px;
+  stroke:var(--ink3);
+  fill:none;stroke-width:2;
+  flex-shrink:0;
+  transition:stroke .3s;
+}
+.search-bar:focus-within svg{stroke:var(--accent)}
+
+.search-bar input{
+  flex:1;background:none;border:none;
+  color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+  font-size:.88rem;outline:none;
+}
 .search-bar input::placeholder{color:var(--ink3)}
-.search-clear{cursor:pointer;color:var(--ink3);font-size:1rem;line-height:1;flex-shrink:0;display:none}
-.search-results{padding:0 1rem}
-.search-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
-.search-result-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .5rem;
-  border-radius:var(--rsm);cursor:pointer;transition:background .2s;border-bottom:1px solid var(--border)}
-.search-result-item:last-child{border-bottom:none}
-.search-result-item:hover{background:var(--s1)}
-.sr-cover{width:44px;height:44px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0}
-.sr-info{flex:1;min-width:0}
-.sr-title{font-size:.85rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sr-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
-.sr-type{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:99px;background:var(--s2);color:var(--ink3);flex-shrink:0}
+.search-clear{
+  cursor:pointer;color:var(--ink3);
+  font-size:1.1rem;line-height:1;
+  flex-shrink:0;display:none;
+  width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  transition:all .2s;
+}
+.search-clear:hover{
+  background:rgba(255,255,255,.1);
+  color:var(--ink);
+}
+.search-clear.visible{display:flex}
 
-/* ── DETAIL ── */
-.detail-header{display:flex;flex-direction:column;align-items:center;padding:1.3rem 1rem .5rem;gap:.9rem}
-.detail-cover{width:clamp(110px,38vw,160px);aspect-ratio:2/3;height:auto;border-radius:var(--r);display:flex;align-items:center;
-  justify-content:center;font-size:4.8rem;border:1px solid var(--border2);position:relative;overflow:hidden}
-.detail-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--r)}
+.search-results{padding:0 1rem;animation:fadeIn .3s ease}
+.search-empty{
+  padding:3rem 1rem;text-align:center;
+  color:var(--ink3);font-size:.9rem;
+}
+.search-result-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.7rem .5rem;
+  border-radius:var(--rsm);
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  border-bottom:1px solid var(--border);
+  animation:slideUp .2s ease backwards;
+}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover{
+  background:var(--s1);
+  transform:translateX(4px);
+}
+.search-result-item:nth-child(1){animation-delay:0s}
+.search-result-item:nth-child(2){animation-delay:.03s}
+.search-result-item:nth-child(n+3){animation-delay:.06s}
+.sr-cover{
+  width:44px;height:44px;border-radius:var(--rsm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.35rem;flex-shrink:0;
+}
+.sr-info{flex:1;min-width:0}
+.sr-title{
+  font-size:.85rem;font-weight:600;
+  color:var(--ink);
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;
+}
+.sr-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
+.sr-type{
+  font-family:'DM Mono',monospace;
+  font-size:9px;padding:3px 8px;
+  border-radius:99px;background:var(--s2);
+  color:var(--ink3);flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════
+   LIBRARY GRID
+═══════════════════════════════════════ */
+.lib-grid-section{padding:0 1rem 1.5rem}
+.lib-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
+  gap:.7rem;
+  animation:fadeIn .3s ease;
+}
+.lib-grid-card{
+  cursor:pointer;border-radius:var(--rsm);
+  overflow:hidden;
+  background:var(--s1);
+  border:1px solid var(--border);
+  transition:all var(--transition-fast);
+  position:relative;
+}
+.lib-grid-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+.lib-grid-card:active{transform:scale(.96)}
+.lib-grid-cover{
+  width:100%;aspect-ratio:2/3;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;
+  position:relative;overflow:hidden;
+}
+.lib-grid-cover img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+}
+.lib-grid-cover span{position:relative;z-index:1}
+.lib-grid-info{padding:.45rem .55rem .55rem}
+.lib-grid-name{
+  font-size:.7rem;font-weight:600;
+  color:var(--ink);line-height:1.2;
+  display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.lib-grid-auth{
+  font-size:.58rem;color:var(--ink3);
+  margin-top:2px;
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* ═══════════════════════════════════════
+   DETAIL VIEW
+═══════════════════════════════════════ */
+.detail-header{
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding:1.5rem 1rem .5rem;
+  gap:1rem;
+  animation:fadeIn .4s ease;
+}
+.detail-cover{
+  width:clamp(120px,40vw,170px);
+  aspect-ratio:2/3;height:auto;
+  border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;
+  font-size:5rem;
+  border:1px solid var(--border2);
+  position:relative;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.detail-cover img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;border-radius:var(--r);
+}
 .detail-cover span{position:relative;z-index:1}
 .detail-info{text-align:center}
-.detail-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;line-height:1.2;margin-bottom:.28rem}
-.detail-author{font-size:.88rem;color:var(--ink2)}
-.detail-actions{display:flex;gap:.6rem;justify-content:center;margin-top:.4rem;flex-wrap:wrap}
-.action-btn{padding:.5rem 1rem;border-radius:99px;background:var(--s1);border:1px solid var(--border2);
-  color:var(--ink2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;
-  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.35rem}
-.action-btn:hover{border-color:var(--accent);color:var(--accent)}
-.action-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
-.action-btn.primary:hover{background:var(--accent2)}
-.action-btn.faved{background:rgba(201,169,110,.15);border-color:var(--accent);color:var(--accent)}
-.detail-stats{text-align:center;font-size:.78rem;color:var(--ink3);margin-top:.4rem}
+.detail-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;font-weight:900;
+  line-height:1.2;margin-bottom:.3rem;
+}
+.detail-author{font-size:.9rem;color:var(--ink2);line-height:1.4}
+.detail-actions{
+  display:flex;gap:.6rem;
+  justify-content:center;
+  margin-top:.5rem;flex-wrap:wrap;
+}
+.action-btn{
+  padding:.55rem 1.1rem;
+  border-radius:99px;
+  background:var(--s1);
+  border:1px solid var(--border2);
+  color:var(--ink2);
+  font-family:'DM Sans',sans-serif;
+  font-size:.8rem;font-weight:500;
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  display:flex;align-items:center;gap:.4rem;
+}
+.action-btn:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  transform:translateY(-1px);
+}
+.action-btn:active{transform:translateY(0)}
+.action-btn.primary{
+  background:var(--accent);
+  color:#000;
+  border-color:var(--accent);
+  font-weight:600;
+}
+.action-btn.primary:hover{
+  background:var(--accent2);
+  box-shadow:0 4px 12px var(--adim);
+}
+.action-btn.faved{
+  background:var(--adim);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.detail-stats{
+  text-align:center;
+  font-size:.8rem;color:var(--ink3);
+  margin-top:.5rem;
+}
 
-/* ── EPISODE LIST ── */
+/* ═══════════════════════════════════════
+   EPISODE/TRACK LIST
+═══════════════════════════════════════ */
 .episode-list{padding:0 .8rem}
-.ep-item{display:flex;align-items:center;gap:.7rem;padding:.85rem .5rem;
-  border-radius:var(--rsm);cursor:pointer;transition:background .18s;
-  border-bottom:1px solid var(--border)}
+.ep-item{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.85rem .5rem;
+  border-radius:var(--rsm);
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  border-bottom:1px solid var(--border);
+  animation:slideUp .3s ease backwards;
+}
 .ep-item:last-of-type{border-bottom:none}
-.ep-item:hover{background:var(--s1)}
-.ep-item.open{background:var(--adim)}
-.ep-num{font-family:'DM Mono',monospace;font-size:.73rem;color:var(--ink3);width:28px;text-align:center;flex-shrink:0}
+.ep-item:hover{background:var(--s1);transform:translateX(3px)}
+.ep-item.open{
+  background:var(--adim);
+  border-bottom-color:transparent;
+}
+.ep-num{
+  font-family:'DM Mono',monospace;
+  font-size:.75rem;color:var(--ink3);
+  width:32px;text-align:center;flex-shrink:0;
+  font-weight:500;
+}
 .ep-info{flex:1;min-width:0}
-.ep-title{font-size:.88rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ep-meta{font-size:.72rem;color:var(--ink3);margin-top:2px;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
-.ep-actions{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
-.ep-fav{width:28px;height:28px;border-radius:50%;background:transparent;border:1px solid var(--border2);
-  color:var(--ink3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:all .15s;flex-shrink:0}
-.ep-fav:hover,.ep-fav.faved{border-color:var(--accent);color:var(--accent)}
-.ep-play{width:34px;height:34px;border-radius:50%;background:var(--adim);border:1px solid var(--accent);
-  color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s}
-.ep-play:hover,.ep-play.active{background:var(--accent);color:#000}
-.ep-play svg{width:12px;height:12px;fill:currentColor}
+.ep-title{
+  font-size:.9rem;font-weight:600;
+  color:var(--ink);
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;
+}
+.ep-meta{
+  font-size:.73rem;color:var(--ink3);
+  margin-top:2px;
+  display:flex;gap:.5rem;align-items:center;
+  flex-wrap:wrap;
+}
+.ep-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.ep-fav,.ep-play{
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  display:flex;align-items:center;justify-content:center;
+}
+.ep-fav{
+  width:30px;height:30px;
+  border-radius:50%;
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--ink3);
+  font-size:13px;
+}
+.ep-fav:hover,.ep-fav.faved{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.ep-fav.faved{animation:favPop .3s ease}
+.ep-play{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--adim);
+  border:1px solid var(--accent);
+  color:var(--accent);
+}
+.ep-play:hover{
+  background:var(--accent);
+  color:#000;
+  transform:scale(1.05);
+}
+.ep-play:active{transform:scale(.95)}
+.ep-play svg{width:13px;height:13px;fill:currentColor}
 
-/* ── APUNTE EXPANDIBLE inline ── */
-.apunte-wrap{overflow:hidden;max-height:0;transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .25s}
-.apunte-wrap.open{max-height:9999px}
-.apunte-inner{background:var(--s1);border-top:1px solid var(--border2);
-  margin:0 .3rem;border-radius:0 0 var(--rsm) var(--rsm);padding:1.3rem 1.1rem 1.4rem}
-.apunte-inner h1{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:900;color:var(--ink);margin-bottom:.4rem}
-.apunte-inner .subtitle{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink3);
-  letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:1.2rem;
-  padding-bottom:.8rem;border-bottom:1px solid var(--border)}
-.apunte-inner h2{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--accent);margin:1.3rem 0 .55rem}
-.apunte-inner h3{font-size:.9rem;font-weight:600;color:var(--ink);margin:.9rem 0 .4rem}
-.apunte-inner p{font-size:.875rem;line-height:1.75;color:var(--ink2);margin-bottom:.7rem}
-.apunte-inner ul,.apunte-inner ol{margin:.5rem 0 .8rem 1.3rem}
-.apunte-inner li{font-size:.875rem;line-height:1.7;color:var(--ink2);margin-bottom:.25rem}
+/* ═══════════════════════════════════════
+   EXPANDABLE CONTENT
+═══════════════════════════════════════ */
+.apunte-wrap{
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s;
+  opacity:0;
+}
+.apunte-wrap.open{
+  max-height:2000px;
+  opacity:1;
+}
+.apunte-inner{
+  background:var(--s1);
+  border-top:1px solid var(--border2);
+  margin:0 .3rem;
+  border-radius:0 0 var(--rsm) var(--rsm);
+  padding:1.5rem 1.2rem;
+  animation:fadeIn .3s ease;
+}
+/* Content Styles */
+.apunte-inner h1{
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;font-weight:900;
+  color:var(--ink);margin-bottom:.5rem;
+}
+.apunte-inner .subtitle{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--ink3);
+  letter-spacing:.08em;text-transform:uppercase;
+  display:block;margin-bottom:1.5rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid var(--border);
+}
+.apunte-inner h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;font-weight:700;
+  color:var(--accent);margin:1.5rem 0 .6rem;
+}
+.apunte-inner h3{
+  font-size:.92rem;font-weight:600;
+  color:var(--ink);margin:1rem 0 .4rem;
+}
+.apunte-inner p{
+  font-size:.875rem;line-height:1.8;
+  color:var(--ink2);margin-bottom:.8rem;
+}
+.apunte-inner ul,.apunte-inner ol{
+  margin:.6rem 0 1rem 1.5rem;
+}
+.apunte-inner li{
+  font-size:.875rem;line-height:1.8;
+  color:var(--ink2);margin-bottom:.3rem;
+}
 .apunte-inner strong{color:var(--ink);font-weight:600}
 .apunte-inner em{color:var(--ink2);font-style:italic}
-.apunte-inner code{font-family:'DM Mono',monospace;background:rgba(201,169,110,.09);padding:2px 7px;border-radius:4px;font-size:.85em;color:var(--accent2)}
-.apunte-inner table{width:100%;border-collapse:collapse;margin:.9rem 0;font-size:.8rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--rsm)}
-.apunte-inner th{background:var(--s2);color:var(--ink);padding:.6rem .75rem;text-align:left;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--border2)}
-.apunte-inner td{padding:.55rem .75rem;border-bottom:1px solid var(--border);color:var(--ink2);font-size:.82rem}
+.apunte-inner code{
+  font-family:'DM Mono',monospace;
+  background:var(--adim);
+  padding:2px 8px;border-radius:4px;
+  font-size:.85em;color:var(--accent2);
+}
+
+/* Boxes */
+.def-box{
+  background:var(--info);
+  border-left:3px solid var(--info-text);
+  padding:.8rem 1rem;margin:1rem 0;
+  border-radius:0 var(--rsm) var(--rsm) 0;
+  font-size:.88em;line-height:1.7;color:var(--ink2);
+}
+.thm-box{
+  background:var(--success);
+  border-left:3px solid var(--success-text);
+  padding:.8rem 1rem;margin:1rem 0;
+  border-radius:0 var(--rsm) var(--rsm) 0;
+  font-size:.88em;line-height:1.7;color:var(--ink2);
+}
+.ex-box{
+  background:var(--warning);
+  border-left:3px solid var(--warning-text);
+  padding:.8rem 1rem;margin:1rem 0;
+  border-radius:0 var(--rsm) var(--rsm) 0;
+  font-size:.88em;line-height:1.7;color:var(--ink2);
+}
+
+/* Math */
+.math-block{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  padding:.8rem 0;text-align:center;margin:.8rem 0;
+  background:rgba(255,255,255,.02);
+  border-radius:var(--rsm);
+}
+.math-block .katex-display{
+  margin:0;overflow-x:auto;overflow-y:hidden;
+  padding:0 .5rem;
+}
+
+/* Tables */
+.apunte-inner table{
+  width:100%;border-collapse:collapse;
+  margin:1rem 0;font-size:.82rem;
+  display:block;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  border:1px solid var(--border);
+  border-radius:var(--rsm);
+}
+.apunte-inner th{
+  background:var(--s2);color:var(--ink);
+  padding:.7rem .8rem;text-align:left;
+  font-family:'DM Mono',monospace;
+  font-size:9px;text-transform:uppercase;
+  letter-spacing:.06em;
+  border-bottom:2px solid var(--border2);
+}
+.apunte-inner td{
+  padding:.6rem .8rem;
+  border-bottom:1px solid var(--border);
+  color:var(--ink2);font-size:.82rem;
+}
 .apunte-inner tr:last-child td{border-bottom:none}
-.def-box{background:rgba(139,157,195,.07);border-left:3px solid #8b9dc3;padding:.75rem .9rem;margin:.85rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.86em;line-height:1.65;color:var(--ink2)}
-.thm-box{background:rgba(123,165,135,.07);border-left:3px solid #7ba587;padding:.75rem .9rem;margin:.85rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.86em;line-height:1.65;color:var(--ink2)}
-.ex-box{background:rgba(201,169,110,.07);border-left:3px solid var(--accent);padding:.75rem .9rem;margin:.85rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.86em;line-height:1.65;color:var(--ink2)}
-.math-block{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.65rem 0;text-align:center;margin:.7rem 0}
-.math-block .katex-display{margin:0;overflow-x:auto;overflow-y:hidden}
 
-/* ── LIBRARY GRID (search) ── */
-.lib-grid-section{padding:0 1rem 1.5rem}
-.lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
-.lib-grid-card{cursor:pointer;border-radius:var(--rsm);overflow:hidden;
-  background:var(--s1);border:1px solid var(--border);transition:all .2s;position:relative}
-.lib-grid-card:hover{border-color:var(--border2);transform:translateY(-2px)}
-.lib-grid-card:active{transform:scale(.96)}
-.lib-grid-cover{width:100%;aspect-ratio:2/3;display:flex;align-items:center;
-  justify-content:center;font-size:1.8rem;position:relative;overflow:hidden}
-.lib-grid-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.lib-grid-cover span{position:relative;z-index:1}
-.lib-grid-info{padding:.35rem .4rem .45rem}
-.lib-grid-name{font-size:.67rem;font-weight:600;color:var(--ink);line-height:1.2;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.lib-grid-auth{font-size:.58rem;color:var(--ink3);margin-top:1px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ── FAVS VIEW ── */
-.favs-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
-
-/* ── BOTTOM NAV ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;
-  display:flex;justify-content:space-around;padding:.45rem .8rem env(safe-area-inset-bottom,.45rem);
-  background:rgba(0,0,0,.92);backdrop-filter:blur(20px);border-top:1px solid var(--border)}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
-  color:var(--ink3);transition:color .2s;padding:.28rem .5rem}
+/* ═══════════════════════════════════════
+   BOTTOM NAVIGATION
+═══════════════════════════════════════ */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-around;
+  padding:.5rem .8rem env(safe-area-inset-bottom,.5rem);
+  background:rgba(0,0,0,.94);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;cursor:pointer;
+  color:var(--ink3);
+  transition:all var(--transition-fast);
+  padding:.3rem .6rem;
+  border-radius:var(--rsm);
+  position:relative;
+}
 .nav-item.active{color:var(--accent)}
-.nav-item svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2}
-.nav-label{font-size:9.5px;font-weight:500;letter-spacing:.04em}
+.nav-item:hover{color:var(--ink2)}
+.nav-item svg{
+  width:22px;height:22px;
+  stroke:currentColor;fill:none;
+  stroke-width:2;
+  transition:all .3s;
+}
+.nav-item.active svg{fill:var(--adim)}
+.nav-label{
+  font-size:10px;font-weight:500;
+  letter-spacing:.04em;
+}
+.nav-dot{
+  position:absolute;top:-2px;right:-4px;
+  min-width:16px;height:16px;
+  background:var(--accent);
+  color:#000;border-radius:8px;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 3px;
+}
 
-::-webkit-scrollbar{width:3px;height:3px}
+/* ═══════════════════════════════════════
+   CUSTOM SCROLLBAR
+═══════════════════════════════════════ */
+::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+::-webkit-scrollbar-thumb{
+  background:var(--border2);
+  border-radius:99px;
+}
+::-webkit-scrollbar-thumb:hover{background:var(--ink3)}
 
-/* ══════════════════════════════════════
-   BOOK READER VIEW
-══════════════════════════════════════ */
-#reader-view{position:fixed;inset:0;z-index:200;background:#0f0e0c;display:none;flex-direction:column;-webkit-user-select:none;user-select:none}
+/* ═══════════════════════════════════════
+   BOOK READER
+═══════════════════════════════════════ */
+#reader-view{
+  position:fixed;inset:0;z-index:200;
+  background:#0f0e0c;
+  display:none;flex-direction:column;
+  -webkit-user-select:none;user-select:none;
+  animation:fadeIn .3s ease;
+}
 #reader-view.active{display:flex}
-.reader-topbar{height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(10,9,7,.97);border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(16px);z-index:2}
-.reader-title{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--accent);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
-.reader-btn{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:rgba(240,236,228,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-.reader-btn:hover{background:rgba(201,169,110,.12);border-color:var(--accent);color:var(--accent)}
-.reader-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.reader-page-ct{font-size:.62rem;color:rgba(240,236,228,.35);min-width:62px;text-align:center;flex-shrink:0;font-family:'DM Mono',monospace;letter-spacing:.04em}
-/* Stage */
-.reader-stage{flex:1;position:relative;overflow:hidden;background:#0f0e0c;display:flex;align-items:center;justify-content:center}
+
+.reader-topbar{
+  height:50px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;
+  background:rgba(10,9,7,.97);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(16px);z-index:2;
+}
+.reader-title{
+  font-family:'Playfair Display',serif;
+  font-size:.88rem;font-style:italic;
+  color:var(--accent);
+  flex:1;text-align:center;
+  white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;padding:0 8px;
+}
+.reader-btn{
+  width:34px;height:34px;border-radius:8px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);
+  color:rgba(240,236,228,.5);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition-fast);
+  flex-shrink:0;
+}
+.reader-btn:hover{
+  background:var(--adim);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.reader-btn svg{
+  width:16px;height:16px;
+  stroke:currentColor;fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+.reader-page-ct{
+  font-size:.65rem;color:rgba(240,236,228,.35);
+  min-width:65px;text-align:center;flex-shrink:0;
+  font-family:'DM Mono',monospace;letter-spacing:.05em;
+}
+
+/* Reader Stage */
+.reader-stage{
+  flex:1;position:relative;overflow:hidden;
+  background:#0f0e0c;
+  display:flex;align-items:center;justify-content:center;
+}
 #r-book{position:absolute;inset:0;overflow:hidden}
-/* Pages: absolutely positioned, full stage */
-.rpage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0f0e0c;will-change:transform,opacity}
-.rpage img{max-width:100%;max-height:100%;object-fit:contain;display:block;pointer-events:none;border-radius:1px;box-shadow:0 2px 24px rgba(0,0,0,.8)}
-/* Slide animations — fast, no jank */
-@keyframes slideOutL{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(-4%)}}
-@keyframes slideOutR{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(4%)}}
-@keyframes slideInR  {0%{opacity:0;transform:translateX(3%)} 100%{opacity:1;transform:translateX(0)}}
-@keyframes slideInL  {0%{opacity:0;transform:translateX(-3%)}100%{opacity:1;transform:translateX(0)}}
-.rpage.out-left {animation:slideOutL .14s ease-out forwards;z-index:2}
-.rpage.out-right{animation:slideOutR .14s ease-out forwards;z-index:2}
-.rpage.in-right {animation:slideInR  .14s ease-out forwards;z-index:1}
-.rpage.in-left  {animation:slideInL  .14s ease-out forwards;z-index:1}
+
+/* Reader Pages */
+.rpage{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#0f0e0c;
+  will-change:transform,opacity;
+  transition:transform .15s ease,opacity .15s ease;
+}
+.rpage img{
+  max-width:100%;max-height:100%;
+  object-fit:contain;display:block;
+  pointer-events:none;
+  box-shadow:0 2px 24px rgba(0,0,0,.8);
+  transition:transform .3s ease;
+}
+
+/* Slide animations */
+@keyframes slideOutL{
+  0%{opacity:1;transform:translateX(0)}
+  100%{opacity:0;transform:translateX(-4%)}
+}
+@keyframes slideOutR{
+  0%{opacity:1;transform:translateX(0)}
+  100%{opacity:0;transform:translateX(4%)}
+}
+@keyframes slideInR{
+  0%{opacity:0;transform:translateX(3%)}
+  100%{opacity:1;transform:translateX(0)}
+}
+@keyframes slideInL{
+  0%{opacity:0;transform:translateX(-3%)}
+  100%{opacity:1;transform:translateX(0)}
+}
+.rpage.out-left{animation:slideOutL .15s ease-out forwards;z-index:2}
+.rpage.out-right{animation:slideOutR .15s ease-out forwards;z-index:2}
+.rpage.in-right{animation:slideInR .15s ease-out forwards;z-index:1}
+.rpage.in-left{animation:slideInL .15s ease-out forwards;z-index:1}
+
 /* Loading */
-.rpage-loading{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
-.r-spinner{width:26px;height:26px;border:2.5px solid rgba(201,169,110,.12);border-top-color:var(--accent);border-radius:50%;animation:rspin .65s linear infinite}
+.rpage-loading{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;
+}
+.r-spinner{
+  width:28px;height:28px;
+  border:3px solid rgba(201,169,110,.12);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:rspin .7s linear infinite;
+}
 @keyframes rspin{to{transform:rotate(360deg)}}
-/* Tap zones */
-.reader-zone-prev{position:absolute;left:0;top:0;bottom:0;width:33%;z-index:10;cursor:w-resize}
-.reader-zone-next{position:absolute;right:0;top:0;bottom:0;width:33%;z-index:10;cursor:e-resize}
-/* Controls */
-.reader-controls{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px;background:rgba(10,9,7,.97);border-top:1px solid rgba(255,255,255,.06);backdrop-filter:blur(16px);padding:10px 18px env(safe-area-inset-bottom,10px)}
-.reader-track{width:100%;max-width:480px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;cursor:pointer;position:relative;touch-action:none}
-.reader-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .12s;position:relative;pointer-events:none}
-.reader-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 3px rgba(201,169,110,.18)}
+
+/* Tap Zones */
+.reader-zone-prev,.reader-zone-next{
+  position:absolute;top:0;bottom:0;width:33%;z-index:10;
+}
+.reader-zone-prev{left:0;cursor:w-resize}
+.reader-zone-next{right:0;cursor:e-resize}
+
+/* Reader Controls */
+.reader-controls{
+  flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:12px;
+  background:rgba(10,9,7,.97);
+  border-top:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(16px);
+  padding:12px 18px env(safe-area-inset-bottom,12px);
+}
+.reader-track{
+  width:100%;max-width:480px;height:4px;
+  background:rgba(255,255,255,.08);
+  border-radius:99px;
+  cursor:pointer;position:relative;
+  touch-action:none;
+  transition:height .2s;
+}
+.reader-track:hover{height:6px}
+.reader-fill{
+  height:100%;background:var(--accent);
+  border-radius:99px;
+  transition:width .15s;
+  position:relative;pointer-events:none;
+}
+.reader-fill::after{
+  content:'';position:absolute;
+  right:-7px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--accent2);
+  box-shadow:0 0 0 4px rgba(201,169,110,.18);
+  opacity:0;transition:opacity .2s;
+}
+.reader-track:hover .reader-fill::after{opacity:1}
+
 .reader-btns{display:flex;align-items:center;gap:10px}
-.reader-nav-btn{display:flex;align-items:center;gap:5px;padding:8px 20px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(240,236,228,.55);font-family:'DM Mono',monospace;font-size:.67rem;letter-spacing:.07em;cursor:pointer;transition:background .12s,border-color .12s,color .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.reader-nav-btn:active{background:rgba(201,169,110,.14);border-color:var(--accent);color:var(--accent)}
-.reader-nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:600}
-.reader-nav-btn.primary:active{background:var(--accent2)}
-.reader-nav-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-/* goto modal */
-#reader-goto{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
+.reader-nav-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:10px 22px;border-radius:99px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  color:rgba(240,236,228,.55);
+  font-family:'DM Mono',monospace;
+  font-size:.68rem;letter-spacing:.07em;
+  cursor:pointer;
+  transition:all var(--transition-fast);
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.reader-nav-btn:active{
+  background:var(--adim);
+  border-color:var(--accent);
+  color:var(--accent);
+  transform:scale(.95);
+}
+.reader-nav-btn.primary{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#0c0b09;font-weight:600;
+}
+.reader-nav-btn.primary:active{
+  background:var(--accent2);
+}
+.reader-nav-btn svg{
+  width:14px;height:14px;
+  stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;
+}
+
+/* Goto Modal */
+#reader-goto{
+  position:fixed;inset:0;z-index:210;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;
+  animation:fadeIn .2s ease;
+}
 #reader-goto.open{display:flex}
-.goto-box{background:#1c1a16;border:1px solid rgba(201,169,110,.22);border-radius:14px;padding:24px 28px;width:min(300px,88vw);display:flex;flex-direction:column;gap:14px;animation:gotoIn .22s cubic-bezier(.34,1.56,.64,1)}
+.goto-box{
+  background:#1c1a16;
+  border:1px solid rgba(201,169,110,.22);
+  border-radius:14px;
+  padding:28px 32px;
+  width:min(320px,90vw);
+  display:flex;flex-direction:column;gap:16px;
+  animation:gotoIn .25s cubic-bezier(.34,1.56,.64,1);
+}
 @keyframes gotoIn{from{opacity:0;transform:scale(.9)}}
-.goto-title{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--accent);text-align:center}
-.goto-input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;color:var(--ink);font-family:'DM Mono',monospace;font-size:.88rem;outline:none;text-align:center;width:100%;transition:border-color .2s}
+.goto-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;font-style:italic;
+  color:var(--accent);text-align:center;
+}
+.goto-input{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:10px 14px;
+  color:var(--ink);
+  font-family:'DM Mono',monospace;
+  font-size:.9rem;outline:none;
+  text-align:center;width:100%;
+  transition:border-color .2s;
+}
 .goto-input:focus{border-color:var(--accent)}
-.goto-row{display:flex;gap:8px}
-.goto-btn{flex:1;padding:9px;border-radius:7px;cursor:pointer;font-family:'DM Mono',monospace;font-size:.73rem;letter-spacing:.05em;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.05);color:rgba(240,236,228,.5);transition:all .2s}
-.goto-btn.ok{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:500}
-.goto-hint{font-size:.6rem;color:rgba(240,236,228,.3);text-align:center;letter-spacing:.06em}
+.goto-row{display:flex;gap:10px}
+.goto-btn{
+  flex:1;padding:10px;border-radius:8px;
+  cursor:pointer;
+  font-family:'DM Mono',monospace;
+  font-size:.75rem;letter-spacing:.05em;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.05);
+  color:rgba(240,236,228,.5);
+  transition:all .2s;
+}
+.goto-btn:hover{background:rgba(255,255,255,.1)}
+.goto-btn.ok{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#0c0b09;font-weight:600;
+}
+.goto-btn.ok:hover{background:var(--accent2)}
+.goto-hint{
+  font-size:.62rem;color:rgba(240,236,228,.3);
+  text-align:center;letter-spacing:.06em;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (min-width: 600px) {
+  .lib-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .mini-card{width:150px}
+  .detail-cover{width:180px}
+}
+@media (min-width: 900px) {
+  body{padding-bottom:2rem}
+  .bottom-nav{display:none}
+  .top-bar{padding:.8rem 2rem}
+  .section{padding:0 2rem}
+}
 </style>
+</head>
 
 <body>
 
-<!-- TOP BAR -->
-<header class="top-bar">
-  <!-- Default state: logo + institution info -->
-  <div class="tb-left" id="tb-left">
-    <span class="logo-text">Ж</span>
+<!-- ═══════════════════════════════════════
+     TOP BAR
+═══════════════════════════════════════ -->
+<header class="top-bar" id="top-bar">
+  <!-- Default: Logo + Institution -->
+  <div class="tb-left" id="tb-default">
+    <span class="logo-text" onclick="goHome()" title="Inicio">Ж</span>
     <div class="tb-divider"></div>
     <div class="tb-institution">
       <div class="tb-inst-title">Matemáticas</div>
       <div class="tb-inst-sub">Facultad de Ciencias · UNAM</div>
     </div>
   </div>
-  <!-- Back state: shown when inside detail/search -->
-  <div class="tb-left" id="tb-back" style="display:none">
-    <button class="icon-btn" id="btn-back" onclick="navBack()">
+  
+  <!-- Back: Shown in detail/search views -->
+  <div class="back-btn-container" id="tb-back" style="display:none">
+    <button class="icon-btn" onclick="navBack()" aria-label="Volver">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <span id="tb-title" style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px"></span>
+    <span class="back-title" id="tb-title"></span>
   </div>
+  
   <div class="tb-right">
-    <button class="icon-btn" onclick="showSearch()">
+    <button class="icon-btn" onclick="showSearch()" aria-label="Buscar">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </button>
   </div>
 </header>
 
-<!-- VIEWS -->
-<div id="home" class="view active"></div>
-<div id="search-view" class="view"></div>
-<div id="detail" class="view"></div>
-<div id="favs-view" class="view"></div>
+<!-- ═══════════════════════════════════════
+     MAIN VIEWS
+═══════════════════════════════════════ -->
+<main>
+  <div id="home" class="view active" role="main"></div>
+  <div id="search-view" class="view" role="search"></div>
+  <div id="detail" class="view" role="article"></div>
+  <div id="favs-view" class="view" role="complementary"></div>
+</main>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
+<!-- ═══════════════════════════════════════
+     BOTTOM NAVIGATION
+═══════════════════════════════════════ -->
+<nav class="bottom-nav" aria-label="Navegación principal">
   <div class="nav-item active" data-nav="home" onclick="goHome()">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
     <span class="nav-label">Inicio</span>
@@ -314,1199 +1106,56 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   <div class="nav-item" data-nav="favs-view" onclick="showFavs()">
     <svg viewBox="0 0 24 24" id="nav-fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <span class="nav-label">Favoritos</span>
+    <span class="nav-dot" id="fav-count" style="display:none">0</span>
   </div>
 </nav>
 
-<script>
-/* ══════════════════════════════════════════
-   LIBRARY DATA
-══════════════════════════════════════════ */
-const LIBRARY = [
-  {
-    label: "Álgebra Superior I",
-    books: [
-      {
-        id: "bib_as1_cardenas", title: "Álgebra Superior", emoji: "📘",
-        cover: "linear-gradient(135deg, #1a1a3e, #3a3a7e)", author: "Cárdenas, Lluis, Raggi, Tomás · Trillas, 1974", pages: 450, totalTime: "Completo",
-        tracks: [
-          { num: 1, title: "Conjuntos", sub: "Cap. 1 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Conjuntos</h1><span class="subtitle">Capítulo 1 · Álgebra Superior</span>
-<h2>Noción intuitiva de conjuntos</h2>
-<p>Igualdad de conjuntos. Subconjuntos. Conjunto vacío. Conjunto Universal.</p>
-<h2>Operaciones con conjuntos</h2>
-<p>Unión, intersección, complemento y diferencia.</p>
-<h2>Conjunto potencia</h2>
-<p>Producto cartesiano. Familias de conjuntos.</p>` },
-          { num: 2, title: "Relaciones y funciones", sub: "Cap. 2 · 19h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Relaciones y Funciones</h1><span class="subtitle">Capítulo 2 · Álgebra Superior</span>
-<p>Relaciones: dominio, codominio e imagen. Funciones: imágenes e imágenes inversas.</p>
-<p>Composición de funciones. Función inversa. Inyectivas, suprayectivas y biyectivas.</p>
-<p>Cardinalidad. Conjuntos finitos e infinitos. Relaciones de equivalencia.</p>` },
-          { num: 3, title: "Números naturales y combinatoria", sub: "Cap. 3 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Números Naturales</h1><span class="subtitle">Capítulo 3 · Álgebra Superior</span>
-<p>Principio de inducción. Ordenaciones con repetición, permutaciones y combinaciones.</p>
-<p>Teorema del binomio. Relaciones entre coeficientes binomiales.</p>` },
-          { num: 4, title: "Espacios vectoriales", sub: "Cap. 4 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Espacios Vectoriales</h1><span class="subtitle">Capítulo 4 · Álgebra Superior</span>
-<p>ℝ² y ℝ³. Interpretación geométrica. El espacio ℝⁿ.</p>
-<p>Subespacios. Combinaciones lineales. Dependencia e independencia lineal. Bases.</p>` },
-          { num: 5, title: "Matrices y determinantes", sub: "Cap. 5 · 13h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Matrices y Determinantes</h1><span class="subtitle">Capítulo 5 · Álgebra Superior</span>
-<p>Definición y operaciones. Transpuesta. Operaciones elementales. Rango.</p>
-<p>Determinante: definición y propiedades. Cálculo de determinantes.</p>` },
-          { num: 6, title: "Sistemas de ecuaciones lineales", sub: "Cap. 6 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Sistemas de Ecuaciones</h1><span class="subtitle">Capítulo 6 · Álgebra Superior</span>
-<p>Matriz y matriz aumentada. Criterios de existencia. Regla de Cramer.</p>
-<p>Espacio de soluciones. Eliminación gaussiana.</p>` }
-        ]
-      },
-      {
-        id: "bib_as1_nachbin", title: "Álgebra Elemental", emoji: "📗",
-        cover: "linear-gradient(135deg, #1a3a1a, #3a7a3a)", author: "L. Nachbin · OEA, 1986", pages: 320, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Teoría de conjuntos", sub: "Cap. 1", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Teoría de Conjuntos</h1><span class="subtitle">Nachbin · OEA, 1986</span><p>Fundamentos de teoría de conjuntos para álgebra superior.</p>` },
-          { num: 2, title: "Funciones e Inducción", sub: "Cap. 2-3", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Funciones e Inducción</h1><span class="subtitle">Nachbin · OEA, 1986</span><p>Estudio detallado de funciones y principio de inducción.</p>` },
-          { num: 3, title: "Ecuaciones lineales", sub: "Cap. 4", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Ecuaciones Lineales</h1><span class="subtitle">Nachbin · OEA, 1986</span><p>Sistemas de ecuaciones lineales y matrices elementales.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Cálculo Diferencial e Integral I",
-    books: [
-      {
-        id: "bib_cal1_spivak", title: "Cálculo Infinitesimal", emoji: "📐",
-        cover: "linear-gradient(135deg, #1a1a2e, #4a4a8e)", author: "M. Spivak · Reverté, 1998", pages: 680, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Propiedades básicas de los números", sub: "Cap. 1-2 · 21h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Propiedades Básicas</h1><span class="subtitle">Spivak · Cap. 1-2</span><p>Propiedades de los números enteros, racionales y reales. Desigualdades.</p><p>Valor absoluto. Propiedad de compleción. Expansiones decimales.</p>` },
-          { num: 2, title: "Funciones y sucesiones", sub: "Cap. 3-4 · 30h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Funciones y Sucesiones</h1><span class="subtitle">Spivak · Cap. 3-4</span><p>Definición, ejemplos y gráficas. Sucesiones de números reales y de Cauchy.</p>` },
-          { num: 3, title: "Límite de funciones", sub: "Cap. 5 · 30h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Límite de Funciones</h1><span class="subtitle">Spivak · Cap. 5</span><p>Definición ε-δ. Propiedades del límite. Límites al infinito. Asíntotas.</p>` },
-          { num: 4, title: "Continuidad", sub: "Cap. 6 · 22h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Continuidad</h1><span class="subtitle">Spivak · Cap. 6</span><p>Funciones continuas. Continuidad en intervalos cerrados. Teorema del Valor Intermedio.</p>` },
-          { num: 5, title: "Derivadas", sub: "Cap. 7-10 · 41h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Derivadas</h1><span class="subtitle">Spivak · Cap. 7-10</span><p>Razón de cambio. Tangentes. Definición de derivada. Reglas de derivación.</p><p>Regla de la cadena. Teorema del Valor Medio. Optimización. Polinomios de Taylor.</p>` }
-        ]
-      },
-      {
-        id: "bib_cal1_thomas", title: "Cálculo con Geometría Analítica", emoji: "📕",
-        cover: "linear-gradient(135deg, #2a0a0a, #7a1a1a)", author: "Thomas & Finney · Addison-Wesley, 1987", pages: 850, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Preliminares y Límites", sub: "Cap. 1-2", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Preliminares</h1><span class="subtitle">Thomas & Finney, 1987</span><p>Fundamentos de geometría analítica. Límites y continuidad.</p>` },
-          { num: 2, title: "Derivadas", sub: "Cap. 3-4", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Derivadas</h1><span class="subtitle">Thomas & Finney, 1987</span><p>Reglas de derivación. Aplicaciones de la derivada.</p>` }
-        ]
-      },
-      {
-        id: "bib_cal1_arizmendi", title: "Cálculo. Primer Curso", emoji: "📙",
-        cover: "linear-gradient(135deg, #2a1a0a, #7a4a1a)", author: "Arizmendi, Carrillo, Lara · Addison Wesley, 1987", pages: 400, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Curso introductorio completo", sub: "Todos los capítulos", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Cálculo. Primer Curso</h1><span class="subtitle">Arizmendi et al., 1987</span><p>Introducción. Números reales. Funciones. Límite. Continuidad. Derivada.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Geometría Analítica I",
-    books: [
-      {
-        id: "bib_ga1_bracho", title: "Geometría Analítica", emoji: "📏",
-        cover: "linear-gradient(135deg, #0a1a2a, #2a5a8a)", author: "J. Bracho · Notas", pages: 300, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Introducción y Trigonometría", sub: "Cap. 1-2 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Introducción</h1><span class="subtitle">Bracho · Cap. 1-2</span><p>Conceptos geométricos elementales. Coordenadas cartesianas. Trigonometría.</p>` },
-          { num: 2, title: "Espacios vectoriales básicos", sub: "Cap. 3 · 20h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Espacios Vectoriales</h1><span class="subtitle">Bracho · Cap. 3</span><p>Definición y ejemplos. Subespacios. Independencia lineal, base, dimensión.</p>` },
-          { num: 3, title: "Rectas, planos y Cónicas", sub: "Cap. 4-5 · 35h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Rectas, Planos y Cónicas</h1><span class="subtitle">Bracho · Cap. 4-5</span><p>Ecuaciones de recta en ℝ² y ℝ³. Planos en ℝ³. Cónicas: definición y ecuaciones canónicas.</p>` }
-        ]
-      },
-      {
-        id: "bib_ga1_ramirez", title: "Geometría Analítica: Una Introducción", emoji: "📐",
-        cover: "linear-gradient(135deg, #1a0a3a, #5a2a8a)", author: "A. Ramírez Galarza · Las Prensas de Ciencias, 2004", pages: 350, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Geometría elemental y Trigonometría", sub: "Cap. 1-2", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Geometría Elemental</h1><span class="subtitle">Ramírez Galarza, 2004</span><p>Fundamentos de geometría elemental y trigonometría.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Geometría Moderna I",
-    books: [
-      {
-        id: "bib_gm1_efimov", title: "Geometría Superior", emoji: "🔺",
-        cover: "linear-gradient(135deg, #2a1a0a, #8a4a1a)", author: "N. Efimov · MIR, 1984", pages: 400, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Geometría del triángulo", sub: "Cap. 1 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Geometría del Triángulo</h1><span class="subtitle">Efimov · Cap. 1</span><p>Congruencia y semejanza. Teorema de Pitágoras. Circuncentro, incentro, baricentro.</p>` },
-          { num: 2, title: "Circunferencia y cuadriláteros", sub: "Cap. 2 · 15h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Circunferencia</h1><span class="subtitle">Efimov · Cap. 2</span><p>Cuadriláteros cíclicos. Teorema de Ptolomeo. Línea de Simson.</p>` },
-          { num: 3, title: "Geometría moderna", sub: "Cap. 3 · 30h", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Geometría Moderna</h1><span class="subtitle">Efimov · Cap. 3</span><p>Postulados euclidianos. Puntos al infinito. División armónica. Homotecia.</p>` },
-          { num: 4, title: "Teoremas fundamentales", sub: "Cap. 4 · 10h", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Teoremas</h1><span class="subtitle">Efimov · Cap. 4</span><p>Teorema de Ceva. Teorema de Menelao. Teorema de Desargues. Teorema de Pascal.</p>` }
-        ]
-      },
-      {
-        id: "bib_gm1_shively", title: "Introducción a la Geometría Moderna", emoji: "📐",
-        cover: "linear-gradient(135deg, #0a2a1a, #2a7a4a)", author: "L. Shively · Continental, 1961", pages: 280, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Triángulo y Circunferencia", sub: "Cap. 1-2", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Geometría Moderna</h1><span class="subtitle">Shively, 1961</span><p>Estudio del triángulo, circunferencia y teoremas de Ceva y Menelao.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Álgebra Superior II",
-    books: [
-      {
-        id: "bib_as2_cardenas", title: "Álgebra Superior", emoji: "📘",
-        cover: "linear-gradient(135deg, #1a1a3e, #3a3a7e)", author: "Cárdenas, Lluis, Raggi, Tomás · Trillas, 1974", pages: 450, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Números enteros", sub: "Cap. 7 · 15h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Números Enteros</h1><span class="subtitle">Capítulo 7</span><p>El anillo ℤ. Dominio entero. Orden en ℤ. Principio de inducción.</p>` },
-          { num: 2, title: "Divisibilidad", sub: "Cap. 8 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Divisibilidad</h1><span class="subtitle">Capítulo 8</span><p>Algoritmo de la división. MCD. Algoritmo de Euclides. Números primos. Congruencias.</p>` },
-          { num: 3, title: "Números complejos", sub: "Cap. 9 · 15h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Números Complejos</h1><span class="subtitle">Capítulo 9</span><p>El campo ℂ. Módulo. Representación polar. Teorema de De Moivre.</p>` },
-          { num: 4, title: "Polinomios", sub: "Cap. 10 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Polinomios</h1><span class="subtitle">Capítulo 10</span><p>Polinomios sobre un campo. Divisibilidad. Polinomios irreducibles. Teorema fundamental del álgebra.</p>` }
-        ]
-      },
-      {
-        id: "bib_as2_nachbin", title: "Álgebra Elemental", emoji: "📗",
-        cover: "linear-gradient(135deg, #1a3a1a, #3a7a3a)", author: "L. Nachbin · OEA, 1986", pages: 320, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Enteros y Divisibilidad", sub: "Cap. 5-6", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Enteros</h1><span class="subtitle">Nachbin, 1986</span><p>Propiedades de los números enteros y divisibilidad.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Cálculo Diferencial e Integral II",
-    books: [
-      {
-        id: "bib_cal2_spivak", title: "Cálculo Infinitesimal", emoji: "📐",
-        cover: "linear-gradient(135deg, #1a1a2e, #4a4a8e)", author: "M. Spivak · Reverté, 1998", pages: 680, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Integral definida", sub: "Cap. 11 · 28h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Integral Definida</h1><span class="subtitle">Spivak · Cap. 11</span><p>Sumas de Riemann. Definición de integral. Propiedades. Teorema del valor medio.</p>` },
-          { num: 2, title: "Teorema Fundamental del Cálculo", sub: "Cap. 12 · 19h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>TFC</h1><span class="subtitle">Spivak · Cap. 12</span><p>La integral como función. Teoremas fundamentales. Integrales impropias.</p>` },
-          { num: 3, title: "Logaritmo y exponencial", sub: "Cap. 13 · 19h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Logaritmo y Exponencial</h1><span class="subtitle">Spivak · Cap. 13</span><p>Definición de logaritmo vía integral. Exponencial como inversa.</p>` },
-          { num: 4, title: "Métodos de integración", sub: "Cap. 14 · 28h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Métodos de Integración</h1><span class="subtitle">Spivak · Cap. 14</span><p>Sustitución. Por partes. Fracciones parciales. Métodos numéricos.</p>` },
-          { num: 5, title: "Aplicaciones y Series", sub: "Cap. 15-16 · 43h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Aplicaciones y Series</h1><span class="subtitle">Spivak · Cap. 15-16</span><p>Cálculo de áreas, longitudes, volúmenes. Series convergentes. Series de potencias.</p>` }
-        ]
-      },
-      {
-        id: "bib_cal2_thomas", title: "Cálculo con Geometría Analítica", emoji: "📕",
-        cover: "linear-gradient(135deg, #2a0a0a, #7a1a1a)", author: "Thomas & Finney · Addison-Wesley, 1987", pages: 850, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Integrales y Series", sub: "Cap. 5-8", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
-            latex: `<h1>Integrales y Series</h1><span class="subtitle">Thomas & Finney, 1987</span><p>Integral definida. TFC. Técnicas de integración. Series infinitas.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Álgebra Lineal I",
-    books: [
-      {
-        id: "bib_al1_curtis", title: "Linear Algebra", emoji: "📊",
-        cover: "linear-gradient(135deg, #0a1a2a, #1a5a8a)", author: "C.W. Curtis · Springer, 1984", pages: 350, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Espacios vectoriales", sub: "Cap. 1 · 15h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Espacios Vectoriales</h1><span class="subtitle">Curtis · Cap. 1</span><p>Campos. Espacios vectoriales. Subespacios. Dependencia lineal. Bases y dimensión.</p>` },
-          { num: 2, title: "Matrices", sub: "Cap. 2 · 10h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Matrices</h1><span class="subtitle">Curtis · Cap. 2</span><p>Multiplicación. Matrices elementales. Matriz inversa. Sistemas lineales.</p>` },
-          { num: 3, title: "Transformaciones lineales", sub: "Cap. 3-4 · 24h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Transformaciones Lineales</h1><span class="subtitle">Curtis · Cap. 3-4</span><p>Núcleo e imagen. Composición. Isomorfismos. Cambios de base.</p>` },
-          { num: 4, title: "Producto escalar", sub: "Cap. 5 · 17h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Producto Escalar</h1><span class="subtitle">Curtis · Cap. 5</span><p>Productos escalares y hermitianos. Ortogonalidad. Coeficientes de Fourier.</p>` },
-          { num: 5, title: "Determinantes", sub: "Cap. 6 · 10h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Determinantes</h1><span class="subtitle">Curtis · Cap. 6</span><p>Unicidad. Determinante del producto. Invertibilidad.</p>` }
-        ]
-      },
-      {
-        id: "bib_al1_hoffman", title: "Álgebra Lineal", emoji: "📋",
-        cover: "linear-gradient(135deg, #1a0a2a, #5a1a7a)", author: "Hoffman & Kunze · Prentice Hall, 1973", pages: 400, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Espacios y Transformaciones", sub: "Cap. 1-3", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Álgebra Lineal</h1><span class="subtitle">Hoffman & Kunze, 1973</span><p>Espacios vectoriales. Transformaciones lineales. Matrices elementales.</p>` }
-        ]
-      },
-      {
-        id: "bib_al1_rincon", title: "Álgebra Lineal", emoji: "📓",
-        cover: "linear-gradient(135deg, #0a2a1a, #1a7a4a)", author: "H.A. Rincón · Las Prensas de Ciencias, UNAM, 2002", pages: 380, totalTime: "Curso UNAM",
-        tracks: [
-          { num: 1, title: "Curso completo", sub: "Todos los capítulos", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
-            latex: `<h1>Álgebra Lineal</h1><span class="subtitle">Rincón, 2002</span><p>Texto diseñado para el curso de Álgebra Lineal I y II de la FC-UNAM.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Análisis Matemático I",
-    books: [
-      {
-        id: "bib_an1_apostol", title: "Análisis Matemático", emoji: "📈",
-        cover: "linear-gradient(135deg, #0a1a0a, #1a5a1a)", author: "T. Apostol · Reverté, 1996", pages: 500, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Espacios métricos", sub: "Cap. 1 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Espacios Métricos</h1><span class="subtitle">Apostol · Cap. 1</span><p>Continuidad. Nociones topológicas básicas. Convergencia.</p>` },
-          { num: 2, title: "Convergencia uniforme", sub: "Cap. 2 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Convergencia Uniforme</h1><span class="subtitle">Apostol · Cap. 2</span><p>Criterio de Cauchy. Espacios completos. Teorema de punto fijo.</p>` },
-          { num: 3, title: "Compacidad", sub: "Cap. 3 · 10h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Compacidad</h1><span class="subtitle">Apostol · Cap. 3</span><p>Heine-Borel. Arzelá. Aplicaciones.</p>` },
-          { num: 4, title: "Weierstrass y Riemann-Stieltjes", sub: "Cap. 4-5 · 30h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Weierstrass</h1><span class="subtitle">Apostol · Cap. 4-5</span><p>Teorema de Aproximación. Integral de Riemann-Stieltjes.</p>` }
-        ]
-      },
-      {
-        id: "bib_an1_rudin", title: "Principios de Análisis Matemático", emoji: "📉",
-        cover: "linear-gradient(135deg, #1a1a0a, #5a5a1a)", author: "W. Rudin · McGraw-Hill, 1980", pages: 350, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Espacios métricos y Convergencia", sub: "Cap. 1-3", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Baby Rudin</h1><span class="subtitle">Rudin, 1976</span><p>Espacios métricos. Convergencia uniforme. Compacidad.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Variable Compleja I",
-    books: [
-      {
-        id: "bib_vc1_ahlfors", title: "Complex Analysis", emoji: "ℂ",
-        cover: "linear-gradient(135deg, #2a0a0a, #8a1a1a)", author: "L.V. Ahlfors · McGraw-Hill, 1979", pages: 330, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Preliminares y analicidad", sub: "Cap. 1-2 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Funciones Analíticas</h1><span class="subtitle">Ahlfors · Cap. 1-2</span><p>Álgebra compleja. Funciones elementales. Cauchy-Riemann. Conformalidad.</p>` },
-          { num: 2, title: "Integración compleja", sub: "Cap. 3 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Integración</h1><span class="subtitle">Ahlfors · Cap. 3</span><p>Teorema de Cauchy. Fórmulas integrales. Liouville. Teorema fundamental del álgebra.</p>` },
-          { num: 3, title: "Series y Residuos", sub: "Cap. 4-5 · 40h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Series</h1><span class="subtitle">Ahlfors · Cap. 4-5</span><p>Taylor. Laurent. Singularidades. Teorema del residuo. Integrales impropias.</p>` }
-        ]
-      },
-      {
-        id: "bib_vc1_churchill", title: "Complex Variables and Applications", emoji: "📗",
-        cover: "linear-gradient(135deg, #0a2a2a, #1a7a7a)", author: "R.V. Churchill · McGraw-Hill, 1996", pages: 380, totalTime: "Complementario",
-        tracks: [
-          { num: 1, title: "Variable Compleja", sub: "Completo", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Variable Compleja</h1><span class="subtitle">Churchill, 1996</span><p>Funciones analíticas, integración, series y residuos con aplicaciones.</p>` }
-        ]
-      }
-    ]
-  },
-  {
-    label: "Análisis Matemático II",
-    books: [
-      {
-        id: "bib_an2_rudin", title: "Principios de Análisis Matemático", emoji: "📉",
-        cover: "linear-gradient(135deg, #1a1a0a, #5a5a1a)", author: "W. Rudin · McGraw-Hill, 1980", pages: 350, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Medida de Lebesgue en ℝⁿ", sub: "Cap. 10 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Medida de Lebesgue</h1><span class="subtitle">Rudin · Cap. 10</span><p>Construcción de la medida de Lebesgue en ℝⁿ.</p>` },
-          { num: 2, title: "Integral de Lebesgue", sub: "Cap. 11 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Integral de Lebesgue</h1><span class="subtitle">Rudin · Cap. 11</span><p>Teorema de Fubini. Teorema de cambio de variable.</p>` },
-          { num: 3, title: "Teoremas de convergencia", sub: "Cap. 12 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Convergencia</h1><span class="subtitle">Rudin · Cap. 12</span><p>Convergencia monótona. Lema de Fatou. Convergencia dominada.</p>` },
-          { num: 4, title: "Espacio L² y Series de Fourier", sub: "Cap. 13 · 13h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Espacio L²</h1><span class="subtitle">Rudin · Cap. 13</span><p>El espacio L². Series de Fourier.</p>` }
-        ]
-      },
-      {
-        id: "bib_an2_apostol", title: "Análisis Matemático", emoji: "📈",
-        cover: "linear-gradient(135deg, #0a1a0a, #1a5a1a)", author: "T. Apostol · Reverté, 1996", pages: 500, totalTime: "Principal",
-        tracks: [
-          { num: 1, title: "Medida e Integración", sub: "Cap. 6-8", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
-            latex: `<h1>Medida</h1><span class="subtitle">Apostol, 1996</span><p>Medida de Lebesgue. Integral de Lebesgue. Teoremas de convergencia.</p>` }
-        ]
-      }
-    ]
-  }
-];
-
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
-const allBooks = LIBRARY.flatMap(c => c.books);
-const allTracks = allBooks.flatMap(b => b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover })));
-
-let state = {
-  view: 'home',
-  prevView: null,
-  currentBookId: null,
-  currentTrackKey: null,
-  favorites: new Set(JSON.parse(localStorage.getItem('np_favs') || '[]')),
-  openTracks: new Set(),
-  // FIX 6: limit recent to 4
-  recentTracks: JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0, 4),
-};
-
-function saveFavs() { localStorage.setItem('np_favs', JSON.stringify([...state.favorites])); }
-function addRecent(bookId, trackNum) {
-  const key = trackKey(bookId, trackNum);
-  // FIX 6: keep max 4 recent tracks
-  state.recentTracks = [key, ...state.recentTracks.filter(k => k !== key)].slice(0, 4);
-  localStorage.setItem('np_recent', JSON.stringify(state.recentTracks));
-}
-function trackKey(bookId, num) { return `${bookId}:${num}`; }
-function isFav(key) { return state.favorites.has(key); }
-
-/* ── FIX 4: Get cover URL from reader config (page 1 image) ── */
-function getBookCoverUrl(bookId) {
-  const cfg = READER_BOOKS[bookId];
-  if (!cfg) return null;
-  return cfg.base + cfg.prefix + '0001' + cfg.ext;
-}
-
-/* ══════════════════════════════════════════
-   RENDER HOME
-   FIX 6: "Continuar leyendo" at the TOP
-══════════════════════════════════════════ */
-function renderHome() {
-  let html = '';
-
-  // FIX 6: History section FIRST, max 4 items
-  if (state.recentTracks.length > 0) {
-    const recentItems = state.recentTracks.slice(0, 4).map(key => {
-      const [bId, numStr] = key.split(':');
-      const book = allBooks.find(b => b.id === bId);
-      const track = book?.tracks.find(t => t.num === parseInt(numStr));
-      return book && track ? { book, track } : null;
-    }).filter(Boolean);
-
-    if (recentItems.length > 0) {
-      html += `
-        <div class="section">
-          <div class="section-header"><span class="section-title">Continuar leyendo</span></div>
-          <div class="continue-list">
-            ${recentItems.map(({ book: b, track: t }) => {
-              const coverUrl = getBookCoverUrl(b.id);
-              const thumbContent = coverUrl
-                ? `<img src="${coverUrl}" alt="">`
-                : b.emoji;
-              return `
-              <div class="continue-item" onclick="playTrack('${b.id}',${t.num})">
-                <div class="c-thumb" style="background:${b.cover}">${thumbContent}</div>
-                <div class="c-info">
-                  <div class="c-title">${t.title}</div>
-                  <div class="c-sub">${b.title} · ${b.author}</div>
-                </div>
-              </div>`;
-            }).join('')}
-          </div>
-        </div>`;
-    }
-  }
-
-  // FIX 2: Build library — favored books first in each carousel
-  html += LIBRARY.map(cat => {
-    // Sort books: faved ones first
-    const sorted = [...cat.books].sort((a, b) => {
-      const af = isFav(a.id) ? 0 : 1;
-      const bf = isFav(b.id) ? 0 : 1;
-      return af - bf;
-    });
-
-    return `
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">${cat.label}</span>
-      </div>
-      <div class="hscroll">
-        ${sorted.map(b => {
-          const coverUrl = getBookCoverUrl(b.id);
-          return `
-          <div class="mini-card" onclick="openDetail('${b.id}')">
-            <div class="mini-cover" style="background:${b.cover}">
-              ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}">` : `<span>${b.emoji}</span>`}
-              <div class="fav-dot ${isFav(b.id)?'faved':''}" onclick="event.stopPropagation();toggleFavBook('${b.id}',this)">
-                ${isFav(b.id)?'★':'☆'}
-              </div>
-            </div>
-            <div class="mini-info">
-              <div class="mini-title">${b.title}</div>
-              <div class="mini-meta">${b.author}</div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('home').innerHTML = html;
-}
-
-/* ══════════════════════════════════════════
-   DETAIL VIEW
-══════════════════════════════════════════ */
-function openDetail(bookId, skipHistory) {
-  const book = allBooks.find(b => b.id === bookId);
-  if (!book) return;
-  state.currentBookId = bookId;
-  state.openTracks.clear();
-
-  setTopBar(book.title, true);
-
-  const coverUrl = getBookCoverUrl(book.id);
-  const coverInner = coverUrl
-    ? `<img src="${coverUrl}" alt="${book.title}">`
-    : `<span>${book.emoji}</span>`;
-
-  let html = `
-    <div class="detail-header">
-      <div class="detail-cover" style="background:${book.cover}" id="detail-cover-${book.id}">
-        ${coverInner}
-      </div>
-      <div class="detail-info">
-        <div class="detail-title">${book.title}</div>
-        <div class="detail-author">${book.author} · ${book.pages} páginas</div>
-      </div>
-      <div class="detail-actions">
-        <button class="action-btn ${isFav(book.id)?'faved':''}" id="fav-btn" onclick="toggleFavBook('${book.id}',this,true)">
-          ${isFav(book.id)?'★ Guardado':'☆ Guardar'}
-        </button>
-        <button class="action-btn primary" onclick="openReader('${book.id}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-          Leer
-        </button>
-      </div>
-      <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
-    </div>
-    <div class="section-header" style="padding:0 1rem .4rem"><span class="section-title">Temas</span></div>
-    <div class="episode-list" id="ep-list">`;
-
-  book.tracks.forEach(t => {
-    const key = trackKey(book.id, t.num);
-    html += renderTrackItem(book, t, key);
-  });
-
-  html += `</div>`;
-  document.getElementById('detail').innerHTML = html;
-  showView('detail', skipHistory);
-}
-
-function renderTrackItem(book, t, key) {
-  return `
-    <div id="wrap-${book.id}-${t.num}">
-      <div class="ep-item" id="ep-${book.id}-${t.num}" onclick="playTrack('${book.id}',${t.num})">
-        <span class="ep-num">${String(t.num).padStart(2,'0')}</span>
-        <div class="ep-info">
-          <div class="ep-title">${t.title}</div>
-          <div class="ep-meta"><span>${t.sub}</span></div>
-        </div>
-        <div class="ep-actions">
-          <button class="ep-fav ${isFav(key)?'faved':''}" onclick="event.stopPropagation();toggleFavTrack('${book.id}',${t.num},this)">${isFav(key)?'★':'☆'}</button>
-          <button class="ep-play" id="epplay-${book.id}-${t.num}" onclick="event.stopPropagation();playTrack('${book.id}',${t.num})">
-            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="apunte-wrap" id="apunte-${book.id}-${t.num}">
-        <div class="apunte-inner" id="ai-${book.id}-${t.num}"></div>
-      </div>
-    </div>`;
-}
-
-/* ══════════════════════════════════════════
-   FIX 7: TOGGLE track — expand AND collapse
-══════════════════════════════════════════ */
-function playTrack(bookId, num) {
-  const book = allBooks.find(b => b.id === bookId);
-  const track = book?.tracks.find(t => t.num === num);
-  if (!book || !track) return;
-
-  const key = trackKey(bookId, num);
-
-  // If not on this book's detail, open it first then expand
-  if (state.view !== 'detail' || state.currentBookId !== bookId) {
-    state.currentBookId = bookId;
-    addRecent(bookId, num);
-    openDetail(bookId, false);
-    setTimeout(() => expandTrack(bookId, num, book, track), 200);
-    return;
-  }
-
-  state.currentBookId = bookId;
-  addRecent(bookId, num);
-
-  const wrap = document.getElementById(`apunte-${bookId}-${num}`);
-  if (!wrap) return;
-
-  const isOpen = wrap.classList.contains('open');
-
-  if (isOpen) {
-    // FIX 7: Collapse if already open
-    collapseTrack(bookId, num);
-  } else {
-    // Close any other open track first
-    closeAllTracks(bookId, num);
-    expandTrack(bookId, num, book, track);
-  }
-
-  state.currentTrackKey = isOpen ? null : key;
-}
-
-function expandTrack(bookId, num, book, track) {
-  if (!book) book = allBooks.find(b => b.id === bookId);
-  if (!track) track = book?.tracks.find(t => t.num === num);
-  if (!book || !track) return;
-
-  const wrap = document.getElementById(`apunte-${bookId}-${num}`);
-  const epEl = document.getElementById(`ep-${bookId}-${num}`);
-  const ai = document.getElementById(`ai-${bookId}-${num}`);
-  if (!wrap) return;
-
-  epEl?.classList.add('open');
-  wrap.classList.add('open');
-
-  if (!ai.dataset.rendered) {
-    ai.innerHTML = track.latex;
-    ai.dataset.rendered = '1';
-    renderKaTeX(ai);
-  }
-
-  setTimeout(() => epEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 150);
-}
-
-function collapseTrack(bookId, num) {
-  const wrap = document.getElementById(`apunte-${bookId}-${num}`);
-  const epEl = document.getElementById(`ep-${bookId}-${num}`);
-  if (!wrap) return;
-  wrap.classList.remove('open');
-  epEl?.classList.remove('open');
-}
-
-function closeAllTracks(exceptBookId, exceptNum) {
-  // Close all currently open tracks in the detail view
-  document.querySelectorAll('.apunte-wrap.open').forEach(el => {
-    el.classList.remove('open');
-  });
-  document.querySelectorAll('.ep-item.open').forEach(el => {
-    el.classList.remove('open');
-  });
-}
-
-/* ══════════════════════════════════════════
-   SEARCH
-══════════════════════════════════════════ */
-function buildLibraryGrid() {
-  const seen = new Set();
-  const unique = allBooks.filter(b => {
-    const key = b.title + '|' + b.author;
-    return seen.has(key) ? false : seen.add(key);
-  });
-  const sorted = unique.sort((a, b) => a.title.localeCompare(b.title, 'es'));
-  const cards = sorted.map(b => {
-    const cu = getBookCoverUrl(b.id);
-    return `
-      <div class="lib-grid-card" onclick="openDetail('${b.id}')">
-        <div class="lib-grid-cover" style="background:${b.cover}">
-          ${cu ? `<img src="${cu}" alt="">` : `<span>${b.emoji}</span>`}
-        </div>
-        <div class="lib-grid-info">
-          <div class="lib-grid-name">${b.title}</div>
-          <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
-        </div>
-      </div>`;
-  }).join('');
-  return `<div class="lib-grid">${cards}</div>`;
-}
-
-function showSearch(skipHistory) {
-  setTopBar('Buscar', true);
-  document.getElementById('search-view').innerHTML = `
-    <div class="search-wrap">
-      <div class="search-bar">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="search-input" placeholder="Buscar libros, temas, materias..." autofocus oninput="doSearch(this.value)">
-        <span class="search-clear" id="search-clear" onclick="clearSearch()">✕</span>
-      </div>
-    </div>
-    <div class="search-results" id="search-results" style="display:none">
-      <div class="search-empty">Escribe para buscar en tu biblioteca</div>
-    </div>
-    <div class="lib-grid-section" id="library-grid">
-      ${buildLibraryGrid()}
-    </div>`;
-  showView('search-view', skipHistory);
-  setTimeout(() => document.getElementById('search-input')?.focus(), 100);
-}
-
-function doSearch(q) {
-  const clear = document.getElementById('search-clear');
-  const res = document.getElementById('search-results');
-  const grid = document.getElementById('library-grid');
-  if (clear) clear.style.display = q ? 'block' : 'none';
-
-  if (!q.trim()) {
-    // Show grid, hide results
-    if (res) res.style.display = 'none';
-    if (grid) grid.style.display = 'block';
-    return;
-  }
-
-  // Show results, hide grid
-  if (res) res.style.display = 'block';
-  if (grid) grid.style.display = 'none';
-
-  const qL = q.toLowerCase();
-  let matches = [];
-  allBooks.forEach(b => {
-    if (b.title.toLowerCase().includes(qL)) matches.push({ type:'book', bookId:b.id, title:b.title, sub:b.author, emoji:b.emoji, cover:b.cover });
-    b.tracks.forEach(t => {
-      if (t.title.toLowerCase().includes(qL) || t.sub.toLowerCase().includes(qL))
-        matches.push({ type:'track', bookId:b.id, num:t.num, title:t.title, sub:`${b.title} · ${t.sub}`, emoji:b.emoji, cover:b.cover });
-    });
-  });
-
-  if (!matches.length) { res.innerHTML = `<div class="search-empty">Sin resultados para "<strong>${q}</strong>"</div>`; return; }
-
-  res.innerHTML = matches.map(m => `
-    <div class="search-result-item" onclick="${m.type==='book'?`openDetail('${m.bookId}')`:`playTrack('${m.bookId}',${m.num})`}">
-      <div class="sr-cover" style="background:${m.cover}">${m.emoji}</div>
-      <div class="sr-info">
-        <div class="sr-title">${m.title}</div>
-        <div class="sr-sub">${m.sub}</div>
-      </div>
-      <span class="sr-type">${m.type==='book'?'Libro':'Tema'}</span>
-    </div>`).join('');
-}
-
-function clearSearch() {
-  const inp = document.getElementById('search-input');
-  if (inp) { inp.value = ''; inp.focus(); }
-  const clear = document.getElementById('search-clear');
-  if (clear) clear.style.display = 'none';
-  const res = document.getElementById('search-results');
-  const grid = document.getElementById('library-grid');
-  if (res) res.style.display = 'none';
-  if (grid) grid.style.display = 'block';
-}
-
-/* ══════════════════════════════════════════
-   FAVORITES
-   FIX 2: Re-render home so favs bubble to front
-══════════════════════════════════════════ */
-function toggleFavBook(bookId, el, isText) {
-  if (isFav(bookId)) state.favorites.delete(bookId);
-  else state.favorites.add(bookId);
-  saveFavs();
-  if (el) {
-    el.classList.toggle('faved', isFav(bookId));
-    if (isText) el.textContent = isFav(bookId) ? '★ Guardado' : '☆ Guardar';
-    else el.textContent = isFav(bookId) ? '★' : '☆';
-  }
-  updateNavFavBadge();
-  // FIX 2: Re-render home so the carousel order updates
-  if (state.view === 'home') renderHome();
-}
-
-function toggleFavTrack(bookId, num, el) {
-  const key = trackKey(bookId, num);
-  if (isFav(key)) state.favorites.delete(key);
-  else state.favorites.add(key);
-  saveFavs();
-  if (el) { el.classList.toggle('faved', isFav(key)); el.textContent = isFav(key)?'★':'☆'; }
-}
-
-function updateNavFavBadge() {
-  const icon = document.getElementById('nav-fav-icon');
-  if (icon) icon.style.fill = state.favorites.size ? 'var(--accent)' : 'none';
-}
-
-function showFavs(skipHistory) {
-  setTopBar('Favoritos', false);
-  const favBooks = allBooks.filter(b => isFav(b.id));
-  const favTracks = allTracks.filter(t => isFav(trackKey(t.bookId, t.num)));
-
-  let html = '';
-  if (!favBooks.length && !favTracks.length) {
-    html = '<div class="favs-empty">Aún no tienes favoritos.<br>Guarda libros o temas con ♡</div>';
-  } else {
-    if (favBooks.length) {
-      html += `<div class="section"><div class="section-header"><span class="section-title">Libros guardados</span></div>
-        <div class="hscroll">${favBooks.map(b=>{
-          const cu = getBookCoverUrl(b.id);
-          return `<div class="mini-card" onclick="openDetail('${b.id}')">
-            <div class="mini-cover" style="background:${b.cover}">${cu?`<img src="${cu}" alt="">`:`<span>${b.emoji}</span>`}</div>
-            <div class="mini-info"><div class="mini-title">${b.title}</div><div class="mini-meta">${b.author}</div></div>
-          </div>`;
-        }).join('')}</div></div>`;
-    }
-    if (favTracks.length) {
-      html += `<div class="section"><div class="section-header"><span class="section-title">Temas guardados</span></div>
-        <div class="continue-list">${favTracks.map(t=>`
-          <div class="continue-item" onclick="openDetail('${t.bookId}')">
-            <div class="c-thumb" style="background:${t.bookCover}">${t.bookEmoji}</div>
-            <div class="c-info"><div class="c-title">${t.title}</div><div class="c-sub">${t.bookTitle} · ${t.sub}</div></div>
-          </div>`).join('')}
-        </div></div>`;
-    }
-  }
-  document.getElementById('favs-view').innerHTML = html;
-  showView('favs-view', skipHistory);
-}
-
-/* ══════════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════════ */
-function showView(id, skipHistory) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id)?.classList.add('active');
-  state.prevView = state.view;
-  state.view = id;
-  document.querySelectorAll('.nav-item').forEach(n => {
-    n.classList.toggle('active', n.dataset.nav === id);
-  });
-  // FIX 1: Always scroll to top when switching views
-  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  if (!skipHistory) {
-    history.pushState({ view: id, bookId: state.currentBookId }, '', '#' + id);
-  }
-}
-
-function setTopBar(title, showBack) {
-  document.getElementById('tb-left').style.display = showBack ? 'none' : 'flex';
-  document.getElementById('tb-back').style.display = showBack ? 'flex' : 'none';
-  document.getElementById('tb-title').textContent = title;
-}
-
-function navBack() {
-  const prev = state.prevView || 'home';
-  if (prev === 'home' || prev === state.view) { goHome(); return; }
-  showView(prev, true);
-  if (prev === 'home') setTopBar('', false);
-  else if (prev === 'detail') {
-    const book = allBooks.find(b => b.id === state.currentBookId);
-    setTopBar(book?.title || '', true);
-  } else setTopBar('', false);
-}
-
-function goHome() {
-  setTopBar('', false);
-  renderHome();
-  showView('home', true);
-  history.replaceState({ view: 'home' }, '', '#home');
-}
-
-/* ══════════════════════════════════════════
-   KATEX
-══════════════════════════════════════════ */
-function renderKaTeX(el) {
-  if (window.renderMathInElement) {
-    try {
-      renderMathInElement(el, {
-        delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
-        throwOnError:false, strict:false, trust:true
-      });
-    } catch(e) { console.warn('KaTeX error', e); }
-  } else {
-    setTimeout(() => renderKaTeX(el), 150);
-  }
-}
-
-/* PDF.js not needed — covers loaded via fetch+blob */
-
-/* ══════════════════════════════════════════
-   BOOK READER ENGINE
-   Optimizations:
-   1. fetch() + createObjectURL → parallel download, no browser re-request
-   2. Adjacent pages pre-fetched into blob pool (radius 4 each side)
-   3. DOM pool: keeps prev/curr/next img elements alive in #r-book (hidden)
-   4. Slide animation replaces 3D flip → no GPU layer creation per page
-   5. Rapid-click queue: never blocks, queues direction steps
-   6. Long-press on buttons → accelerating auto-scroll
-   7. Android back gesture → closes reader via popstate
-══════════════════════════════════════════ */
-const R = {
-  bookId: null, total: 0, current: 1,
-  base: '', prefix: '', ext: '.jpg',
-  // blob URL cache: n → objectURL string
-  blobs: {},
-  // pending fetch promises: n → Promise<string>
-  fetching: {},
-  // rapid-nav queue
-  queue: 0, processing: false,
-  // long-press
-  fastTimer: null, fastInterval: null,
-};
-
-const READER_BOOKS = {
-  'bib_as1_cardenas': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Cardenas/',
-    prefix: 'Cardenas-Algebra-superior_page-',
-    ext: '.jpg', total: 327,
-  },
-  'bib_an1_apostol': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an1_Apostol/',
-    prefix: 'Apostol-Analisis-Matematico_page-',
-    ext: '.jpg', total: 606,
-  },
-  'bib_as1_nachbin': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Nachbin/',
-    prefix: 'Nachbin-Algebra-superior_page-',
-    ext: '.jpg', total: 153,
-  }
-};
-
-function rUrl(n) {
-  return R.base + R.prefix + String(n).padStart(4,'0') + R.ext;
-}
-
-/* Fetch page n into blob cache. Returns promise of blob URL. */
-function rFetch(n) {
-  if (n < 1 || n > R.total) return Promise.resolve(null);
-  if (R.blobs[n]) return Promise.resolve(R.blobs[n]);
-  if (R.fetching[n]) return R.fetching[n];
-  const p = fetch(rUrl(n))
-    .then(r => r.ok ? r.blob() : null)
-    .then(blob => {
-      if (!blob) return null;
-      const url = URL.createObjectURL(blob);
-      R.blobs[n] = url;
-      delete R.fetching[n];
-      return url;
-    })
-    .catch(() => { delete R.fetching[n]; return null; });
-  R.fetching[n] = p;
-  return p;
-}
-
-/* Pre-fetch pages around n, high priority for n itself */
-function rPrefetch(n, radius) {
-  rFetch(n); // highest priority
-  for (let d = 1; d <= radius; d++) {
-    rFetch(n + d);
-    rFetch(n - d);
-  }
-}
-
-/* Evict blob URLs far from current page to free memory */
-function rEvict(current, keep) {
-  Object.keys(R.blobs).forEach(k => {
-    const pg = +k;
-    if (Math.abs(pg - current) > keep) {
-      URL.revokeObjectURL(R.blobs[pg]);
-      delete R.blobs[pg];
-    }
-  });
-}
-
-function openReader(bookId) {
-  const cfg = READER_BOOKS[bookId];
-  if (!cfg) { openPdf(bookId); return; }
-  R.bookId = bookId;
-  R.base = cfg.base; R.prefix = cfg.prefix; R.ext = cfg.ext; R.total = cfg.total;
-  R.current = parseInt(localStorage.getItem('reader_pg_' + bookId) || '1');
-  R.blobs = {}; R.fetching = {}; R.queue = 0; R.processing = false;
-
-  const book = allBooks.find(b => b.id === bookId);
-  document.getElementById('r-title').textContent = book?.title || bookId;
-  document.getElementById('goto-hint').textContent = 'Total: ' + R.total + ' páginas';
-  document.getElementById('goto-inp').max = R.total;
-
-  document.getElementById('reader-view').classList.add('active');
-  history.pushState({ view: 'reader', bookId }, '', '#reader');
-
-  // Fetch current page first, then neighbors
-  rPrefetch(R.current, 4);
-  rShowPage(R.current, null);
-  rSetupInteractions();
-}
-
-function openPdf(bookId) {
-  const book = allBooks.find(b => b.id === bookId);
-  if (!book?.pdfUrl) return;
-  window.open(book.pdfUrl, '_blank');
-}
-
-function closeReader() {
-  rStopFast();
-  document.getElementById('reader-view').classList.remove('active');
-  if (location.hash === '#reader') history.back();
-}
-
-/* Show page n with optional slide direction ('fwd' | 'bk' | null) */
-function rShowPage(n, dir) {
-  const bookEl = document.getElementById('r-book');
-
-  // Create new page div
-  const div = document.createElement('div');
-  div.className = 'rpage';
-
-  const blobUrl = R.blobs[n];
-  if (blobUrl) {
-    // Image already in cache → instant display
-    const img = document.createElement('img');
-    img.src = blobUrl; img.draggable = false; img.decoding = 'async';
-    div.appendChild(img);
-    rSwapPage(bookEl, div, dir);
-  } else {
-    // Show spinner while fetching
-    const sp = document.createElement('div');
-    sp.className = 'rpage-loading';
-    sp.innerHTML = '<div class="r-spinner"></div>';
-    div.appendChild(sp);
-    rSwapPage(bookEl, div, dir);
-    rFetch(n).then(url => {
-      if (!url) return;
-      // Only update if we're still on this page
-      if (R.current !== n) return;
-      const img = document.createElement('img');
-      img.src = url; img.draggable = false; img.decoding = 'async';
-      sp.replaceWith(img);
-    });
-  }
-
-  rUpdateUI();
-  rPrefetch(n, 4);
-  rEvict(n, 8);
-}
-
-function rSwapPage(bookEl, newDiv, dir) {
-  const old = bookEl.querySelector('.rpage');
-  if (!old || !dir) {
-    // No animation
-    bookEl.innerHTML = '';
-    bookEl.appendChild(newDiv);
-    return;
-  }
-  // Animate: old slides out, new slides in
-  const outClass = dir === 'fwd' ? 'out-left' : 'out-right';
-  const inClass  = dir === 'fwd' ? 'in-right'  : 'in-left';
-  old.classList.add(outClass);
-  newDiv.classList.add(inClass);
-  bookEl.appendChild(newDiv);
-  // Remove old after animation
-  old.addEventListener('animationend', () => old.remove(), { once: true });
-}
-
-/* ── Queue-based rapid navigation ── */
-function rNext() { rEnqueue(+1); }
-function rPrev() { rEnqueue(-1); }
-
-function rEnqueue(step) {
-  const target = R.current + R.queue + step;
-  if (target < 1 || target > R.total) return;
-  R.queue += step;
-  if (!R.processing) rFlushQueue();
-}
-
-function rFlushQueue() {
-  if (R.queue === 0) { R.processing = false; return; }
-  R.processing = true;
-  const step = R.queue > 0 ? 1 : -1;
-  R.queue -= step;
-  const next = R.current + step;
-  if (next < 1 || next > R.total) { R.queue = 0; R.processing = false; return; }
-  R.current = next;
-  localStorage.setItem('reader_pg_' + R.bookId, R.current);
-  // Animate only if not rapidly skipping (queue draining fast)
-  const dir = step > 0 ? 'fwd' : 'bk';
-  rShowPage(R.current, Math.abs(R.queue) > 2 ? null : dir);
-  // Flush remaining queue after a brief pause
-  setTimeout(rFlushQueue, R.queue !== 0 ? 60 : 0);
-}
-
-function rGoTo(n) {
-  rStopFast();
-  R.queue = 0; R.processing = false;
-  const t = Math.max(1, Math.min(R.total, n));
-  if (t === R.current) return;
-  const dir = t > R.current ? 'fwd' : 'bk';
-  R.current = t;
-  localStorage.setItem('reader_pg_' + R.bookId, R.current);
-  rShowPage(R.current, dir);
-}
-
-function rUpdateUI() {
-  document.getElementById('r-counter').textContent = 'p. ' + R.current + ' / ' + R.total;
-  const pct = R.total > 1 ? ((R.current - 1) / (R.total - 1)) * 100 : 0;
-  document.getElementById('r-fill').style.width = pct + '%';
-}
-
-/* ── Long-press: accelerating repeat ── */
-function rStartFast(dir) {
-  rStopFast();
-  dir > 0 ? rNext() : rPrev();
-  let speed = 300;
-  function repeat() {
-    dir > 0 ? rNext() : rPrev();
-    speed = Math.max(60, speed - 30);
-    R.fastTimer = setTimeout(repeat, speed);
-  }
-  R.fastTimer = setTimeout(repeat, 450);
-}
-function rStopFast() {
-  clearTimeout(R.fastTimer); clearInterval(R.fastInterval);
-  R.fastTimer = null; R.fastInterval = null;
-}
-
-/* ── Interactions (set up once) ── */
-let _rInteractionsSetup = false;
-function rSetupInteractions() {
-  if (_rInteractionsSetup) return;
-  _rInteractionsSetup = true;
-
-  // Progress bar scrub
-  const track = document.getElementById('r-track');
-  track.addEventListener('click', e => {
-    const ratio = e.offsetX / track.offsetWidth;
-    rGoTo(Math.round(1 + ratio * (R.total - 1)));
-  });
-  // Touch scrub on bar
-  track.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const rect = track.getBoundingClientRect();
-    const ratio = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
-    rGoTo(Math.round(1 + ratio * (R.total - 1)));
-  }, { passive: false });
-
-  // Swipe on stage
-  const stage = document.getElementById('r-stage');
-  let sx = 0, sy = 0, moved = false;
-  stage.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; moved = false; }, { passive: true });
-  stage.addEventListener('touchmove', () => { moved = true; }, { passive: true });
-  stage.addEventListener('touchend', e => {
-    if (!moved) return;
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 36) {
-      dx < 0 ? rNext() : rPrev();
-    }
-  });
-
-  // Long-press on nav buttons
-  const prevBtn = document.getElementById('r-prev-btn');
-  const nextBtn = document.getElementById('r-next-btn');
-  ['mousedown','touchstart'].forEach(ev => {
-    prevBtn?.addEventListener(ev, e => { if(ev==='touchstart')e.preventDefault(); rStartFast(-1); }, { passive: false });
-    nextBtn?.addEventListener(ev, e => { if(ev==='touchstart')e.preventDefault(); rStartFast(+1); }, { passive: false });
-  });
-  ['mouseup','touchend','mouseleave','touchcancel'].forEach(ev => {
-    prevBtn?.addEventListener(ev, rStopFast);
-    nextBtn?.addEventListener(ev, rStopFast);
-  });
-
-  // Tap zones
-  document.querySelector('.reader-zone-prev')?.addEventListener('click', rPrev);
-  document.querySelector('.reader-zone-next')?.addEventListener('click', rNext);
-
-  // Keyboard
-  document.addEventListener('keydown', e => {
-    if (!document.getElementById('reader-view').classList.contains('active')) return;
-    if (e.target.tagName === 'INPUT') return;
-    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); rNext(); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); rPrev(); }
-    if (e.key === 'Escape') { closeGoto(); closeReader(); }
-    if (e.key === 'g') readerGoto();
-  });
-}
-
-function readerGoto() {
-  document.getElementById('goto-inp').value = R.current;
-  document.getElementById('reader-goto').classList.add('open');
-  setTimeout(() => document.getElementById('goto-inp').focus(), 100);
-}
-function closeGoto() { document.getElementById('reader-goto').classList.remove('open'); }
-function gotoConfirm() {
-  const v = parseInt(document.getElementById('goto-inp').value);
-  if (!isNaN(v)) rGoTo(v);
-  closeGoto();
-}
-
-/* ══════════════════════════════════════════
-   INIT — FIX 1: ensure scroll starts at top
-══════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  history.replaceState({ view: 'home' }, '', '#home');
-  renderHome();
-  updateNavFavBadge();
-  // FIX 1: force scroll reset
-  window.scrollTo(0, 0);
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-});
-
-window.addEventListener('popstate', (e) => {
-  const data = e.state;
-  if (!data) { goHome(); return; }
-  const v = data.view || 'home';
-  if (v === 'home') {
-    setTopBar('', false);
-    renderHome();
-    showView('home', true);
-  } else if (v === 'detail') {
-    if (data.bookId) openDetail(data.bookId, true);
-    else goHome();
-  } else if (v === 'reader') {
-    document.getElementById('reader-view').classList.remove('active');
-  } else if (v === 'search-view') {
-    showSearch(true);
-  } else if (v === 'favs-view') {
-    showFavs(true);
-  } else {
-    goHome();
-  }
-});
-</script>
-
-<!-- ════════════════════════════════
+<!-- ═══════════════════════════════════════
      BOOK READER
-════════════════════════════════ -->
-<div id="reader-view">
+═══════════════════════════════════════ -->
+<div id="reader-view" aria-label="Lector de libros">
   <div class="reader-topbar">
     <div class="reader-page-ct" id="r-counter">p. — / —</div>
     <div class="reader-title" id="r-title">—</div>
-    <div style="display:flex;gap:5px">
-      <button class="reader-btn" onclick="readerGoto()" title="Ir a página">
+    <div style="display:flex;gap:6px">
+      <button class="reader-btn" onclick="readerGoto()" title="Ir a página" aria-label="Ir a página específica">
         <svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
       </button>
-      <button class="reader-btn" onclick="closeReader()" title="Cerrar">
+      <button class="reader-btn" onclick="closeReader()" title="Cerrar lector" aria-label="Cerrar">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
   </div>
+  
   <div class="reader-stage" id="r-stage">
     <div id="r-book"></div>
-    <div class="reader-zone-prev"></div>
-    <div class="reader-zone-next"></div>
+    <div class="reader-zone-prev" aria-label="Página anterior"></div>
+    <div class="reader-zone-next" aria-label="Página siguiente"></div>
   </div>
+  
   <div class="reader-controls">
-    <div class="reader-track" id="r-track">
+    <div class="reader-track" id="r-track" role="slider" aria-label="Progreso de lectura">
       <div class="reader-fill" id="r-fill"></div>
     </div>
     <div class="reader-btns">
-      <button class="reader-nav-btn" id="r-prev-btn">
+      <button class="reader-nav-btn" id="r-prev-btn" aria-label="Anterior">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Anterior
       </button>
-      <button class="reader-nav-btn primary" id="r-next-btn">
+      <button class="reader-nav-btn primary" id="r-next-btn" aria-label="Siguiente">
         Siguiente <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
   </div>
 </div>
 
-<div id="reader-goto">
+<!-- Goto Modal -->
+<div id="reader-goto" aria-label="Ir a página" role="dialog">
   <div class="goto-box">
     <div class="goto-title">Ir a página</div>
-    <input class="goto-input" id="goto-inp" type="number" min="1"
-           placeholder="número de página" onkeydown="if(event.key==='Enter')gotoConfirm()">
+    <input class="goto-input" id="goto-inp" type="number" min="1" 
+           placeholder="número de página" 
+           onkeydown="if(event.key==='Enter')gotoConfirm()"
+           aria-label="Número de página">
     <div class="goto-hint" id="goto-hint">Total: — páginas</div>
     <div class="goto-row">
       <button class="goto-btn" onclick="closeGoto()">Cancelar</button>
@@ -1514,6 +1163,1175 @@ window.addEventListener('popstate', (e) => {
     </div>
   </div>
 </div>
+
+<script>
+/* ══════════════════════════════════════════
+   UTILITY FUNCTIONS
+══════════════════════════════════════════ */
+const debounce = (fn, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+};
+
+const throttle = (fn, limit) => {
+  let inThrottle;
+  return (...args) => {
+    if (!inThrottle) {
+      fn(...args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+};
+
+/* ══════════════════════════════════════════
+   DATA STORE
+══════════════════════════════════════════ */
+const LIBRARY = [
+  {
+    label: "Álgebra Superior I",
+    books: [
+      {
+        id: "bib_as1_cardenas", title: "Álgebra Superior", emoji: "📘",
+        cover: "linear-gradient(135deg, #1a1a3e, #3a3a7e)", 
+        author: "Cárdenas, Lluis, Raggi, Tomás · Trillas, 1974", 
+        pages: 450, totalTime: "Completo",
+        tracks: [
+          { num: 1, title: "Conjuntos", sub: "Cap. 1 · 12h", 
+            diff: "Esencial", diffStyle: "background:var(--success);color:var(--success-text)", time: "—",
+            latex: `<h1>Conjuntos</h1><span class="subtitle">Capítulo 1 · Álgebra Superior</span>
+<h2>Noción intuitiva de conjuntos</h2>
+<p>Igualdad de conjuntos. Subconjuntos. Conjunto vacío. Conjunto Universal.</p>
+<h2>Operaciones con conjuntos</h2>
+<p>Unión, intersección, complemento y diferencia.</p>
+<h2>Conjunto potencia</h2>
+<p>Producto cartesiano. Familias de conjuntos.</p>` },
+          { num: 2, title: "Relaciones y funciones", sub: "Cap. 2 · 19h", 
+            diff: "Esencial", diffStyle: "background:var(--success);color:var(--success-text)", time: "—",
+            latex: `<h1>Relaciones y Funciones</h1><span class="subtitle">Capítulo 2 · Álgebra Superior</span>
+<p>Relaciones: dominio, codominio e imagen. Funciones: imágenes e imágenes inversas.</p>
+<p>Composición de funciones. Función inversa. Inyectivas, suprayectivas y biyectivas.</p>
+<p>Cardinalidad. Conjuntos finitos e infinitos. Relaciones de equivalencia.</p>` },
+          // ... (más temas)
+        ]
+      }
+    ]
+  },
+  // ... (más materias)
+];
+
+// Aplanar datos para búsquedas eficientes
+const allBooks = LIBRARY.flatMap(c => c.books);
+const allTracks = allBooks.flatMap(b => 
+  b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover }))
+);
+
+/* ══════════════════════════════════════════
+   APPLICATION STATE
+══════════════════════════════════════════ */
+const AppState = {
+  view: 'home',
+  prevView: null,
+  currentBookId: null,
+  currentTrackKey: null,
+  favorites: new Set(JSON.parse(localStorage.getItem('np_favs') || '[]')),
+  openTracks: new Set(),
+  recentTracks: JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0, 4),
+  
+  // Métodos de estado
+  isFav(key) { return this.favorites.has(key); },
+  
+  addFavorite(key) {
+    this.favorites.add(key);
+    this.saveFavorites();
+  },
+  
+  removeFavorite(key) {
+    this.favorites.delete(key);
+    this.saveFavorites();
+  },
+  
+  toggleFavorite(key) {
+    if (this.isFav(key)) {
+      this.removeFavorite(key);
+      return false;
+    } else {
+      this.addFavorite(key);
+      return true;
+    }
+  },
+  
+  saveFavorites() {
+    localStorage.setItem('np_favs', JSON.stringify([...this.favorites]));
+    this.updateFavCount();
+  },
+  
+  addRecent(bookId, trackNum) {
+    const key = `${bookId}:${trackNum}`;
+    this.recentTracks = [key, ...this.recentTracks.filter(k => k !== key)].slice(0, 4);
+    localStorage.setItem('np_recent', JSON.stringify(this.recentTracks));
+  },
+  
+  updateFavCount() {
+    const count = this.favorites.size;
+    const el = document.getElementById('fav-count');
+    if (el) {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'flex' : 'none';
+    }
+  },
+  
+  getBookCoverUrl(bookId) {
+    const cfg = READER_CONFIGS[bookId];
+    if (!cfg) return null;
+    return cfg.base + cfg.prefix + '0001' + cfg.ext;
+  }
+};
+
+/* ══════════════════════════════════════════
+   RENDER FUNCTIONS
+══════════════════════════════════════════ */
+const Renderer = {
+  home() {
+    let html = '';
+
+    // Sección: Continuar leyendo (si hay historial)
+    if (AppState.recentTracks.length > 0) {
+      const recentItems = AppState.recentTracks
+        .map(key => {
+          const [bId, numStr] = key.split(':');
+          const book = allBooks.find(b => b.id === bId);
+          const track = book?.tracks.find(t => t.num === parseInt(numStr));
+          return book && track ? { book, track } : null;
+        })
+        .filter(Boolean);
+
+      if (recentItems.length > 0) {
+        html += `
+          <div class="section">
+            <div class="section-header">
+              <span class="section-title">Continuar leyendo</span>
+            </div>
+            <div class="continue-list">
+              ${recentItems.map(({ book: b, track: t }) => {
+                const coverUrl = AppState.getBookCoverUrl(b.id);
+                const thumbContent = coverUrl 
+                  ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` 
+                  : b.emoji;
+                return `
+                <div class="continue-item" onclick="Navigation.playTrack('${b.id}',${t.num})">
+                  <div class="c-thumb" style="background:${b.cover}">${thumbContent}</div>
+                  <div class="c-info">
+                    <div class="c-title">${t.title}</div>
+                    <div class="c-sub">${b.title} · ${b.author.split('·')[0].trim()}</div>
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>`;
+      }
+    }
+
+    // Secciones de materias con carruseles
+    html += LIBRARY.map(cat => {
+      const sorted = [...cat.books].sort((a, b) => {
+        const af = AppState.isFav(a.id) ? 0 : 1;
+        const bf = AppState.isFav(b.id) ? 0 : 1;
+        return af - bf;
+      });
+
+      return `
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">${cat.label}</span>
+        </div>
+        <div class="hscroll" role="list" aria-label="${cat.label}">
+          ${sorted.map(b => {
+            const coverUrl = AppState.getBookCoverUrl(b.id);
+            return `
+            <div class="mini-card" onclick="Navigation.openDetail('${b.id}')" role="listitem">
+              <div class="mini-cover" style="background:${b.cover}">
+                ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` : `<span aria-hidden="true">${b.emoji}</span>`}
+                <button class="fav-dot ${AppState.isFav(b.id)?'faved':''}" 
+                        onclick="event.stopPropagation();Actions.toggleBookFav('${b.id}',this)"
+                        aria-label="${AppState.isFav(b.id)?'Quitar de favoritos':'Agregar a favoritos'}">
+                  ${AppState.isFav(b.id)?'★':'☆'}
+                </button>
+              </div>
+              <div class="mini-info">
+                <div class="mini-title">${b.title}</div>
+                <div class="mini-meta">${b.author.split('·')[0].trim()}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('home').innerHTML = html;
+  },
+  
+  detail(book) {
+    if (!book) return;
+    AppState.currentBookId = book.id;
+    
+    const coverUrl = AppState.getBookCoverUrl(book.id);
+    const coverInner = coverUrl 
+      ? `<img src="${coverUrl}" alt="${book.title}">` 
+      : `<span>${book.emoji}</span>`;
+    
+    // Header del detalle
+    let html = `
+      <div class="detail-header">
+        <div class="detail-cover" style="background:${book.cover}">
+          ${coverInner}
+        </div>
+        <div class="detail-info">
+          <h1 class="detail-title">${book.title}</h1>
+          <p class="detail-author">${book.author} · ${book.pages} páginas</p>
+        </div>
+        <div class="detail-actions">
+          <button class="action-btn ${AppState.isFav(book.id)?'faved':''}" id="fav-btn" 
+                  onclick="Actions.toggleBookFav('${book.id}',this,true)">
+            ${AppState.isFav(book.id)?'★ Guardado':'☆ Guardar'}
+          </button>
+          <button class="action-btn primary" onclick="Reader.open('${book.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Leer
+          </button>
+        </div>
+        <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
+      </div>
+      
+      <div class="section-header" style="padding:0 1rem .5rem">
+        <span class="section-title">Temas</span>
+      </div>
+      <div class="episode-list" id="ep-list">`;
+
+    // Lista de temas
+    book.tracks.forEach((t, index) => {
+      const key = `${book.id}:${t.num}`;
+      const isOpen = AppState.openTracks.has(key);
+      html += `
+        <div id="wrap-${book.id}-${t.num}" style="animation-delay:${index * 0.03}s">
+          <div class="ep-item ${isOpen?'open':''}" id="ep-${book.id}-${t.num}" 
+               onclick="Navigation.playTrack('${book.id}',${t.num})">
+            <span class="ep-num">${String(t.num).padStart(2,'0')}</span>
+            <div class="ep-info">
+              <div class="ep-title">${t.title}</div>
+              <div class="ep-meta"><span>${t.sub}</span></div>
+            </div>
+            <div class="ep-actions">
+              <button class="ep-fav ${AppState.isFav(key)?'faved':''}" 
+                      onclick="event.stopPropagation();Actions.toggleTrackFav('${book.id}',${t.num},this)"
+                      aria-label="Favorito">
+                ${AppState.isFav(key)?'★':'☆'}
+              </button>
+              <button class="ep-play" onclick="event.stopPropagation();Navigation.playTrack('${book.id}',${t.num})">
+                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="apunte-wrap ${isOpen?'open':''}" id="apunte-${book.id}-${t.num}">
+            <div class="apunte-inner" id="ai-${book.id}-${t.num}">
+              ${isOpen ? t.latex : ''}
+            </div>
+          </div>
+        </div>`;
+    });
+
+    html += `</div>`;
+    document.getElementById('detail').innerHTML = html;
+    
+    // Renderizar KaTeX para temas que ya están abiertos
+    if (AppState.openTracks.size > 0) {
+      setTimeout(() => {
+        AppState.openTracks.forEach(key => {
+          const el = document.getElementById('ai-' + key.replace(':', '-'));
+          if (el && el.innerHTML) KaTeXRenderer.render(el);
+        });
+      }, 100);
+    }
+  },
+  
+  search(query = '') {
+    const searchView = document.getElementById('search-view');
+    
+    let html = `
+      <div class="search-wrap">
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" placeholder="Buscar libros, temas, materias..." 
+                 value="${query}" autofocus oninput="Actions.doSearch(this.value)">
+          <span class="search-clear ${query?'visible':''}" id="search-clear" onclick="Actions.clearSearch()">✕</span>
+        </div>
+      </div>
+      <div class="search-results" id="search-results" style="display:${query?'block':'none'}">
+        <div class="search-empty">Escribe para buscar en tu biblioteca</div>
+      </div>
+      <div class="lib-grid-section" id="library-grid" style="display:${query?'none':'block'}">
+        ${this.buildLibraryGrid()}
+      </div>`;
+    
+    searchView.innerHTML = html;
+  },
+  
+  buildLibraryGrid() {
+    const seen = new Set();
+    const unique = allBooks.filter(b => {
+      const key = b.title + '|' + b.author;
+      return seen.has(key) ? false : seen.add(key);
+    });
+    
+    const sorted = unique.sort((a, b) => a.title.localeCompare(b.title, 'es'));
+    
+    const cards = sorted.map(b => {
+      const coverUrl = AppState.getBookCoverUrl(b.id);
+      return `
+        <div class="lib-grid-card" onclick="Navigation.openDetail('${b.id}')">
+          <div class="lib-grid-cover" style="background:${b.cover}">
+            ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` : `<span>${b.emoji}</span>`}
+          </div>
+          <div class="lib-grid-info">
+            <div class="lib-grid-name">${b.title}</div>
+            <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
+          </div>
+        </div>`;
+    }).join('');
+    
+    return `<div class="lib-grid">${cards}</div>`;
+  },
+  
+  favorites() {
+    const favBooks = allBooks.filter(b => AppState.isFav(b.id));
+    const favTracks = allTracks.filter(t => AppState.isFav(`${t.bookId}:${t.num}`));
+    
+    let html = '';
+    
+    if (!favBooks.length && !favTracks.length) {
+      html = '<div class="search-empty" style="padding:4rem 1rem">Aún no tienes favoritos.<br>Guarda libros o temas con ☆</div>';
+    } else {
+      if (favBooks.length) {
+        html += `<div class="section">
+          <div class="section-header"><span class="section-title">Libros guardados</span></div>
+          <div class="hscroll">${favBooks.map(b => {
+            const coverUrl = AppState.getBookCoverUrl(b.id);
+            return `<div class="mini-card" onclick="Navigation.openDetail('${b.id}')">
+              <div class="mini-cover" style="background:${b.cover}">
+                ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` : `<span>${b.emoji}</span>`}
+              </div>
+              <div class="mini-info">
+                <div class="mini-title">${b.title}</div>
+                <div class="mini-meta">${b.author.split('·')[0].trim()}</div>
+              </div>
+            </div>`;
+          }).join('')}</div>
+        </div>`;
+      }
+      
+      if (favTracks.length) {
+        html += `<div class="section">
+          <div class="section-header"><span class="section-title">Temas guardados</span></div>
+          <div class="continue-list">${favTracks.map(t => `
+            <div class="continue-item" onclick="Navigation.openDetail('${t.bookId}')">
+              <div class="c-thumb" style="background:${t.bookCover}">${t.bookEmoji}</div>
+              <div class="c-info">
+                <div class="c-title">${t.title}</div>
+                <div class="c-sub">${t.bookTitle} · ${t.sub}</div>
+              </div>
+            </div>`).join('')}
+          </div>
+        </div>`;
+      }
+    }
+    
+    document.getElementById('favs-view').innerHTML = html;
+  }
+};
+
+/* ══════════════════════════════════════════
+   NAVIGATION CONTROLLER
+══════════════════════════════════════════ */
+const Navigation = {
+  setTopBar(title, showBack) {
+    document.getElementById('tb-default').style.display = showBack ? 'none' : 'flex';
+    document.getElementById('tb-back').style.display = showBack ? 'flex' : 'none';
+    if (showBack) document.getElementById('tb-title').textContent = title || '';
+  },
+  
+  showView(id, skipHistory = false) {
+    // Ocultar vista actual
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    
+    // Mostrar nueva vista
+    const viewEl = document.getElementById(id);
+    if (viewEl) {
+      viewEl.classList.add('active');
+      viewEl.scrollTop = 0;
+    }
+    
+    // Actualizar navegación inferior
+    document.querySelectorAll('.nav-item').forEach(n => {
+      n.classList.toggle('active', n.dataset.nav === id);
+    });
+    
+    // Actualizar estado
+    AppState.prevView = AppState.view;
+    AppState.view = id;
+    
+    // Scroll al inicio
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Historial
+    if (!skipHistory) {
+      history.pushState({ view: id, bookId: AppState.currentBookId }, '', '#' + id);
+    }
+  },
+  
+  goHome() {
+    this.setTopBar('', false);
+    Renderer.home();
+    this.showView('home', true);
+    history.replaceState({ view: 'home' }, '', '#home');
+  },
+  
+  showSearch() {
+    this.setTopBar('Buscar', true);
+    Renderer.search();
+    this.showView('search-view', false);
+    setTimeout(() => document.getElementById('search-input')?.focus(), 100);
+  },
+  
+  showFavs() {
+    this.setTopBar('Favoritos', false);
+    Renderer.favorites();
+    this.showView('favs-view', false);
+  },
+  
+  openDetail(bookId, skipHistory = false) {
+    const book = allBooks.find(b => b.id === bookId);
+    if (!book) return;
+    
+    AppState.currentBookId = bookId;
+    this.setTopBar(book.title, true);
+    Renderer.detail(book);
+    this.showView('detail', skipHistory);
+  },
+  
+  playTrack(bookId, num) {
+    const book = allBooks.find(b => b.id === bookId);
+    const track = book?.tracks.find(t => t.num === num);
+    if (!book || !track) return;
+    
+    const key = `${bookId}:${num}`;
+    
+    // Asegurar que estamos en la vista de detalle correcta
+    if (AppState.view !== 'detail' || AppState.currentBookId !== bookId) {
+      AppState.currentBookId = bookId;
+      AppState.addRecent(bookId, num);
+      this.openDetail(bookId, false);
+      setTimeout(() => Actions.toggleTrack(bookId, num), 300);
+      return;
+    }
+    
+    AppState.addRecent(bookId, num);
+    Actions.toggleTrack(bookId, num);
+  },
+  
+  navBack() {
+    const prev = AppState.prevView || 'home';
+    if (prev === 'home' || prev === AppState.view) {
+      this.goHome();
+      return;
+    }
+    
+    this.showView(prev, true);
+    if (prev === 'home') {
+      this.setTopBar('', false);
+    } else if (prev === 'detail') {
+      const book = allBooks.find(b => b.id === AppState.currentBookId);
+      this.setTopBar(book?.title || '', true);
+    }
+  }
+};
+
+/* ══════════════════════════════════════════
+   USER ACTIONS
+══════════════════════════════════════════ */
+const Actions = {
+  toggleBookFav(bookId, el, isDetailBtn = false) {
+    const isNowFav = AppState.toggleFavorite(bookId);
+    
+    // Actualizar UI específica
+    if (el) {
+      el.classList.toggle('faved', isNowFav);
+      if (isDetailBtn) {
+        el.textContent = isNowFav ? '★ Guardado' : '☆ Guardar';
+      } else {
+        el.textContent = isNowFav ? '★' : '☆';
+      }
+    }
+    
+    // Actualizar otras vistas si es necesario
+    if (AppState.view === 'home') {
+      // Solo reordenar, no re-renderizar todo
+      const card = document.querySelector(`.mini-card .fav-dot[onclick*="${bookId}"]`);
+      if (card) {
+        const miniCard = card.closest('.mini-card');
+        const hscroll = miniCard.closest('.hscroll');
+        if (isNowFav) {
+          hscroll.insertBefore(miniCard, hscroll.firstChild);
+        }
+      }
+    }
+  },
+  
+  toggleTrackFav(bookId, num, el) {
+    const key = `${bookId}:${num}`;
+    const isNowFav = AppState.toggleFavorite(key);
+    
+    if (el) {
+      el.classList.toggle('faved', isNowFav);
+      el.textContent = isNowFav ? '★' : '☆';
+    }
+  },
+  
+  toggleTrack(bookId, num) {
+    const key = `${bookId}:${num}`;
+    const wrap = document.getElementById(`apunte-${bookId}-${num}`);
+    const epEl = document.getElementById(`ep-${bookId}-${num}`);
+    
+    if (!wrap) return;
+    
+    const isCurrentlyOpen = wrap.classList.contains('open');
+    
+    if (isCurrentlyOpen) {
+      // Cerrar
+      wrap.classList.remove('open');
+      epEl?.classList.remove('open');
+      AppState.openTracks.delete(key);
+    } else {
+      // Cerrar otros abiertos
+      document.querySelectorAll('.apunte-wrap.open').forEach(el => {
+        el.classList.remove('open');
+        const elId = el.id.replace('apunte-', '').replace('-', ':');
+        AppState.openTracks.delete(elId);
+      });
+      document.querySelectorAll('.ep-item.open').forEach(el => {
+        el.classList.remove('open');
+      });
+      
+      // Abrir este
+      wrap.classList.add('open');
+      epEl?.classList.add('open');
+      AppState.openTracks.add(key);
+      
+      // Renderizar contenido si es necesario
+      const ai = document.getElementById(`ai-${bookId}-${num}`);
+      if (!ai.dataset.rendered) {
+        const book = allBooks.find(b => b.id === bookId);
+        const track = book?.tracks.find(t => t.num === num);
+        if (track) {
+          ai.innerHTML = track.latex;
+          ai.dataset.rendered = 'true';
+          setTimeout(() => KaTeXRenderer.render(ai), 150);
+        }
+      }
+      
+      // Scroll suave al elemento
+      setTimeout(() => {
+        epEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 200);
+    }
+  },
+  
+  doSearch: debounce(function(query) {
+    const clearBtn = document.getElementById('search-clear');
+    const resultsDiv = document.getElementById('search-results');
+    const gridDiv = document.getElementById('library-grid');
+    
+    // Actualizar botón de limpiar
+    if (clearBtn) {
+      clearBtn.classList.toggle('visible', query.length > 0);
+    }
+    
+    if (!query.trim()) {
+      // Mostrar grid, ocultar resultados
+      if (resultsDiv) resultsDiv.style.display = 'none';
+      if (gridDiv) gridDiv.style.display = 'block';
+      return;
+    }
+    
+    // Mostrar resultados, ocultar grid
+    if (resultsDiv) resultsDiv.style.display = 'block';
+    if (gridDiv) gridDiv.style.display = 'none';
+    
+    // Buscar
+    const ql = query.toLowerCase();
+    let matches = [];
+    
+    allBooks.forEach(b => {
+      if (b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql)) {
+        matches.push({
+          type: 'book', bookId: b.id, 
+          title: b.title, sub: b.author, 
+          emoji: b.emoji, cover: b.cover 
+        });
+      }
+      
+      b.tracks.forEach(t => {
+        if (t.title.toLowerCase().includes(ql) || t.sub.toLowerCase().includes(ql)) {
+          matches.push({
+            type: 'track', bookId: b.id, num: t.num,
+            title: t.title, sub: `${b.title} · ${t.sub}`,
+            emoji: b.emoji, cover: b.cover
+          });
+        }
+      });
+    });
+    
+    if (matches.length === 0) {
+      resultsDiv.innerHTML = `<div class="search-empty">Sin resultados para "<strong>${query}</strong>"</div>`;
+      return;
+    }
+    
+    resultsDiv.innerHTML = matches.map((m, i) => `
+      <div class="search-result-item" style="animation-delay:${i * 0.02}s"
+           onclick="${m.type === 'book' ? `Navigation.openDetail('${m.bookId}')` : `Navigation.playTrack('${m.bookId}',${m.num})`}">
+        <div class="sr-cover" style="background:${m.cover}">${m.emoji}</div>
+        <div class="sr-info">
+          <div class="sr-title">${m.title}</div>
+          <div class="sr-sub">${m.sub.split('·')[0].trim()}</div>
+        </div>
+        <span class="sr-type">${m.type === 'book' ? 'Libro' : 'Tema'}</span>
+      </div>
+    `).join('');
+  }, 300),
+  
+  clearSearch() {
+    const input = document.getElementById('search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+    this.doSearch('');
+  }
+};
+
+/* ══════════════════════════════════════════
+   KATEX RENDERER
+══════════════════════════════════════════ */
+const KaTeXRenderer = {
+  render(element) {
+    if (!element || !window.renderMathInElement) {
+      setTimeout(() => this.render(element), 150);
+      return;
+    }
+    
+    try {
+      renderMathInElement(element, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
+        ],
+        throwOnError: false,
+        strict: false,
+        trust: true
+      });
+    } catch (e) {
+      console.warn('KaTeX rendering error:', e);
+    }
+  }
+};
+
+/* ══════════════════════════════════════════
+   BOOK READER ENGINE
+══════════════════════════════════════════ */
+const READER_CONFIGS = {
+  'bib_as1_cardenas': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Cardenas/',
+    prefix: 'Cardenas-Algebra-superior_page-',
+    ext: '.jpg', total: 327,
+  },
+  // ... más configuraciones
+};
+
+const Reader = {
+  state: {
+    bookId: null,
+    total: 0,
+    current: 1,
+    base: '', prefix: '', ext: '.jpg',
+    blobs: {},        // Cache de blob URLs
+    fetching: {},     // Promesas pendientes
+    queue: 0,
+    processing: false,
+    fastTimer: null,
+    fetchToken: 0,    // Para cancelar fetches obsoletos
+    scale: 1,
+    isLoading: false
+  },
+  
+  open(bookId) {
+    const cfg = READER_CONFIGS[bookId];
+    if (!cfg) {
+      console.error('No reader config for:', bookId);
+      return;
+    }
+    
+    const state = this.state;
+    state.bookId = bookId;
+    state.base = cfg.base;
+    state.prefix = cfg.prefix;
+    state.ext = cfg.ext;
+    state.total = cfg.total;
+    state.current = parseInt(localStorage.getItem('reader_pg_' + bookId) || '1');
+    state.blobs = {};
+    state.fetching = {};
+    state.queue = 0;
+    state.processing = false;
+    state.fetchToken = 0;
+    state.scale = 1;
+    state.isLoading = false;
+    
+    // Actualizar UI
+    const book = allBooks.find(b => b.id === bookId);
+    document.getElementById('r-title').textContent = book?.title || '';
+    document.getElementById('goto-hint').textContent = `Total: ${state.total} páginas`;
+    document.getElementById('goto-inp').max = state.total;
+    
+    // Mostrar reader
+    document.getElementById('reader-view').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    history.pushState({ view: 'reader', bookId }, '', '#reader');
+    
+    // Cargar página actual
+    this.prefetch(state.current, 4);
+    this.showPage(state.current, null);
+    this.setupInteractions();
+  },
+  
+  close() {
+    // Limpiar todos los blobs para evitar memory leaks
+    Object.keys(this.state.blobs).forEach(k => {
+      URL.revokeObjectURL(this.state.blobs[k]);
+    });
+    
+    this.state.blobs = {};
+    this.state.fetching = {};
+    this.state.queue = 0;
+    this.state.processing = false;
+    this.stopFastNav();
+    
+    document.getElementById('reader-view').classList.remove('active');
+    document.body.style.overflow = '';
+    
+    if (location.hash === '#reader') {
+      history.back();
+    }
+  },
+  
+  getUrl(n) {
+    return this.state.base + this.state.prefix + String(n).padStart(4, '0') + this.state.ext;
+  },
+  
+  async fetch(n) {
+    const state = this.state;
+    if (n < 1 || n > state.total) return null;
+    if (state.blobs[n]) return state.blobs[n];
+    if (state.fetching[n]) return state.fetching[n];
+    
+    const token = ++state.fetchToken;
+    const promise = fetch(this.getUrl(n))
+      .then(r => r.ok ? r.blob() : null)
+      .then(blob => {
+        if (!blob) return null;
+        if (token !== state.fetchToken) {
+          // Este fetch fue cancelado por uno más reciente
+          return null;
+        }
+        const url = URL.createObjectURL(blob);
+        state.blobs[n] = url;
+        delete state.fetching[n];
+        return url;
+      })
+      .catch(() => {
+        delete state.fetching[n];
+        return null;
+      });
+    
+    state.fetching[n] = promise;
+    return promise;
+  },
+  
+  prefetch(n, radius = 4) {
+    this.fetch(n); // Prioridad máxima
+    for (let d = 1; d <= radius; d++) {
+      this.fetch(n + d);
+      this.fetch(n - d);
+    }
+  },
+  
+  evict(current, keep = 12) {
+    const state = this.state;
+    Object.keys(state.blobs).forEach(k => {
+      const pg = parseInt(k);
+      if (Math.abs(pg - current) > keep) {
+        URL.revokeObjectURL(state.blobs[pg]);
+        delete state.blobs[pg];
+      }
+    });
+  },
+  
+  showPage(n, direction) {
+    const state = this.state;
+    const bookEl = document.getElementById('r-book');
+    
+    // Crear nuevo elemento de página
+    const div = document.createElement('div');
+    div.className = 'rpage';
+    
+    const blobUrl = state.blobs[n];
+    if (blobUrl) {
+      const img = document.createElement('img');
+      img.src = blobUrl;
+      img.draggable = false;
+      img.decoding = 'async';
+      img.style.transform = `scale(${state.scale})`;
+      div.appendChild(img);
+      this.swapPage(bookEl, div, direction);
+    } else {
+      // Mostrar spinner
+      const sp = document.createElement('div');
+      sp.className = 'rpage-loading';
+      sp.innerHTML = '<div class="r-spinner"></div>';
+      div.appendChild(sp);
+      this.swapPage(bookEl, div, direction);
+      
+      // Cargar imagen
+      this.fetch(n).then(url => {
+        if (!url || state.current !== n) return;
+        const img = document.createElement('img');
+        img.src = url;
+        img.draggable = false;
+        img.decoding = 'async';
+        img.style.transform = `scale(${state.scale})`;
+        sp.replaceWith(img);
+      });
+    }
+    
+    this.updateUI();
+    this.prefetch(n, 4);
+    this.evict(n, 12);
+    localStorage.setItem('reader_pg_' + state.bookId, n);
+  },
+  
+  swapPage(bookEl, newDiv, direction) {
+    const old = bookEl.querySelector('.rpage');
+    
+    if (!old || !direction) {
+      bookEl.innerHTML = '';
+      bookEl.appendChild(newDiv);
+      return;
+    }
+    
+    const outClass = direction === 'fwd' ? 'out-left' : 'out-right';
+    const inClass = direction === 'fwd' ? 'in-right' : 'in-left';
+    
+    old.classList.add(outClass);
+    newDiv.classList.add(inClass);
+    bookEl.appendChild(newDiv);
+    
+    old.addEventListener('animationend', () => old.remove(), { once: true });
+  },
+  
+  updateUI() {
+    const state = this.state;
+    document.getElementById('r-counter').textContent = 
+      `p. ${state.current} / ${state.total}`;
+    
+    const pct = state.total > 1 
+      ? ((state.current - 1) / (state.total - 1)) * 100 
+      : 0;
+    document.getElementById('r-fill').style.width = pct + '%';
+  },
+  
+  // Navegación
+  next() { this.enqueue(1); },
+  prev() { this.enqueue(-1); },
+  
+  enqueue(step) {
+    const state = this.state;
+    const target = state.current + state.queue + step;
+    if (target < 1 || target > state.total) return;
+    
+    state.queue += step;
+    if (!state.processing) this.flushQueue();
+  },
+  
+  flushQueue() {
+    const state = this.state;
+    if (state.queue === 0) {
+      state.processing = false;
+      return;
+    }
+    
+    state.processing = true;
+    const step = state.queue > 0 ? 1 : -1;
+    state.queue -= step;
+    
+    const next = state.current + step;
+    if (next < 1 || next > state.total) {
+      state.queue = 0;
+      state.processing = false;
+      return;
+    }
+    
+    state.current = next;
+    const direction = step > 0 ? 'fwd' : 'bk';
+    const animate = Math.abs(state.queue) <= 2;
+    this.showPage(state.current, animate ? direction : null);
+    
+    setTimeout(() => this.flushQueue(), state.queue !== 0 ? 60 : 0);
+  },
+  
+  goTo(n) {
+    this.stopFastNav();
+    const state = this.state;
+    state.queue = 0;
+    state.processing = false;
+    
+    const target = Math.max(1, Math.min(state.total, n));
+    if (target === state.current) return;
+    
+    const direction = target > state.current ? 'fwd' : 'bk';
+    state.current = target;
+    this.showPage(state.current, direction);
+  },
+  
+  // Navegación rápida (long press)
+  startFastNav(direction) {
+    this.stopFastNav();
+    const step = direction > 0 ? 1 : -1;
+    
+    if (step > 0) this.next();
+    else this.prev();
+    
+    let speed = 300;
+    const repeat = () => {
+      if (step > 0) this.next();
+      else this.prev();
+      speed = Math.max(60, speed - 30);
+      this.state.fastTimer = setTimeout(repeat, speed);
+    };
+    
+    this.state.fastTimer = setTimeout(repeat, 450);
+  },
+  
+  stopFastNav() {
+    clearTimeout(this.state.fastTimer);
+    this.state.fastTimer = null;
+  },
+  
+  // Interacciones
+  _interactionsSetup: false,
+  
+  setupInteractions() {
+    if (this._interactionsSetup) return;
+    this._interactionsSetup = true;
+    
+    const state = this.state;
+    
+    // Barra de progreso
+    const track = document.getElementById('r-track');
+    track.addEventListener('click', e => {
+      const ratio = e.offsetX / track.offsetWidth;
+      this.goTo(Math.round(1 + ratio * (state.total - 1)));
+    });
+    
+    track.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const rect = track.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, 
+        (e.touches[0].clientX - rect.left) / rect.width
+      ));
+      this.goTo(Math.round(1 + ratio * (state.total - 1)));
+    }, { passive: false });
+    
+    // Gestos swipe
+    const stage = document.getElementById('r-stage');
+    let sx = 0, moved = false;
+    
+    stage.addEventListener('touchstart', e => {
+      sx = e.touches[0].clientX;
+      moved = false;
+    }, { passive: true });
+    
+    stage.addEventListener('touchmove', () => { moved = true; }, { passive: true });
+    
+    stage.addEventListener('touchend', e => {
+      if (!moved) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) {
+        dx < 0 ? this.next() : this.prev();
+      }
+    });
+    
+    // Zoom con gestos
+    let initialDistance = 0;
+    stage.addEventListener('touchstart', e => {
+      if (e.touches.length === 2) {
+        initialDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    }, { passive: true });
+    
+    stage.addEventListener('touchmove', e => {
+      if (e.touches.length === 2) {
+        const currentDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const scale = currentDistance / initialDistance;
+        state.scale = Math.max(0.5, Math.min(3, state.scale * scale));
+        initialDistance = currentDistance;
+        
+        const img = document.querySelector('.rpage img');
+        if (img) img.style.transform = `scale(${state.scale})`;
+      }
+    }, { passive: true });
+    
+    // Long press en botones
+    const prevBtn = document.getElementById('r-prev-btn');
+    const nextBtn = document.getElementById('r-next-btn');
+    
+    ['mousedown', 'touchstart'].forEach(ev => {
+      prevBtn?.addEventListener(ev, e => {
+        e.preventDefault();
+        this.startFastNav(-1);
+      }, { passive: false });
+      
+      nextBtn?.addEventListener(ev, e => {
+        e.preventDefault();
+        this.startFastNav(1);
+      }, { passive: false });
+    });
+    
+    ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(ev => {
+      prevBtn?.addEventListener(ev, () => this.stopFastNav());
+      nextBtn?.addEventListener(ev, () => this.stopFastNav());
+    });
+    
+    // Tap zones
+    document.querySelector('.reader-zone-prev')?.addEventListener('click', () => this.prev());
+    document.querySelector('.reader-zone-next')?.addEventListener('click', () => this.next());
+    
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('reader-view').classList.contains('active')) return;
+      if (e.target.tagName === 'INPUT') return;
+      
+      switch(e.key) {
+        case 'ArrowRight':
+        case ' ':
+          e.preventDefault();
+          this.next();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          this.prev();
+          break;
+        case 'Escape':
+          this.close();
+          break;
+        case 'g':
+          ReaderModals.open();
+          break;
+      }
+    });
+  }
+};
+
+/* ══════════════════════════════════════════
+   READER MODALS
+══════════════════════════════════════════ */
+const ReaderModals = {
+  open() {
+    document.getElementById('goto-inp').value = Reader.state.current;
+    document.getElementById('reader-goto').classList.add('open');
+    setTimeout(() => document.getElementById('goto-inp').focus(), 100);
+  },
+  
+  close() {
+    document.getElementById('reader-goto').classList.remove('open');
+  },
+  
+  confirm() {
+    const v = parseInt(document.getElementById('goto-inp').value);
+    if (!isNaN(v)) Reader.goTo(v);
+    this.close();
+  }
+};
+
+/* ══════════════════════════════════════════
+   INITIALIZATION
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  history.replaceState({ view: 'home' }, '', '#home');
+  Renderer.home();
+  AppState.updateFavCount();
+  window.scrollTo(0, 0);
+});
+
+// Navegación del navegador
+window.addEventListener('popstate', (e) => {
+  const data = e.state;
+  if (!data || data.view === 'home') {
+    Navigation.goHome();
+  } else if (data.view === 'detail' && data.bookId) {
+    Navigation.openDetail(data.bookId, true);
+  } else if (data.view === 'search-view') {
+    Navigation.showSearch();
+  } else if (data.view === 'favs-view') {
+    Navigation.showFavs();
+  } else if (data.view === 'reader') {
+    Reader.close();
+  } else {
+    Navigation.goHome();
+  }
+});
+
+// Prevenir scroll en reader
+document.addEventListener('touchmove', (e) => {
+  if (document.getElementById('reader-view').classList.contains('active')) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+/* ══════════════════════════════════════════
+   EXPORTAR FUNCIONES GLOBALES PARA HTML
+══════════════════════════════════════════ */
+window.goHome = () => Navigation.goHome();
+window.showSearch = () => Navigation.showSearch();
+window.showFavs = () => Navigation.showFavs();
+window.openDetail = (id) => Navigation.openDetail(id);
+window.playTrack = (bookId, num) => Navigation.playTrack(bookId, num);
+window.navBack = () => Navigation.navBack();
+window.toggleFavBook = (id, el, isBtn) => Actions.toggleBookFav(id, el, isBtn);
+window.toggleFavTrack = (bookId, num, el) => Actions.toggleTrackFav(bookId, num, el);
+window.doSearch = (q) => Actions.doSearch(q);
+window.clearSearch = () => Actions.clearSearch();
+window.openReader = (id) => Reader.open(id);
+window.closeReader = () => Reader.close();
+window.readerGoto = () => ReaderModals.open();
+window.closeGoto = () => ReaderModals.close();
+window.gotoConfirm = () => ReaderModals.confirm();
+</script>
 
 </body>
 </html>
