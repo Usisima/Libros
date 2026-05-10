@@ -1534,7 +1534,24 @@ const AppState = {
   prevView: null,
   currentBookId: null,
   currentTrackKey: null,
-  favorites: new Set(JSON.parse(localStorage.getItem('np_favs') || '[]')),
+  favorites: new Set(
+  (() => {
+    const stored = localStorage.getItem('np_favs');
+    if (!stored) return [];
+    try {
+      const parsed = JSON.parse(stored);
+      // Filtrar solo strings válidos (bookId o bookId:num)
+      return parsed.filter(item => 
+        typeof item === 'string' && 
+        (item.includes(':') ? item.split(':').length === 2 : true)
+      );
+    } catch (e) {
+      console.warn('Datos de favoritos corruptos, reiniciando');
+      localStorage.removeItem('np_favs');
+      return [];
+    }
+  })()
+),
   openTracks: new Set(),
   recentTracks: JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0, 4),
   
@@ -1574,6 +1591,8 @@ const AppState = {
   
   updateFavCount() {
     const count = this.favorites.size;
+    console.log('Favoritos actuales:', [...this.favorites]); // DEBUG
+    console.log('Total:', count); // DEBUG
     const el = document.getElementById('fav-count');
     if (el) {
       el.textContent = count;
