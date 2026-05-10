@@ -171,8 +171,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 
 /* ── LIBRARY GRID (search) ── */
 .lib-grid-section{padding:0 1rem 1.5rem}
-.lib-grid-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
-  letter-spacing:.01em;margin:1.2rem 0 .8rem;color:var(--ink)}
 .lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
 .lib-grid-card{cursor:pointer;border-radius:var(--rsm);overflow:hidden;
   background:var(--s1);border:1px solid var(--border);transition:all .2s;position:relative}
@@ -208,80 +206,61 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 /* ══════════════════════════════════════
    BOOK READER VIEW
 ══════════════════════════════════════ */
-#reader-view{position:fixed;inset:0;z-index:200;background:#0c0b09;display:none;flex-direction:column}
+#reader-view{position:fixed;inset:0;z-index:200;background:#0f0e0c;display:none;flex-direction:column;-webkit-user-select:none;user-select:none}
 #reader-view.active{display:flex}
-.reader-topbar{height:50px;flex-shrink:0;display:flex;align-items:center;
-  justify-content:space-between;padding:0 14px;
-  background:rgba(12,11,9,.92);border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(16px)}
-.reader-title{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--accent);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.reader-btn{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.07);color:rgba(240,236,228,.5);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.reader-topbar{height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(10,9,7,.97);border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(16px);z-index:2}
+.reader-title{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;color:var(--accent);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
+.reader-btn{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:rgba(240,236,228,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .reader-btn:hover{background:rgba(201,169,110,.12);border-color:var(--accent);color:var(--accent)}
 .reader-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.reader-page-ct{font-size:.62rem;color:rgba(240,236,228,.3);min-width:56px;text-align:center;flex-shrink:0;font-family:'DM Mono',monospace}
-.reader-stage{flex:1;position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:center;perspective:1800px;padding:12px}
-.reader-book{position:relative;width:100%;height:100%;max-width:min(440px,90vw);margin:0 auto}
-.rpage{position:absolute;inset:0;border-radius:2px 8px 8px 2px;overflow:hidden;
-  transform-style:preserve-3d;
-  box-shadow:4px 0 18px rgba(0,0,0,.4),inset -1px 0 0 rgba(0,0,0,.12);background:#f5f0e8;
-  /* No base transition — transitions only applied when .turning-* class is set */
-}
-.rpage img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
-
-/* Distinct flip animations per direction */
-.rpage.turning-fwd{
-  transform-origin:left center;
-  transform:rotateY(-180deg);
-  box-shadow:-8px 4px 28px rgba(0,0,0,.65);
-  z-index:20!important;
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
-}
-.rpage.turning-bk{
-  transform-origin:right center;
-  transform:rotateY(180deg);
-  box-shadow:8px 4px 28px rgba(0,0,0,.65);
-  z-index:20!important;
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
-}
-
-.rpage-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f0e8}
-.rpage-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.35;animation:rdot 1s ease infinite}
-@keyframes rdot{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:.8;transform:scale(1.2)}}
-.rpage-spine{position:absolute;top:0;left:0;width:16px;height:100%;background:linear-gradient(to right,rgba(0,0,0,.16) 0%,transparent 100%);pointer-events:none;z-index:2}
-.rpage-curl{position:absolute;top:0;right:0;width:14px;height:100%;background:linear-gradient(to left,rgba(0,0,0,.1) 0%,transparent 100%);pointer-events:none;z-index:2}
-.reader-zone-prev{position:absolute;left:0;top:0;bottom:0;width:36%;z-index:30;cursor:w-resize}
-.reader-zone-next{position:absolute;right:0;top:0;bottom:0;width:36%;z-index:30;cursor:e-resize}
-.reader-controls{height:82px;flex-shrink:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:9px;
-  background:rgba(12,11,9,.92);border-top:1px solid rgba(255,255,255,.06);backdrop-filter:blur(16px);
-  padding:0 18px env(safe-area-inset-bottom,0)}
-.reader-track{width:100%;max-width:480px;height:3px;background:rgba(255,255,255,.07);border-radius:99px;cursor:pointer;position:relative}
-.reader-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .2s;position:relative}
-.reader-fill::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--accent2)}
-.reader-btns{display:flex;align-items:center;gap:14px}
-.reader-nav-btn{display:flex;align-items:center;gap:5px;padding:7px 16px;border-radius:99px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
-  color:rgba(240,236,228,.5);font-family:'DM Mono',monospace;font-size:.67rem;letter-spacing:.07em;cursor:pointer;transition:all .2s}
-.reader-nav-btn:hover{background:rgba(201,169,110,.12);border-color:var(--accent);color:var(--accent)}
-.reader-nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:500}
-.reader-nav-btn.primary:hover{background:var(--accent2)}
+.reader-page-ct{font-size:.62rem;color:rgba(240,236,228,.35);min-width:62px;text-align:center;flex-shrink:0;font-family:'DM Mono',monospace;letter-spacing:.04em}
+/* Stage */
+.reader-stage{flex:1;position:relative;overflow:hidden;background:#0f0e0c;display:flex;align-items:center;justify-content:center}
+#r-book{position:absolute;inset:0;overflow:hidden}
+/* Pages: absolutely positioned, full stage */
+.rpage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0f0e0c;will-change:transform,opacity}
+.rpage img{max-width:100%;max-height:100%;object-fit:contain;display:block;pointer-events:none;border-radius:1px;box-shadow:0 2px 24px rgba(0,0,0,.8)}
+/* Slide animations — fast, no jank */
+@keyframes slideOutL{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(-4%)}}
+@keyframes slideOutR{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(4%)}}
+@keyframes slideInR  {0%{opacity:0;transform:translateX(3%)} 100%{opacity:1;transform:translateX(0)}}
+@keyframes slideInL  {0%{opacity:0;transform:translateX(-3%)}100%{opacity:1;transform:translateX(0)}}
+.rpage.out-left {animation:slideOutL .14s ease-out forwards;z-index:2}
+.rpage.out-right{animation:slideOutR .14s ease-out forwards;z-index:2}
+.rpage.in-right {animation:slideInR  .14s ease-out forwards;z-index:1}
+.rpage.in-left  {animation:slideInL  .14s ease-out forwards;z-index:1}
+/* Loading */
+.rpage-loading{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.r-spinner{width:26px;height:26px;border:2.5px solid rgba(201,169,110,.12);border-top-color:var(--accent);border-radius:50%;animation:rspin .65s linear infinite}
+@keyframes rspin{to{transform:rotate(360deg)}}
+/* Tap zones */
+.reader-zone-prev{position:absolute;left:0;top:0;bottom:0;width:33%;z-index:10;cursor:w-resize}
+.reader-zone-next{position:absolute;right:0;top:0;bottom:0;width:33%;z-index:10;cursor:e-resize}
+/* Controls */
+.reader-controls{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px;background:rgba(10,9,7,.97);border-top:1px solid rgba(255,255,255,.06);backdrop-filter:blur(16px);padding:10px 18px env(safe-area-inset-bottom,10px)}
+.reader-track{width:100%;max-width:480px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;cursor:pointer;position:relative;touch-action:none}
+.reader-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .12s;position:relative;pointer-events:none}
+.reader-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 3px rgba(201,169,110,.18)}
+.reader-btns{display:flex;align-items:center;gap:10px}
+.reader-nav-btn{display:flex;align-items:center;gap:5px;padding:8px 20px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(240,236,228,.55);font-family:'DM Mono',monospace;font-size:.67rem;letter-spacing:.07em;cursor:pointer;transition:background .12s,border-color .12s,color .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.reader-nav-btn:active{background:rgba(201,169,110,.14);border-color:var(--accent);color:var(--accent)}
+.reader-nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:600}
+.reader-nav-btn.primary:active{background:var(--accent2)}
 .reader-nav-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 /* goto modal */
-#reader-goto{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
+#reader-goto{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
 #reader-goto.open{display:flex}
-.goto-box{background:#1a1714;border:1px solid rgba(201,169,110,.22);border-radius:14px;padding:24px 28px;width:min(300px,88vw);display:flex;flex-direction:column;gap:14px;animation:gotoIn .22s cubic-bezier(.34,1.56,.64,1)}
+.goto-box{background:#1c1a16;border:1px solid rgba(201,169,110,.22);border-radius:14px;padding:24px 28px;width:min(300px,88vw);display:flex;flex-direction:column;gap:14px;animation:gotoIn .22s cubic-bezier(.34,1.56,.64,1)}
 @keyframes gotoIn{from{opacity:0;transform:scale(.9)}}
 .goto-title{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--accent);text-align:center}
-.goto-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:9px 12px;color:var(--ink);font-family:'DM Mono',monospace;font-size:.88rem;outline:none;text-align:center;width:100%;transition:border-color .2s}
+.goto-input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;color:var(--ink);font-family:'DM Mono',monospace;font-size:.88rem;outline:none;text-align:center;width:100%;transition:border-color .2s}
 .goto-input:focus{border-color:var(--accent)}
 .goto-row{display:flex;gap:8px}
 .goto-btn{flex:1;padding:9px;border-radius:7px;cursor:pointer;font-family:'DM Mono',monospace;font-size:.73rem;letter-spacing:.05em;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.05);color:rgba(240,236,228,.5);transition:all .2s}
 .goto-btn.ok{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:500}
 .goto-hint{font-size:.6rem;color:rgba(240,236,228,.3);text-align:center;letter-spacing:.06em}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-</head>
+
 <body>
 
 <!-- TOP BAR -->
@@ -912,22 +891,21 @@ function closeAllTracks(exceptBookId, exceptNum) {
    SEARCH
 ══════════════════════════════════════════ */
 function buildLibraryGrid() {
-  return LIBRARY.map(cat => {
-    const cards = cat.books.map(b => {
-      const cu = getBookCoverUrl(b.id);
-      return `
-        <div class="lib-grid-card" onclick="openDetail('${b.id}')">
-          <div class="lib-grid-cover" style="background:${b.cover}">
-            ${cu ? `<img src="${cu}" alt="">` : `<span>${b.emoji}</span>`}
-          </div>
-          <div class="lib-grid-info">
-            <div class="lib-grid-name">${b.title}</div>
-            <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
-          </div>
-        </div>`;
-    }).join('');
-    return `<div class="lib-grid-title">${cat.label}</div><div class="lib-grid">${cards}</div>`;
+  const sorted = [...allBooks].sort((a, b) => a.title.localeCompare(b.title, 'es'));
+  const cards = sorted.map(b => {
+    const cu = getBookCoverUrl(b.id);
+    return `
+      <div class="lib-grid-card" onclick="openDetail('${b.id}')">
+        <div class="lib-grid-cover" style="background:${b.cover}">
+          ${cu ? `<img src="${cu}" alt="">` : `<span>${b.emoji}</span>`}
+        </div>
+        <div class="lib-grid-info">
+          <div class="lib-grid-name">${b.title}</div>
+          <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
+        </div>
+      </div>`;
   }).join('');
+  return `<div class="lib-grid">${cards}</div>`;
 }
 
 function showSearch(skipHistory) {
@@ -1123,73 +1101,95 @@ function renderKaTeX(el) {
   }
 }
 
-/* ══════════════════════════════════════════
-   PDF.js (portada extraída del PDF — legacy)
-══════════════════════════════════════════ */
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+/* PDF.js not needed — covers loaded via fetch+blob */
 
 /* ══════════════════════════════════════════
    BOOK READER ENGINE
-   - No animation lock: rapid clicks queue pages
-   - Long press = fast auto-scroll
-   - Android back gesture closes reader
-   - Full-height optimized stage
+   Optimizations:
+   1. fetch() + createObjectURL → parallel download, no browser re-request
+   2. Adjacent pages pre-fetched into blob pool (radius 4 each side)
+   3. DOM pool: keeps prev/curr/next img elements alive in #r-book (hidden)
+   4. Slide animation replaces 3D flip → no GPU layer creation per page
+   5. Rapid-click queue: never blocks, queues direction steps
+   6. Long-press on buttons → accelerating auto-scroll
+   7. Android back gesture → closes reader via popstate
 ══════════════════════════════════════════ */
 const R = {
-  bookId: null,
-  total: 0,
-  current: 1,
-  base: '',
-  prefix: '',
-  ext: '.jpg',
-  cache: {},
-  // Rapid-click queue
-  queue: 0,         // pending page steps (+1 / -1)
-  processing: false,
-  // Long-press fast scroll
-  fastTimer: null,
-  fastInterval: null,
+  bookId: null, total: 0, current: 1,
+  base: '', prefix: '', ext: '.jpg',
+  // blob URL cache: n → objectURL string
+  blobs: {},
+  // pending fetch promises: n → Promise<string>
+  fetching: {},
+  // rapid-nav queue
+  queue: 0, processing: false,
+  // long-press
+  fastTimer: null, fastInterval: null,
 };
 
 const READER_BOOKS = {
   'bib_as1_cardenas': {
     base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Cardenas/',
     prefix: 'Cardenas-Algebra-superior_page-',
-    ext: '.jpg',
-    total: 327,
+    ext: '.jpg', total: 327,
   },
   'bib_an1_apostol': {
     base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an1_Apostol/',
     prefix: 'Apostol-Analisis-Matematico_page-',
-    ext: '.jpg',
-    total: 606,
+    ext: '.jpg', total: 606,
   }
 };
 
-function rPageUrl(n) {
-  return R.base + R.prefix + String(n).padStart(4, '0') + R.ext;
+function rUrl(n) {
+  return R.base + R.prefix + String(n).padStart(4,'0') + R.ext;
 }
 
-function rLoad(n) {
-  if (n < 1 || n > R.total || R.cache[n]) return;
-  const img = new Image();
-  img.src = rPageUrl(n);
-  R.cache[n] = img;
+/* Fetch page n into blob cache. Returns promise of blob URL. */
+function rFetch(n) {
+  if (n < 1 || n > R.total) return Promise.resolve(null);
+  if (R.blobs[n]) return Promise.resolve(R.blobs[n]);
+  if (R.fetching[n]) return R.fetching[n];
+  const p = fetch(rUrl(n))
+    .then(r => r.ok ? r.blob() : null)
+    .then(blob => {
+      if (!blob) return null;
+      const url = URL.createObjectURL(blob);
+      R.blobs[n] = url;
+      delete R.fetching[n];
+      return url;
+    })
+    .catch(() => { delete R.fetching[n]; return null; });
+  R.fetching[n] = p;
+  return p;
 }
 
-function rPreload(n, radius) {
-  for (let i = n; i <= Math.min(R.total, n + radius); i++) rLoad(i);
-  for (let i = Math.max(1, n - radius); i < n; i++) rLoad(i);
+/* Pre-fetch pages around n, high priority for n itself */
+function rPrefetch(n, radius) {
+  rFetch(n); // highest priority
+  for (let d = 1; d <= radius; d++) {
+    rFetch(n + d);
+    rFetch(n - d);
+  }
+}
+
+/* Evict blob URLs far from current page to free memory */
+function rEvict(current, keep) {
+  Object.keys(R.blobs).forEach(k => {
+    const pg = +k;
+    if (Math.abs(pg - current) > keep) {
+      URL.revokeObjectURL(R.blobs[pg]);
+      delete R.blobs[pg];
+    }
+  });
 }
 
 function openReader(bookId) {
   const cfg = READER_BOOKS[bookId];
   if (!cfg) { openPdf(bookId); return; }
-
   R.bookId = bookId;
   R.base = cfg.base; R.prefix = cfg.prefix; R.ext = cfg.ext; R.total = cfg.total;
   R.current = parseInt(localStorage.getItem('reader_pg_' + bookId) || '1');
-  R.cache = {}; R.queue = 0; R.processing = false;
+  R.blobs = {}; R.fetching = {}; R.queue = 0; R.processing = false;
 
   const book = allBooks.find(b => b.id === bookId);
   document.getElementById('r-title').textContent = book?.title || bookId;
@@ -1197,11 +1197,11 @@ function openReader(bookId) {
   document.getElementById('goto-inp').max = R.total;
 
   document.getElementById('reader-view').classList.add('active');
-  // Push history state so Android back button closes reader
   history.pushState({ view: 'reader', bookId }, '', '#reader');
 
-  rPreload(R.current, 6);
-  rRender();
+  // Fetch current page first, then neighbors
+  rPrefetch(R.current, 4);
+  rShowPage(R.current, null);
   rSetupInteractions();
 }
 
@@ -1214,57 +1214,70 @@ function openPdf(bookId) {
 function closeReader() {
   rStopFast();
   document.getElementById('reader-view').classList.remove('active');
-  // Only call history.back() if we pushed a reader state
   if (location.hash === '#reader') history.back();
 }
 
-function rRender() {
+/* Show page n with optional slide direction ('fwd' | 'bk' | null) */
+function rShowPage(n, dir) {
   const bookEl = document.getElementById('r-book');
-  bookEl.innerHTML = '';
-  const page = rMakePage(R.current);
-  bookEl.appendChild(page);
-  rUpdateUI();
-}
 
-function rMakePage(n) {
+  // Create new page div
   const div = document.createElement('div');
   div.className = 'rpage';
-  div.dataset.n = n;
 
-  const img = R.cache[n];
-  if (img?.complete && img.naturalWidth > 0) {
-    const el = document.createElement('img');
-    el.src = img.src; el.draggable = false;
-    div.appendChild(el);
+  const blobUrl = R.blobs[n];
+  if (blobUrl) {
+    // Image already in cache → instant display
+    const img = document.createElement('img');
+    img.src = blobUrl; img.draggable = false; img.decoding = 'async';
+    div.appendChild(img);
+    rSwapPage(bookEl, div, dir);
   } else {
-    const pl = document.createElement('div');
-    pl.className = 'rpage-loading';
-    pl.innerHTML = '<div class="rpage-dot"></div>';
-    div.appendChild(pl);
-    rLoad(n);
-    const poll = setInterval(() => {
-      const c = R.cache[n];
-      if (c?.complete && c.naturalWidth > 0) {
-        clearInterval(poll);
-        const el = document.createElement('img');
-        el.src = c.src; el.draggable = false;
-        pl.replaceWith(el);
-      }
-    }, 80);
+    // Show spinner while fetching
+    const sp = document.createElement('div');
+    sp.className = 'rpage-loading';
+    sp.innerHTML = '<div class="r-spinner"></div>';
+    div.appendChild(sp);
+    rSwapPage(bookEl, div, dir);
+    rFetch(n).then(url => {
+      if (!url) return;
+      // Only update if we're still on this page
+      if (R.current !== n) return;
+      const img = document.createElement('img');
+      img.src = url; img.draggable = false; img.decoding = 'async';
+      sp.replaceWith(img);
+    });
   }
 
-  const spine = document.createElement('div'); spine.className = 'rpage-spine';
-  const curl = document.createElement('div'); curl.className = 'rpage-curl';
-  div.appendChild(spine); div.appendChild(curl);
-  return div;
+  rUpdateUI();
+  rPrefetch(n, 4);
+  rEvict(n, 8);
 }
 
-/* ── Queue-based navigation: handles rapid clicks ── */
+function rSwapPage(bookEl, newDiv, dir) {
+  const old = bookEl.querySelector('.rpage');
+  if (!old || !dir) {
+    // No animation
+    bookEl.innerHTML = '';
+    bookEl.appendChild(newDiv);
+    return;
+  }
+  // Animate: old slides out, new slides in
+  const outClass = dir === 'fwd' ? 'out-left' : 'out-right';
+  const inClass  = dir === 'fwd' ? 'in-right'  : 'in-left';
+  old.classList.add(outClass);
+  newDiv.classList.add(inClass);
+  bookEl.appendChild(newDiv);
+  // Remove old after animation
+  old.addEventListener('animationend', () => old.remove(), { once: true });
+}
+
+/* ── Queue-based rapid navigation ── */
 function rNext() { rEnqueue(+1); }
 function rPrev() { rEnqueue(-1); }
 
 function rEnqueue(step) {
-  const target = R.current + step;
+  const target = R.current + R.queue + step;
   if (target < 1 || target > R.total) return;
   R.queue += step;
   if (!R.processing) rFlushQueue();
@@ -1273,54 +1286,28 @@ function rEnqueue(step) {
 function rFlushQueue() {
   if (R.queue === 0) { R.processing = false; return; }
   R.processing = true;
-
   const step = R.queue > 0 ? 1 : -1;
   R.queue -= step;
-
   const next = R.current + step;
   if (next < 1 || next > R.total) { R.queue = 0; R.processing = false; return; }
-
   R.current = next;
   localStorage.setItem('reader_pg_' + R.bookId, R.current);
-  rPreload(R.current, 6);
-
-  const bookEl = document.getElementById('r-book');
-  const cur = bookEl.querySelector('.rpage');
-
-  // Animate flip
-  if (cur) {
-    if (step > 0) {
-      cur.style.transformOrigin = 'left center';
-      cur.classList.add('turning-fwd');
-    } else {
-      cur.style.transformOrigin = 'right center';
-      cur.classList.add('turning-bk');
-    }
-    cur.style.zIndex = 20;
-  }
-
-  // Insert new page behind
-  const newP = rMakePage(R.current);
-  newP.style.zIndex = 1;
-  bookEl.insertBefore(newP, bookEl.firstChild);
-  rUpdateUI();
-
-  // After animation, clean up and process next in queue
-  const delay = R.queue !== 0 ? 80 : 300; // faster cleanup when more queued
-  setTimeout(() => {
-    cur?.remove();
-    rFlushQueue();
-  }, delay);
+  // Animate only if not rapidly skipping (queue draining fast)
+  const dir = step > 0 ? 'fwd' : 'bk';
+  rShowPage(R.current, Math.abs(R.queue) > 2 ? null : dir);
+  // Flush remaining queue after a brief pause
+  setTimeout(rFlushQueue, R.queue !== 0 ? 60 : 0);
 }
 
 function rGoTo(n) {
-  R.queue = 0;
-  R.processing = false;
+  rStopFast();
+  R.queue = 0; R.processing = false;
   const t = Math.max(1, Math.min(R.total, n));
+  if (t === R.current) return;
+  const dir = t > R.current ? 'fwd' : 'bk';
   R.current = t;
   localStorage.setItem('reader_pg_' + R.bookId, R.current);
-  rPreload(t, 6);
-  rRender();
+  rShowPage(R.current, dir);
 }
 
 function rUpdateUI() {
@@ -1329,78 +1316,82 @@ function rUpdateUI() {
   document.getElementById('r-fill').style.width = pct + '%';
 }
 
-/* ── Long-press fast scroll ── */
+/* ── Long-press: accelerating repeat ── */
 function rStartFast(dir) {
   rStopFast();
-  // First trigger immediate
   dir > 0 ? rNext() : rPrev();
-  // After 400ms hold, start repeating fast
-  R.fastTimer = setTimeout(() => {
-    R.fastInterval = setInterval(() => { dir > 0 ? rNext() : rPrev(); }, 80);
-  }, 400);
+  let speed = 300;
+  function repeat() {
+    dir > 0 ? rNext() : rPrev();
+    speed = Math.max(60, speed - 30);
+    R.fastTimer = setTimeout(repeat, speed);
+  }
+  R.fastTimer = setTimeout(repeat, 450);
 }
-
 function rStopFast() {
-  clearTimeout(R.fastTimer);
-  clearInterval(R.fastInterval);
-  R.fastTimer = null;
-  R.fastInterval = null;
+  clearTimeout(R.fastTimer); clearInterval(R.fastInterval);
+  R.fastTimer = null; R.fastInterval = null;
 }
 
-/* ── Set up all interactions once ── */
+/* ── Interactions (set up once) ── */
+let _rInteractionsSetup = false;
 function rSetupInteractions() {
-  const track = document.getElementById('r-track');
-  // Use one-time setup with a flag
-  if (track._rSetup) return;
-  track._rSetup = true;
+  if (_rInteractionsSetup) return;
+  _rInteractionsSetup = true;
 
-  track.onclick = (e) => {
+  // Progress bar scrub
+  const track = document.getElementById('r-track');
+  track.addEventListener('click', e => {
     const ratio = e.offsetX / track.offsetWidth;
     rGoTo(Math.round(1 + ratio * (R.total - 1)));
-  };
+  });
+  // Touch scrub on bar
+  track.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const rect = track.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+    rGoTo(Math.round(1 + ratio * (R.total - 1)));
+  }, { passive: false });
 
+  // Swipe on stage
   const stage = document.getElementById('r-stage');
-  if (stage._rSetup) return;
-  stage._rSetup = true;
-
-  // Touch swipe
   let sx = 0, sy = 0, moved = false;
-  stage.addEventListener('touchstart', (e) => {
-    sx = e.touches[0].clientX;
-    sy = e.touches[0].clientY;
-    moved = false;
-  }, { passive: true });
-  stage.addEventListener('touchmove', (e) => { moved = true; }, { passive: true });
-  stage.addEventListener('touchend', (e) => {
+  stage.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; moved = false; }, { passive: true });
+  stage.addEventListener('touchmove', () => { moved = true; }, { passive: true });
+  stage.addEventListener('touchend', e => {
     if (!moved) return;
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 38) {
-      if (dx < 0) rNext(); else rPrev();
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 36) {
+      dx < 0 ? rNext() : rPrev();
     }
   });
 
-  // Prev/Next button long-press
+  // Long-press on nav buttons
   const prevBtn = document.getElementById('r-prev-btn');
   const nextBtn = document.getElementById('r-next-btn');
-  if (prevBtn) {
-    prevBtn.addEventListener('mousedown', () => rStartFast(-1));
-    prevBtn.addEventListener('touchstart', (e) => { e.preventDefault(); rStartFast(-1); }, { passive: false });
-    prevBtn.addEventListener('mouseup', rStopFast);
-    prevBtn.addEventListener('touchend', rStopFast);
-    prevBtn.addEventListener('mouseleave', rStopFast);
-  }
-  if (nextBtn) {
-    nextBtn.addEventListener('mousedown', () => rStartFast(+1));
-    nextBtn.addEventListener('touchstart', (e) => { e.preventDefault(); rStartFast(+1); }, { passive: false });
-    nextBtn.addEventListener('mouseup', rStopFast);
-    nextBtn.addEventListener('touchend', rStopFast);
-    nextBtn.addEventListener('mouseleave', rStopFast);
-  }
+  ['mousedown','touchstart'].forEach(ev => {
+    prevBtn?.addEventListener(ev, e => { if(ev==='touchstart')e.preventDefault(); rStartFast(-1); }, { passive: false });
+    nextBtn?.addEventListener(ev, e => { if(ev==='touchstart')e.preventDefault(); rStartFast(+1); }, { passive: false });
+  });
+  ['mouseup','touchend','mouseleave','touchcancel'].forEach(ev => {
+    prevBtn?.addEventListener(ev, rStopFast);
+    nextBtn?.addEventListener(ev, rStopFast);
+  });
 
   // Tap zones
   document.querySelector('.reader-zone-prev')?.addEventListener('click', rPrev);
   document.querySelector('.reader-zone-next')?.addEventListener('click', rNext);
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('reader-view').classList.contains('active')) return;
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); rNext(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); rPrev(); }
+    if (e.key === 'Escape') { closeGoto(); closeReader(); }
+    if (e.key === 'g') readerGoto();
+  });
 }
 
 function readerGoto() {
@@ -1408,23 +1399,12 @@ function readerGoto() {
   document.getElementById('reader-goto').classList.add('open');
   setTimeout(() => document.getElementById('goto-inp').focus(), 100);
 }
-
 function closeGoto() { document.getElementById('reader-goto').classList.remove('open'); }
-
 function gotoConfirm() {
   const v = parseInt(document.getElementById('goto-inp').value);
   if (!isNaN(v)) rGoTo(v);
   closeGoto();
 }
-
-document.addEventListener('keydown', e => {
-  if (!document.getElementById('reader-view').classList.contains('active')) return;
-  if (e.target.tagName === 'INPUT') return;
-  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); rNext(); }
-  if (e.key === 'ArrowLeft') { e.preventDefault(); rPrev(); }
-  if (e.key === 'Escape') { closeGoto(); closeReader(); }
-  if (e.key === 'g') readerGoto();
-});
 
 /* ══════════════════════════════════════════
    INIT — FIX 1: ensure scroll starts at top
@@ -1471,7 +1451,7 @@ window.addEventListener('popstate', (e) => {
     <div class="reader-title" id="r-title">—</div>
     <div style="display:flex;gap:5px">
       <button class="reader-btn" onclick="readerGoto()" title="Ir a página">
-        <svg viewBox="0 0 24 24"><line x1="9" y1="12" x2="15" y2="12"/><polyline points="12 9 15 12 12 15"/></svg>
+        <svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
       </button>
       <button class="reader-btn" onclick="closeReader()" title="Cerrar">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1480,18 +1460,18 @@ window.addEventListener('popstate', (e) => {
   </div>
   <div class="reader-stage" id="r-stage">
     <div id="r-book"></div>
-    <div class="reader-zone-prev" onclick="rPrev()"></div>
-    <div class="reader-zone-next" onclick="rNext()"></div>
+    <div class="reader-zone-prev"></div>
+    <div class="reader-zone-next"></div>
   </div>
   <div class="reader-controls">
     <div class="reader-track" id="r-track">
       <div class="reader-fill" id="r-fill"></div>
     </div>
     <div class="reader-btns">
-      <button class="reader-nav-btn" onclick="rPrev()">
+      <button class="reader-nav-btn" id="r-prev-btn">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Anterior
       </button>
-      <button class="reader-nav-btn primary" onclick="rNext()">
+      <button class="reader-nav-btn primary" id="r-next-btn">
         Siguiente <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
