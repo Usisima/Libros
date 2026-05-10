@@ -187,10 +187,23 @@ img{max-width:100%;height:auto;display:block}
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
   scroll-snap-type:x proximity;
+  /* NUEVO: Para alinear con el título cuando hay pocos items */
+  scroll-padding: 0 1rem;
 }
 .hscroll::-webkit-scrollbar{display:none}
 .hscroll::after{
   content:'';flex:0 0 1px;
+}
+
+/* NUEVA REGLA: Carruseles con pocos items */
+.hscroll.few-items {
+  justify-content: flex-start;
+  padding-left: 1rem;
+}
+
+/* NUEVA REGLA: Para 1 solo libro */
+.hscroll.single-item {
+  justify-content: flex-start;
 }
 
 /* ═══════════════════════════════════════
