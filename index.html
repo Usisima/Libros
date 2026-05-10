@@ -169,6 +169,25 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .math-block{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.65rem 0;text-align:center;margin:.7rem 0}
 .math-block .katex-display{margin:0;overflow-x:auto;overflow-y:hidden}
 
+/* ── LIBRARY GRID (search) ── */
+.lib-grid-section{padding:0 1rem 1.5rem}
+.lib-grid-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  letter-spacing:.01em;margin:1.2rem 0 .8rem;color:var(--ink)}
+.lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.lib-grid-card{cursor:pointer;border-radius:var(--rsm);overflow:hidden;
+  background:var(--s1);border:1px solid var(--border);transition:all .2s;position:relative}
+.lib-grid-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.lib-grid-card:active{transform:scale(.96)}
+.lib-grid-cover{width:100%;aspect-ratio:2/3;display:flex;align-items:center;
+  justify-content:center;font-size:1.8rem;position:relative;overflow:hidden}
+.lib-grid-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lib-grid-cover span{position:relative;z-index:1}
+.lib-grid-info{padding:.35rem .4rem .45rem}
+.lib-grid-name{font-size:.67rem;font-weight:600;color:var(--ink);line-height:1.2;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lib-grid-auth{font-size:.58rem;color:var(--ink3);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 /* ── FAVS VIEW ── */
 .favs-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
 
@@ -201,28 +220,29 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .reader-btn:hover{background:rgba(201,169,110,.12);border-color:var(--accent);color:var(--accent)}
 .reader-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .reader-page-ct{font-size:.62rem;color:rgba(240,236,228,.3);min-width:56px;text-align:center;flex-shrink:0;font-family:'DM Mono',monospace}
-.reader-stage{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;perspective:1800px}
-.reader-book{position:relative;width:min(440px,90vw);height:min(640px,calc(100vh - 50px - 82px))}
-.reader-book::after{content:'';position:absolute;bottom:-18px;left:8%;right:8%;height:28px;
-  background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(0,0,0,.65) 0%,transparent 100%);filter:blur(6px);pointer-events:none}
+.reader-stage{flex:1;position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:center;perspective:1800px;padding:12px}
+.reader-book{position:relative;width:100%;height:100%;max-width:min(440px,90vw);margin:0 auto}
 .rpage{position:absolute;inset:0;border-radius:2px 8px 8px 2px;overflow:hidden;
-  transform-origin:left center;transform-style:preserve-3d;
-  transition:transform .6s cubic-bezier(.4,0,.2,1),box-shadow .35s;
-  box-shadow:4px 0 18px rgba(0,0,0,.4),inset -1px 0 0 rgba(0,0,0,.12);background:#f5f0e8}
+  transform-style:preserve-3d;
+  box-shadow:4px 0 18px rgba(0,0,0,.4),inset -1px 0 0 rgba(0,0,0,.12);background:#f5f0e8;
+  /* No base transition — transitions only applied when .turning-* class is set */
+}
 .rpage img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
 
-/* FIX 3: DISTINCT animations for prev vs next */
+/* Distinct flip animations per direction */
 .rpage.turning-fwd{
+  transform-origin:left center;
   transform:rotateY(-180deg);
   box-shadow:-8px 4px 28px rgba(0,0,0,.65);
   z-index:20!important;
-  transform-origin:left center;
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
 }
 .rpage.turning-bk{
+  transform-origin:right center;
   transform:rotateY(180deg);
   box-shadow:8px 4px 28px rgba(0,0,0,.65);
   z-index:20!important;
-  transform-origin:right center;
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
 }
 
 .rpage-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f0e8}
@@ -891,6 +911,25 @@ function closeAllTracks(exceptBookId, exceptNum) {
 /* ══════════════════════════════════════════
    SEARCH
 ══════════════════════════════════════════ */
+function buildLibraryGrid() {
+  return LIBRARY.map(cat => {
+    const cards = cat.books.map(b => {
+      const cu = getBookCoverUrl(b.id);
+      return `
+        <div class="lib-grid-card" onclick="openDetail('${b.id}')">
+          <div class="lib-grid-cover" style="background:${b.cover}">
+            ${cu ? `<img src="${cu}" alt="">` : `<span>${b.emoji}</span>`}
+          </div>
+          <div class="lib-grid-info">
+            <div class="lib-grid-name">${b.title}</div>
+            <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
+          </div>
+        </div>`;
+    }).join('');
+    return `<div class="lib-grid-title">${cat.label}</div><div class="lib-grid">${cards}</div>`;
+  }).join('');
+}
+
 function showSearch(skipHistory) {
   setTopBar('Buscar', true);
   document.getElementById('search-view').innerHTML = `
@@ -901,8 +940,11 @@ function showSearch(skipHistory) {
         <span class="search-clear" id="search-clear" onclick="clearSearch()">✕</span>
       </div>
     </div>
-    <div class="search-results" id="search-results">
+    <div class="search-results" id="search-results" style="display:none">
       <div class="search-empty">Escribe para buscar en tu biblioteca</div>
+    </div>
+    <div class="lib-grid-section" id="library-grid">
+      ${buildLibraryGrid()}
     </div>`;
   showView('search-view', skipHistory);
   setTimeout(() => document.getElementById('search-input')?.focus(), 100);
@@ -910,11 +952,22 @@ function showSearch(skipHistory) {
 
 function doSearch(q) {
   const clear = document.getElementById('search-clear');
-  if (clear) clear.style.display = q ? 'block' : 'none';
   const res = document.getElementById('search-results');
-  if (!q.trim()) { res.innerHTML = '<div class="search-empty">Escribe para buscar en tu biblioteca</div>'; return; }
-  const qL = q.toLowerCase();
+  const grid = document.getElementById('library-grid');
+  if (clear) clear.style.display = q ? 'block' : 'none';
 
+  if (!q.trim()) {
+    // Show grid, hide results
+    if (res) res.style.display = 'none';
+    if (grid) grid.style.display = 'block';
+    return;
+  }
+
+  // Show results, hide grid
+  if (res) res.style.display = 'block';
+  if (grid) grid.style.display = 'none';
+
+  const qL = q.toLowerCase();
   let matches = [];
   allBooks.forEach(b => {
     if (b.title.toLowerCase().includes(qL)) matches.push({ type:'book', bookId:b.id, title:b.title, sub:b.author, emoji:b.emoji, cover:b.cover });
@@ -940,8 +993,12 @@ function doSearch(q) {
 function clearSearch() {
   const inp = document.getElementById('search-input');
   if (inp) { inp.value = ''; inp.focus(); }
-  document.getElementById('search-clear').style.display = 'none';
-  document.getElementById('search-results').innerHTML = '<div class="search-empty">Escribe para buscar en tu biblioteca</div>';
+  const clear = document.getElementById('search-clear');
+  if (clear) clear.style.display = 'none';
+  const res = document.getElementById('search-results');
+  const grid = document.getElementById('library-grid');
+  if (res) res.style.display = 'none';
+  if (grid) grid.style.display = 'block';
 }
 
 /* ══════════════════════════════════════════
@@ -1073,8 +1130,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dis
 
 /* ══════════════════════════════════════════
    BOOK READER ENGINE
-   FIX 3: prev animation uses right-origin flip
-   FIX 4: covers = page 1 image from reader config
+   - No animation lock: rapid clicks queue pages
+   - Long press = fast auto-scroll
+   - Android back gesture closes reader
+   - Full-height optimized stage
 ══════════════════════════════════════════ */
 const R = {
   bookId: null,
@@ -1083,8 +1142,13 @@ const R = {
   base: '',
   prefix: '',
   ext: '.jpg',
-  animating: false,
   cache: {},
+  // Rapid-click queue
+  queue: 0,         // pending page steps (+1 / -1)
+  processing: false,
+  // Long-press fast scroll
+  fastTimer: null,
+  fastInterval: null,
 };
 
 const READER_BOOKS = {
@@ -1106,17 +1170,16 @@ function rPageUrl(n) {
   return R.base + R.prefix + String(n).padStart(4, '0') + R.ext;
 }
 
-function rPreload(n, radius) {
-  for (let i = n; i <= Math.min(R.total, n + radius); i++) rLoad(i);
-  for (let i = Math.max(1, n - radius); i < n; i++) rLoad(i);
-}
-
 function rLoad(n) {
   if (n < 1 || n > R.total || R.cache[n]) return;
   const img = new Image();
-  img.onload = img.onerror = () => { R.cache[n] = img; };
   img.src = rPageUrl(n);
   R.cache[n] = img;
+}
+
+function rPreload(n, radius) {
+  for (let i = n; i <= Math.min(R.total, n + radius); i++) rLoad(i);
+  for (let i = Math.max(1, n - radius); i < n; i++) rLoad(i);
 }
 
 function openReader(bookId) {
@@ -1124,13 +1187,9 @@ function openReader(bookId) {
   if (!cfg) { openPdf(bookId); return; }
 
   R.bookId = bookId;
-  R.base = cfg.base;
-  R.prefix = cfg.prefix;
-  R.ext = cfg.ext;
-  R.total = cfg.total;
+  R.base = cfg.base; R.prefix = cfg.prefix; R.ext = cfg.ext; R.total = cfg.total;
   R.current = parseInt(localStorage.getItem('reader_pg_' + bookId) || '1');
-  R.animating = false;
-  R.cache = {};
+  R.cache = {}; R.queue = 0; R.processing = false;
 
   const book = allBooks.find(b => b.id === bookId);
   document.getElementById('r-title').textContent = book?.title || bookId;
@@ -1138,27 +1197,12 @@ function openReader(bookId) {
   document.getElementById('goto-inp').max = R.total;
 
   document.getElementById('reader-view').classList.add('active');
+  // Push history state so Android back button closes reader
   history.pushState({ view: 'reader', bookId }, '', '#reader');
 
-  rPreload(R.current, 4);
+  rPreload(R.current, 6);
   rRender();
-
-  const track = document.getElementById('r-track');
-  track.onclick = (e) => {
-    const ratio = e.offsetX / track.offsetWidth;
-    rGoTo(Math.round(1 + ratio * (R.total - 1)));
-  };
-
-  let sx = 0, sy = 0;
-  const stage = document.getElementById('r-stage');
-  stage.ontouchstart = (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; };
-  stage.ontouchend = (e) => {
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 38) {
-      if (dx < 0) rNext(); else rPrev();
-    }
-  };
+  rSetupInteractions();
 }
 
 function openPdf(bookId) {
@@ -1168,15 +1212,17 @@ function openPdf(bookId) {
 }
 
 function closeReader() {
+  rStopFast();
   document.getElementById('reader-view').classList.remove('active');
-  history.back();
+  // Only call history.back() if we pushed a reader state
+  if (location.hash === '#reader') history.back();
 }
 
 function rRender() {
-  const book = document.getElementById('r-book');
-  book.querySelectorAll('.rpage').forEach(p => p.remove());
+  const bookEl = document.getElementById('r-book');
+  bookEl.innerHTML = '';
   const page = rMakePage(R.current);
-  book.appendChild(page);
+  bookEl.appendChild(page);
   rUpdateUI();
 }
 
@@ -1204,7 +1250,7 @@ function rMakePage(n) {
         el.src = c.src; el.draggable = false;
         pl.replaceWith(el);
       }
-    }, 120);
+    }, 80);
   }
 
   const spine = document.createElement('div'); spine.className = 'rpage-spine';
@@ -1213,24 +1259,37 @@ function rMakePage(n) {
   return div;
 }
 
-/* FIX 3: Forward flips left (turning-fwd, left origin),
-          Backward flips right (turning-bk, right origin) */
-function rTurn(dir) {
-  if (R.animating) return;
-  const isFwd = dir === 'fwd';
-  const next = isFwd ? R.current + 1 : R.current - 1;
-  if (next < 1 || next > R.total) return;
-  R.animating = true;
+/* ── Queue-based navigation: handles rapid clicks ── */
+function rNext() { rEnqueue(+1); }
+function rPrev() { rEnqueue(-1); }
 
-  const book = document.getElementById('r-book');
-  const cur = book.querySelector('.rpage');
+function rEnqueue(step) {
+  const target = R.current + step;
+  if (target < 1 || target > R.total) return;
+  R.queue += step;
+  if (!R.processing) rFlushQueue();
+}
 
-  rLoad(next);
-  rPreload(next, 3);
+function rFlushQueue() {
+  if (R.queue === 0) { R.processing = false; return; }
+  R.processing = true;
 
+  const step = R.queue > 0 ? 1 : -1;
+  R.queue -= step;
+
+  const next = R.current + step;
+  if (next < 1 || next > R.total) { R.queue = 0; R.processing = false; return; }
+
+  R.current = next;
+  localStorage.setItem('reader_pg_' + R.bookId, R.current);
+  rPreload(R.current, 6);
+
+  const bookEl = document.getElementById('r-book');
+  const cur = bookEl.querySelector('.rpage');
+
+  // Animate flip
   if (cur) {
-    // FIX 3: apply different transform-origin per direction
-    if (isFwd) {
+    if (step > 0) {
       cur.style.transformOrigin = 'left center';
       cur.classList.add('turning-fwd');
     } else {
@@ -1240,31 +1299,27 @@ function rTurn(dir) {
     cur.style.zIndex = 20;
   }
 
-  setTimeout(() => {
-    R.current = next;
-    localStorage.setItem('reader_pg_' + R.bookId, R.current);
-    const newP = rMakePage(R.current);
-    newP.style.zIndex = 1;
-    book.insertBefore(newP, book.firstChild);
-    rUpdateUI();
-  }, 280);
+  // Insert new page behind
+  const newP = rMakePage(R.current);
+  newP.style.zIndex = 1;
+  bookEl.insertBefore(newP, bookEl.firstChild);
+  rUpdateUI();
 
+  // After animation, clean up and process next in queue
+  const delay = R.queue !== 0 ? 80 : 300; // faster cleanup when more queued
   setTimeout(() => {
-    book.querySelectorAll('.rpage.turning-fwd,.rpage.turning-bk').forEach(p => p.remove());
-    R.animating = false;
-  }, 640);
+    cur?.remove();
+    rFlushQueue();
+  }, delay);
 }
 
-function rNext() { rTurn('fwd'); }
-function rPrev() { rTurn('bk'); }
-
 function rGoTo(n) {
-  if (R.animating) return;
+  R.queue = 0;
+  R.processing = false;
   const t = Math.max(1, Math.min(R.total, n));
-  if (t === R.current) return;
   R.current = t;
   localStorage.setItem('reader_pg_' + R.bookId, R.current);
-  rPreload(t, 4);
+  rPreload(t, 6);
   rRender();
 }
 
@@ -1272,6 +1327,80 @@ function rUpdateUI() {
   document.getElementById('r-counter').textContent = 'p. ' + R.current + ' / ' + R.total;
   const pct = R.total > 1 ? ((R.current - 1) / (R.total - 1)) * 100 : 0;
   document.getElementById('r-fill').style.width = pct + '%';
+}
+
+/* ── Long-press fast scroll ── */
+function rStartFast(dir) {
+  rStopFast();
+  // First trigger immediate
+  dir > 0 ? rNext() : rPrev();
+  // After 400ms hold, start repeating fast
+  R.fastTimer = setTimeout(() => {
+    R.fastInterval = setInterval(() => { dir > 0 ? rNext() : rPrev(); }, 80);
+  }, 400);
+}
+
+function rStopFast() {
+  clearTimeout(R.fastTimer);
+  clearInterval(R.fastInterval);
+  R.fastTimer = null;
+  R.fastInterval = null;
+}
+
+/* ── Set up all interactions once ── */
+function rSetupInteractions() {
+  const track = document.getElementById('r-track');
+  // Use one-time setup with a flag
+  if (track._rSetup) return;
+  track._rSetup = true;
+
+  track.onclick = (e) => {
+    const ratio = e.offsetX / track.offsetWidth;
+    rGoTo(Math.round(1 + ratio * (R.total - 1)));
+  };
+
+  const stage = document.getElementById('r-stage');
+  if (stage._rSetup) return;
+  stage._rSetup = true;
+
+  // Touch swipe
+  let sx = 0, sy = 0, moved = false;
+  stage.addEventListener('touchstart', (e) => {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    moved = false;
+  }, { passive: true });
+  stage.addEventListener('touchmove', (e) => { moved = true; }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
+    if (!moved) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 38) {
+      if (dx < 0) rNext(); else rPrev();
+    }
+  });
+
+  // Prev/Next button long-press
+  const prevBtn = document.getElementById('r-prev-btn');
+  const nextBtn = document.getElementById('r-next-btn');
+  if (prevBtn) {
+    prevBtn.addEventListener('mousedown', () => rStartFast(-1));
+    prevBtn.addEventListener('touchstart', (e) => { e.preventDefault(); rStartFast(-1); }, { passive: false });
+    prevBtn.addEventListener('mouseup', rStopFast);
+    prevBtn.addEventListener('touchend', rStopFast);
+    prevBtn.addEventListener('mouseleave', rStopFast);
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('mousedown', () => rStartFast(+1));
+    nextBtn.addEventListener('touchstart', (e) => { e.preventDefault(); rStartFast(+1); }, { passive: false });
+    nextBtn.addEventListener('mouseup', rStopFast);
+    nextBtn.addEventListener('touchend', rStopFast);
+    nextBtn.addEventListener('mouseleave', rStopFast);
+  }
+
+  // Tap zones
+  document.querySelector('.reader-zone-prev')?.addEventListener('click', rPrev);
+  document.querySelector('.reader-zone-next')?.addEventListener('click', rNext);
 }
 
 function readerGoto() {
