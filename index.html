@@ -6,897 +6,403 @@
 <title>NotePlayer · Apuntes Matemáticos</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
-/* ═══════════════════════════════════════
-   DESIGN SYSTEM & CSS VARIABLES
-═══════════════════════════════════════ */
+/* ── VARIABLES ─────────────────────────────── */
 :root {
-  --bg:#000000; --s1:#12121a; --s2:#1a1a24; --s3:#222230;
-  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.11);
-  --ink:#f0ece4; --ink2:rgba(240,236,228,0.62); --ink3:rgba(240,236,228,0.32);
-  --accent:#c9a96e; --accent2:#d4ba7c; --adim:rgba(201,169,110,0.14);
-  --teal:#7ec8bc; --tdim:rgba(126,200,188,0.12);
-  --success:rgba(123,165,135,0.14); --success-text:#7ba587;
-  --info:rgba(139,157,195,0.14); --info-text:#8b9dc3;
-  --warning:rgba(201,169,110,0.14); --warning-text:#c9a96e;
-  --r:16px; --rsm:10px; --nav-h:58px;
-  --transition-fast: 0.15s ease;
-  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg:#000;--s1:#12121a;--s2:#1a1a24;--s3:#222230;
+  --br:rgba(255,255,255,.06);--br2:rgba(255,255,255,.11);
+  --ink:#f0ece4;--ink2:rgba(240,236,228,.62);--ink3:rgba(240,236,228,.32);
+  --acc:#c9a96e;--acc2:#d4ba7c;--adim:rgba(201,169,110,.14);
+  --teal:#7ec8bc;
+  --c-info:rgba(139,157,195,.14);--c-info-t:#8b9dc3;
+  --c-ok:rgba(123,165,135,.14);--c-ok-t:#7ba587;
+  --c-warn:rgba(201,169,110,.14);--c-warn-t:#c9a96e;
+  --r:16px;--rsm:10px;--nav-h:58px;
+  --tf:.15s ease;--ts:.3s cubic-bezier(.4,0,.2,1);
 }
 
-/* ═══════════════════════════════════════
-   RESET & BASE
-═══════════════════════════════════════ */
+/* ── RESET ─────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
 body{
   font-family:'DM Sans',system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
+  background:var(--bg);color:var(--ink);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
   overflow-x:hidden;
   padding-bottom:calc(var(--nav-h) + 1rem);
   line-height:1.5;
 }
-img{max-width:100%;height:auto;display:block}
 
-/* ═══════════════════════════════════════
-   LAYOUT - VIEWS
-═══════════════════════════════════════ */
-.view{display:none;animation:fadeIn .3s ease}
-.view.active{display:block}
+/* ── ANIMATIONS ────────────────────────────── */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes favPop{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+@keyframes rspin{to{transform:rotate(360deg)}}
 
-/* ═══════════════════════════════════════
-   TOP BAR
-═══════════════════════════════════════ */
+/* ── VIEWS ─────────────────────────────────── */
+.view{display:none;animation:fadeIn .3s ease}
+.view.active{display:block}
+
+/* ── TOP BAR ───────────────────────────────── */
 .top-bar{
   position:sticky;top:0;z-index:100;
   padding:.7rem 1rem;
   display:flex;align-items:center;justify-content:space-between;gap:.6rem;
   background:rgba(0,0,0,.93);
   backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  transition:all .3s ease;
+  border-bottom:1px solid var(--br);
 }
 .top-bar::after{
   content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  background:linear-gradient(90deg,transparent,var(--acc),transparent);
   opacity:.28;pointer-events:none;
 }
-
-/* Top Bar Components */
 .tb-left,.tb-right{display:flex;align-items:center;gap:.5rem}
 .tb-right{gap:.8rem}
 .logo-text{
   font-family:'Playfair Display',serif;
-  font-size:1.4rem;font-weight:900;
-  color:var(--ink);
-  letter-spacing:-.02em;line-height:1;
-  flex-shrink:0;
-  cursor:pointer;
-  transition:color .2s;
+  font-size:1.4rem;font-weight:900;letter-spacing:-.02em;line-height:1;
+  cursor:pointer;transition:color .2s;
 }
-.logo-text:hover{color:var(--accent)}
-.tb-divider{
-  width:1px;height:22px;
-  background:rgba(255,255,255,.13);
-  flex-shrink:0;margin:0 .1rem;
-}
-.tb-institution{display:flex;flex-direction:column;gap:1px}
+.logo-text:hover{color:var(--acc)}
+.tb-divider{width:1px;height:22px;background:rgba(255,255,255,.13);margin:0 .1rem}
 .tb-inst-title{
   font-family:'Playfair Display',serif;
-  font-size:.95rem;font-weight:900;
-  color:var(--ink);
-  line-height:1.1;letter-spacing:-.01em;
+  font-size:.95rem;font-weight:900;line-height:1.1;letter-spacing:-.01em;
 }
-.tb-inst-sub{
-  font-size:9px;letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--ink3);font-weight:500;
-}
-
-/* Back Button */
-.back-btn-container{
-  display:flex;align-items:center;gap:.5rem;
-  flex:1;min-width:0;
-}
+.tb-inst-sub{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.back-btn-container{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
 .back-title{
   font-family:'Playfair Display',serif;
   font-size:.95rem;font-weight:700;
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:200px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;
 }
 
-/* Icon Buttons */
+/* ── ICON BUTTONS ──────────────────────────── */
 .icon-btn{
-  width:36px;height:36px;
-  border-radius:50%;
-  background:transparent;
-  border:1px solid var(--border2);
+  width:36px;height:36px;border-radius:50%;
+  background:transparent;border:1px solid var(--br2);
   color:var(--ink2);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-  transition:all var(--transition-fast);
-  flex-shrink:0;
-  position:relative;
+  cursor:pointer;transition:all var(--tf);flex-shrink:0;
 }
-.icon-btn:hover{
-  border-color:var(--accent);
-  color:var(--accent);
-  transform:scale(1.05);
-}
+.icon-btn:hover{border-color:var(--acc);color:var(--acc);transform:scale(1.05)}
 .icon-btn:active{transform:scale(.95)}
-.icon-btn svg{
-  width:17px;height:17px;
-  stroke:currentColor;
-  fill:none;stroke-width:2;
-  stroke-linecap:round;stroke-linejoin:round;
-}
-.icon-btn.active{
-  background:var(--adim);
-  border-color:var(--accent);
-  color:var(--accent);
-}
+.icon-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn.active{background:var(--adim);border-color:var(--acc);color:var(--acc)}
 
-/* Badge for icons */
-.icon-btn .badge{
-  position:absolute;top:-2px;right:-2px;
-  min-width:18px;height:18px;
-  background:var(--accent);
-  color:#000;
-  border-radius:9px;
-  font-size:9px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  padding:0 4px;
-  border:2px solid var(--bg);
-}
-
-/* ═══════════════════════════════════════
-   SECTIONS & HEADERS
-═══════════════════════════════════════ */
+/* ── SECTIONS ──────────────────────────────── */
 .section{margin:1.5rem 0}
-.section-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 1rem;margin-bottom:.8rem;
-}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;margin-bottom:.8rem}
 .section-title{
   font-family:'Playfair Display',serif;
-  font-size:1.05rem;font-weight:700;
-  letter-spacing:.01em;
-  position:relative;
-  padding-left:12px;
+  font-size:1.05rem;font-weight:700;letter-spacing:.01em;
+  position:relative;padding-left:12px;
 }
 .section-title::before{
   content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:3px;height:16px;background:var(--accent);border-radius:2px;
+  width:3px;height:16px;background:var(--acc);border-radius:2px;
 }
 
-/* ═══════════════════════════════════════
-   HORIZONTAL SCROLL CONTAINER
-═══════════════════════════════════════ */
+/* ── HORIZONTAL SCROLL ─────────────────────── */
 .hscroll{
-  display:flex;gap:.75rem;
-  overflow-x:auto;
+  display:flex;gap:.75rem;overflow-x:auto;
   padding:0 1rem .5rem;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
   scroll-snap-type:x proximity;
-  scroll-padding: 0 1rem;
+  scroll-padding:0 1rem;
 }
 .hscroll::-webkit-scrollbar{display:none}
 .hscroll::after{content:'';flex:0 0 1px}
-.hscroll.few-items{justify-content:flex-start;padding-left:1rem}
-.hscroll.single-item{justify-content:flex-start}
 
-/* ═══════════════════════════════════════
-   CARDS - Mini, Grid, Continue
-═══════════════════════════════════════ */
+/* ── MINI CARDS ────────────────────────────── */
 .mini-card{
-  flex-shrink:0;width:138px;
-  cursor:pointer;
-  border-radius:var(--rsm);
-  overflow:hidden;
-  background:var(--s1);
-  border:1px solid var(--border);
-  transition:all var(--transition-fast);
-  scroll-snap-align:start;
+  flex-shrink:0;width:138px;cursor:pointer;
+  border-radius:var(--rsm);overflow:hidden;
+  background:var(--s1);border:1px solid var(--br);
+  transition:all var(--tf);scroll-snap-align:start;
 }
-.mini-card:hover{
-  border-color:var(--border2);
-  transform:translateY(-2px);
-  box-shadow:0 8px 24px rgba(0,0,0,.3);
-}
+.mini-card:hover{border-color:var(--br2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .mini-card:active{transform:scale(.97)}
-
 .mini-cover{
   width:100%;aspect-ratio:2/3;
   display:flex;align-items:center;justify-content:center;
-  font-size:2.4rem;position:relative;overflow:hidden;
-  background:var(--s2);
+  font-size:2.4rem;position:relative;overflow:hidden;background:var(--s2);
 }
-.mini-cover img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  transition:transform .3s ease;
+.mini-cover img,.lib-grid-cover img,.c-thumb img,.detail-cover img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
 }
-.mini-card:hover .mini-cover img{transform:scale(1.05)}
-.mini-cover span{position:relative;z-index:1}
-
-/* Favorite Dot on Cards */
+.mini-card:hover .mini-cover img{transform:scale(1.05);transition:transform .3s}
+.mini-cover span,.lib-grid-cover span,.detail-cover span{position:relative;z-index:1}
 .fav-dot{
   position:absolute;top:.4rem;right:.4rem;z-index:3;
-  width:24px;height:24px;
-  border-radius:50%;
-  background:rgba(0,0,0,.6);
-  border:1px solid rgba(255,255,255,.2);
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-  font-size:13px;color:var(--ink2);
-  transition:all var(--transition-fast);
-  backdrop-filter:blur(4px);
+  cursor:pointer;font-size:13px;color:var(--ink2);
+  transition:all var(--tf);backdrop-filter:blur(4px);
 }
-.fav-dot:hover{
-  transform:scale(1.1);
-  border-color:var(--accent);
-}
-.fav-dot.faved{
-  background:var(--adim);
-  border-color:var(--accent);
-  color:var(--accent);
-  animation:favPop .3s ease;
-}
-@keyframes favPop{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.3)}
-  100%{transform:scale(1)}
-}
-
+.fav-dot:hover{transform:scale(1.1);border-color:var(--acc)}
+.fav-dot.faved{background:var(--adim);border-color:var(--acc);color:var(--acc);animation:favPop .3s ease}
 .mini-info{padding:.6rem .7rem}
 .mini-title{
-  font-size:.79rem;font-weight:600;
-  color:var(--ink);line-height:1.2;
-  display:-webkit-box;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;
+  font-size:.79rem;font-weight:600;line-height:1.2;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
-.mini-meta{
-  font-size:.69rem;color:var(--ink3);
-  margin-top:3px;
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;
-}
+.mini-meta{font-size:.69rem;color:var(--ink3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* Continue Reading List */
+/* ── CONTINUE LIST ─────────────────────────── */
 .continue-list{padding:0 1rem}
 .continue-item{
   display:flex;align-items:center;gap:.75rem;
-  padding:.7rem .6rem;
-  border-radius:var(--rsm);
-  cursor:pointer;
-  transition:all var(--transition-fast);
+  padding:.7rem .6rem;border-radius:var(--rsm);
+  cursor:pointer;transition:all var(--tf);
   animation:slideUp .3s ease backwards;
 }
-.continue-item:hover{
-  background:var(--s1);
-  transform:translateX(4px);
-}
+.continue-item:hover{background:var(--s1);transform:translateX(4px)}
 .continue-item:active{transform:scale(.98)}
-.continue-item:nth-child(1){animation-delay:0s}
-.continue-item:nth-child(2){animation-delay:.05s}
-.continue-item:nth-child(3){animation-delay:.1s}
-.continue-item:nth-child(4){animation-delay:.15s}
-
 .c-thumb{
-  width:48px;height:48px;
-  border-radius:var(--rsm);
+  width:48px;height:48px;border-radius:var(--rsm);
   display:flex;align-items:center;justify-content:center;
-  font-size:1.5rem;
-  background:var(--s2);
-  flex-shrink:0;
+  font-size:1.5rem;background:var(--s2);flex-shrink:0;
   overflow:hidden;position:relative;
 }
-.c-thumb img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-}
 .c-info{flex:1;min-width:0}
-.c-title{
-  font-size:.85rem;font-weight:600;
-  color:var(--ink);
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;
-}
-.c-sub{
-  font-size:.73rem;color:var(--ink3);
-  margin-top:2px;
-}
+.c-title{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
 
-/* ═══════════════════════════════════════
-   SEARCH
-═══════════════════════════════════════ */
+/* ── SEARCH ────────────────────────────────── */
 .search-wrap{padding:.7rem 1rem .3rem;animation:fadeIn .3s ease}
 .search-bar{
   display:flex;align-items:center;gap:.6rem;
-  padding:.7rem 1rem;
-  background:var(--s1);
-  border:1px solid var(--border);
-  border-radius:99px;
-  transition:all var(--transition-fast);
+  padding:.7rem 1rem;background:var(--s1);
+  border:1px solid var(--br);border-radius:99px;
+  transition:all var(--tf);
 }
-.search-bar:focus-within{
-  border-color:var(--accent);
-  box-shadow:0 0 0 2px var(--adim);
-}
-.search-bar svg{
-  width:16px;height:16px;
-  stroke:var(--ink3);
-  fill:none;stroke-width:2;
-  flex-shrink:0;
-  transition:stroke .3s;
-}
-.search-bar:focus-within svg{stroke:var(--accent)}
-
+.search-bar:focus-within{border-color:var(--acc);box-shadow:0 0 0 2px var(--adim)}
+.search-bar svg{width:16px;height:16px;stroke:var(--ink3);fill:none;stroke-width:2;flex-shrink:0;transition:stroke .3s}
+.search-bar:focus-within svg{stroke:var(--acc)}
 .search-bar input{
-  flex:1;background:none;border:none;
-  color:var(--ink);
-  font-family:'DM Sans',sans-serif;
-  font-size:.88rem;outline:none;
+  flex:1;background:none;border:none;color:var(--ink);
+  font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;
 }
 .search-bar input::placeholder{color:var(--ink3)}
 .search-clear{
   cursor:pointer;color:var(--ink3);
-  font-size:1.1rem;line-height:1;
-  flex-shrink:0;display:none;
   width:24px;height:24px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:50%;
-  transition:all .2s;
+  display:none;align-items:center;justify-content:center;
+  border-radius:50%;transition:all .2s;
 }
-.search-clear:hover{
-  background:rgba(255,255,255,.1);
-  color:var(--ink);
-}
+.search-clear:hover{background:rgba(255,255,255,.1);color:var(--ink)}
 .search-clear.visible{display:flex}
-
 .search-results{padding:0 1rem;animation:fadeIn .3s ease}
-.search-empty{
-  padding:3rem 1rem;text-align:center;
-  color:var(--ink3);font-size:.9rem;
-}
+.search-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
 .search-result-item{
   display:flex;align-items:center;gap:.75rem;
-  padding:.7rem .5rem;
-  border-radius:var(--rsm);
-  cursor:pointer;
-  transition:all var(--transition-fast);
-  border-bottom:1px solid var(--border);
+  padding:.7rem .5rem;border-radius:var(--rsm);cursor:pointer;
+  transition:all var(--tf);border-bottom:1px solid var(--br);
   animation:slideUp .2s ease backwards;
 }
 .search-result-item:last-child{border-bottom:none}
-.search-result-item:hover{
-  background:var(--s1);
-  transform:translateX(4px);
-}
-.search-result-item:nth-child(1){animation-delay:0s}
-.search-result-item:nth-child(2){animation-delay:.03s}
-.search-result-item:nth-child(n+3){animation-delay:.06s}
-.sr-cover{
-  width:44px;height:44px;border-radius:var(--rsm);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.35rem;flex-shrink:0;
-}
+.search-result-item:hover{background:var(--s1);transform:translateX(4px)}
+.sr-cover{width:44px;height:44px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0}
 .sr-info{flex:1;min-width:0}
-.sr-title{
-  font-size:.85rem;font-weight:600;
-  color:var(--ink);
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;
-}
+.sr-title{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sr-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
-.sr-type{
-  font-family:'DM Mono',monospace;
-  font-size:9px;padding:3px 8px;
-  border-radius:99px;background:var(--s2);
-  color:var(--ink3);flex-shrink:0;
-}
+.sr-type{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:99px;background:var(--s2);color:var(--ink3);flex-shrink:0}
 
-/* ═══════════════════════════════════════
-   LIBRARY GRID
-═══════════════════════════════════════ */
+/* ── LIBRARY GRID ──────────────────────────── */
 .lib-grid-section{padding:0 1rem 1.5rem}
-.lib-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
-  gap:.7rem;
-  animation:fadeIn .3s ease;
-}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.7rem;animation:fadeIn .3s ease}
 .lib-grid-card{
-  cursor:pointer;border-radius:var(--rsm);
-  overflow:hidden;
-  background:var(--s1);
-  border:1px solid var(--border);
-  transition:all var(--transition-fast);
-  position:relative;
+  cursor:pointer;border-radius:var(--rsm);overflow:hidden;
+  background:var(--s1);border:1px solid var(--br);
+  transition:all var(--tf);position:relative;
 }
-.lib-grid-card:hover{
-  border-color:var(--border2);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,0,0,.3);
-}
+.lib-grid-card:hover{border-color:var(--br2);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .lib-grid-card:active{transform:scale(.96)}
-.lib-grid-cover{
-  width:100%;aspect-ratio:2/3;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.6rem;
-  position:relative;overflow:hidden;
-}
-.lib-grid-cover img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-}
-.lib-grid-cover span{position:relative;z-index:1}
+.lib-grid-cover{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative;overflow:hidden}
 .lib-grid-info{padding:.45rem .55rem .55rem}
 .lib-grid-name{
-  font-size:.7rem;font-weight:600;
-  color:var(--ink);line-height:1.2;
-  display:-webkit-box;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;
+  font-size:.7rem;font-weight:600;line-height:1.2;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
-.lib-grid-auth{
-  font-size:.58rem;color:var(--ink3);
-  margin-top:2px;
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;
-}
+.lib-grid-auth{font-size:.58rem;color:var(--ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ═══════════════════════════════════════
-   DETAIL VIEW
-═══════════════════════════════════════ */
+/* ── DETAIL ────────────────────────────────── */
 .detail-header{
-  display:flex;flex-direction:column;
-  align-items:center;
-  padding:1.5rem 1rem .5rem;
-  gap:1rem;
-  animation:fadeIn .4s ease;
+  display:flex;flex-direction:column;align-items:center;
+  padding:1.5rem 1rem .5rem;gap:1rem;animation:fadeIn .4s ease;
 }
 .detail-cover{
-  width:clamp(120px,40vw,170px);
-  aspect-ratio:2/3;height:auto;
+  width:clamp(120px,40vw,170px);aspect-ratio:2/3;
   border-radius:var(--r);
   display:flex;align-items:center;justify-content:center;
-  font-size:5rem;
-  border:1px solid var(--border2);
+  font-size:5rem;border:1px solid var(--br2);
   position:relative;overflow:hidden;
   box-shadow:0 8px 32px rgba(0,0,0,.4);
 }
-.detail-cover img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;border-radius:var(--r);
-}
-.detail-cover span{position:relative;z-index:1}
 .detail-info{text-align:center}
-.detail-title{
-  font-family:'Playfair Display',serif;
-  font-size:1.5rem;font-weight:900;
-  line-height:1.2;margin-bottom:.3rem;
-}
+.detail-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;line-height:1.2;margin-bottom:.3rem}
 .detail-author{font-size:.9rem;color:var(--ink2);line-height:1.4}
-.detail-actions{
-  display:flex;gap:.6rem;
-  justify-content:center;
-  margin-top:.5rem;flex-wrap:wrap;
-}
+.detail-actions{display:flex;gap:.6rem;justify-content:center;margin-top:.5rem;flex-wrap:wrap}
 .action-btn{
-  padding:.55rem 1.1rem;
-  border-radius:99px;
-  background:var(--s1);
-  border:1px solid var(--border2);
+  padding:.55rem 1.1rem;border-radius:99px;
+  background:var(--s1);border:1px solid var(--br2);
   color:var(--ink2);
-  font-family:'DM Sans',sans-serif;
-  font-size:.8rem;font-weight:500;
-  cursor:pointer;
-  transition:all var(--transition-fast);
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
+  cursor:pointer;transition:all var(--tf);
   display:flex;align-items:center;gap:.4rem;
 }
-.action-btn:hover{
-  border-color:var(--accent);
-  color:var(--accent);
-  transform:translateY(-1px);
-}
+.action-btn:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
 .action-btn:active{transform:translateY(0)}
-.action-btn.primary{
-  background:var(--accent);
-  color:#000;
-  border-color:var(--accent);
-  font-weight:600;
-}
-.action-btn.primary:hover{
-  background:var(--accent2);
-  box-shadow:0 4px 12px var(--adim);
-}
-.action-btn.faved{
-  background:var(--adim);
-  border-color:var(--accent);
-  color:var(--accent);
-}
-.detail-stats{
-  text-align:center;
-  font-size:.8rem;color:var(--ink3);
-  margin-top:.5rem;
-}
+.action-btn.primary{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+.action-btn.primary:hover{background:var(--acc2);box-shadow:0 4px 12px var(--adim)}
+.action-btn.faved{background:var(--adim);border-color:var(--acc);color:var(--acc)}
+.detail-stats{text-align:center;font-size:.8rem;color:var(--ink3);margin-top:.5rem}
 
-/* ═══════════════════════════════════════
-   EPISODE/TRACK LIST
-═══════════════════════════════════════ */
+/* ── EPISODE LIST ──────────────────────────── */
 .episode-list{padding:0 .8rem}
 .ep-item{
   display:flex;align-items:center;gap:.7rem;
-  padding:.85rem .5rem;
-  border-radius:var(--rsm);
-  cursor:pointer;
-  transition:all var(--transition-fast);
-  border-bottom:1px solid var(--border);
+  padding:.85rem .5rem;border-radius:var(--rsm);
+  cursor:pointer;transition:all var(--tf);
+  border-bottom:1px solid var(--br);
   animation:slideUp .3s ease backwards;
 }
 .ep-item:last-of-type{border-bottom:none}
 .ep-item:hover{background:var(--s1);transform:translateX(3px)}
-.ep-item.open{
-  background:var(--adim);
-  border-bottom-color:transparent;
-}
-.ep-num{
-  font-family:'DM Mono',monospace;
-  font-size:.75rem;color:var(--ink3);
-  width:32px;text-align:center;flex-shrink:0;
-  font-weight:500;
-}
+.ep-item.open{background:var(--adim);border-bottom-color:transparent}
+.ep-num{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--ink3);width:32px;text-align:center;flex-shrink:0;font-weight:500}
 .ep-info{flex:1;min-width:0}
-.ep-title{
-  font-size:.9rem;font-weight:600;
-  color:var(--ink);
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;
-}
-.ep-meta{
-  font-size:.73rem;color:var(--ink3);
-  margin-top:2px;
-  display:flex;gap:.5rem;align-items:center;
-  flex-wrap:wrap;
-}
+.ep-title{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-meta{font-size:.73rem;color:var(--ink3);margin-top:2px;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
 .ep-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
-.ep-fav,.ep-play{
-  cursor:pointer;
-  transition:all var(--transition-fast);
-  display:flex;align-items:center;justify-content:center;
-}
+.ep-fav,.ep-play{cursor:pointer;transition:all var(--tf);display:flex;align-items:center;justify-content:center}
 .ep-fav{
-  width:30px;height:30px;
-  border-radius:50%;
-  background:transparent;
-  border:1px solid var(--border2);
-  color:var(--ink3);
-  font-size:13px;
+  width:30px;height:30px;border-radius:50%;
+  background:transparent;border:1px solid var(--br2);color:var(--ink3);font-size:13px;
 }
-.ep-fav:hover,.ep-fav.faved{
-  border-color:var(--accent);
-  color:var(--accent);
-}
+.ep-fav:hover,.ep-fav.faved{border-color:var(--acc);color:var(--acc)}
 .ep-fav.faved{animation:favPop .3s ease}
 .ep-play{
-  width:36px;height:36px;
-  border-radius:50%;
-  background:var(--adim);
-  border:1px solid var(--accent);
-  color:var(--accent);
+  width:36px;height:36px;border-radius:50%;
+  background:var(--adim);border:1px solid var(--acc);color:var(--acc);
 }
-.ep-play:hover{
-  background:var(--accent);
-  color:#000;
-  transform:scale(1.05);
-}
+.ep-play:hover{background:var(--acc);color:#000;transform:scale(1.05)}
 .ep-play:active{transform:scale(.95)}
 .ep-play svg{width:13px;height:13px;fill:currentColor}
 
-/* ═══════════════════════════════════════
-   EXPANDABLE CONTENT
-═══════════════════════════════════════ */
-.apunte-wrap{
-  overflow:hidden;
-  max-height:0;
-  transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s;
-  opacity:0;
-}
-.apunte-wrap.open{
-  max-height:2000px;
-  opacity:1;
-}
+/* ── EXPANDABLE NOTES ──────────────────────── */
+.apunte-wrap{overflow:hidden;max-height:0;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0}
+.apunte-wrap.open{max-height:2000px;opacity:1}
 .apunte-inner{
-  background:var(--s1);
-  border-top:1px solid var(--border2);
-  margin:0 .3rem;
-  border-radius:0 0 var(--rsm) var(--rsm);
-  padding:1.5rem 1.2rem;
-  animation:fadeIn .3s ease;
+  background:var(--s1);border-top:1px solid var(--br2);
+  margin:0 .3rem;border-radius:0 0 var(--rsm) var(--rsm);
+  padding:1.5rem 1.2rem;animation:fadeIn .3s ease;
 }
-/* Content Styles */
-.apunte-inner h1{
-  font-family:'Playfair Display',serif;
-  font-size:1.4rem;font-weight:900;
-  color:var(--ink);margin-bottom:.5rem;
-}
+.apunte-inner h1{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:.5rem}
 .apunte-inner .subtitle{
-  font-family:'DM Mono',monospace;
-  font-size:10px;color:var(--ink3);
+  font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);
   letter-spacing:.08em;text-transform:uppercase;
-  display:block;margin-bottom:1.5rem;
-  padding-bottom:1rem;
-  border-bottom:1px solid var(--border);
+  display:block;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--br);
 }
-.apunte-inner h2{
-  font-family:'Playfair Display',serif;
-  font-size:1.05rem;font-weight:700;
-  color:var(--accent);margin:1.5rem 0 .6rem;
-}
-.apunte-inner h3{
-  font-size:.92rem;font-weight:600;
-  color:var(--ink);margin:1rem 0 .4rem;
-}
-.apunte-inner p{
-  font-size:.875rem;line-height:1.8;
-  color:var(--ink2);margin-bottom:.8rem;
-}
-.apunte-inner ul,.apunte-inner ol{
-  margin:.6rem 0 1rem 1.5rem;
-}
-.apunte-inner li{
-  font-size:.875rem;line-height:1.8;
-  color:var(--ink2);margin-bottom:.3rem;
-}
+.apunte-inner h2{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--acc);margin:1.5rem 0 .6rem}
+.apunte-inner h3{font-size:.92rem;font-weight:600;margin:1rem 0 .4rem}
+.apunte-inner p{font-size:.875rem;line-height:1.8;color:var(--ink2);margin-bottom:.8rem}
+.apunte-inner ul,.apunte-inner ol{margin:.6rem 0 1rem 1.5rem}
+.apunte-inner li{font-size:.875rem;line-height:1.8;color:var(--ink2);margin-bottom:.3rem}
 .apunte-inner strong{color:var(--ink);font-weight:600}
 .apunte-inner em{color:var(--ink2);font-style:italic}
-.apunte-inner code{
-  font-family:'DM Mono',monospace;
-  background:var(--adim);
-  padding:2px 8px;border-radius:4px;
-  font-size:.85em;color:var(--accent2);
-}
-
-/* Boxes */
-.def-box{
-  background:var(--info);
-  border-left:3px solid var(--info-text);
-  padding:.8rem 1rem;margin:1rem 0;
-  border-radius:0 var(--rsm) var(--rsm) 0;
-  font-size:.88em;line-height:1.7;color:var(--ink2);
-}
-.thm-box{
-  background:var(--success);
-  border-left:3px solid var(--success-text);
-  padding:.8rem 1rem;margin:1rem 0;
-  border-radius:0 var(--rsm) var(--rsm) 0;
-  font-size:.88em;line-height:1.7;color:var(--ink2);
-}
-.ex-box{
-  background:var(--warning);
-  border-left:3px solid var(--warning-text);
-  padding:.8rem 1rem;margin:1rem 0;
-  border-radius:0 var(--rsm) var(--rsm) 0;
-  font-size:.88em;line-height:1.7;color:var(--ink2);
-}
-
-/* Math */
-.math-block{
-  overflow-x:auto;-webkit-overflow-scrolling:touch;
-  padding:.8rem 0;text-align:center;margin:.8rem 0;
-  background:rgba(255,255,255,.02);
-  border-radius:var(--rsm);
-}
-.math-block .katex-display{
-  margin:0;overflow-x:auto;overflow-y:hidden;
-  padding:0 .5rem;
-}
-
-/* Tables */
-.apunte-inner table{
-  width:100%;border-collapse:collapse;
-  margin:1rem 0;font-size:.82rem;
-  display:block;overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  border:1px solid var(--border);
-  border-radius:var(--rsm);
-}
-.apunte-inner th{
-  background:var(--s2);color:var(--ink);
-  padding:.7rem .8rem;text-align:left;
-  font-family:'DM Mono',monospace;
-  font-size:9px;text-transform:uppercase;
-  letter-spacing:.06em;
-  border-bottom:2px solid var(--border2);
-}
-.apunte-inner td{
-  padding:.6rem .8rem;
-  border-bottom:1px solid var(--border);
-  color:var(--ink2);font-size:.82rem;
-}
+.apunte-inner code{font-family:'DM Mono',monospace;background:var(--adim);padding:2px 8px;border-radius:4px;font-size:.85em;color:var(--acc2)}
+.def-box{background:var(--c-info);border-left:3px solid var(--c-info-t);padding:.8rem 1rem;margin:1rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.88em;line-height:1.7;color:var(--ink2)}
+.thm-box{background:var(--c-ok);border-left:3px solid var(--c-ok-t);padding:.8rem 1rem;margin:1rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.88em;line-height:1.7;color:var(--ink2)}
+.ex-box{background:var(--c-warn);border-left:3px solid var(--c-warn-t);padding:.8rem 1rem;margin:1rem 0;border-radius:0 var(--rsm) var(--rsm) 0;font-size:.88em;line-height:1.7;color:var(--ink2)}
+.math-block{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.8rem 0;text-align:center;margin:.8rem 0;background:rgba(255,255,255,.02);border-radius:var(--rsm)}
+.math-block .katex-display{margin:0;overflow-x:auto;overflow-y:hidden;padding:0 .5rem}
+.apunte-inner table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.82rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--br);border-radius:var(--rsm)}
+.apunte-inner th{background:var(--s2);padding:.7rem .8rem;text-align:left;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--br2)}
+.apunte-inner td{padding:.6rem .8rem;border-bottom:1px solid var(--br);color:var(--ink2);font-size:.82rem}
 .apunte-inner tr:last-child td{border-bottom:none}
 
-/* ═══════════════════════════════════════
-   BOTTOM NAVIGATION
-═══════════════════════════════════════ */
+/* ── BOTTOM NAV ────────────────────────────── */
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
   display:flex;justify-content:space-around;
   padding:.5rem .8rem env(safe-area-inset-bottom,.5rem);
-  background:rgba(0,0,0,.94);
-  backdrop-filter:blur(20px);
-  border-top:1px solid var(--border);
+  background:rgba(0,0,0,.94);backdrop-filter:blur(20px);
+  border-top:1px solid var(--br);
 }
 .nav-item{
   display:flex;flex-direction:column;align-items:center;
-  gap:4px;cursor:pointer;
-  color:var(--ink3);
-  transition:all var(--transition-fast);
-  padding:.3rem .6rem;
-  border-radius:var(--rsm);
-  position:relative;
+  gap:4px;cursor:pointer;color:var(--ink3);
+  transition:all var(--tf);padding:.3rem .6rem;border-radius:var(--rsm);position:relative;
 }
-.nav-item.active{color:var(--accent)}
-.nav-item:hover{color:var(--ink2)}
-.nav-item svg{
-  width:22px;height:22px;
-  stroke:currentColor;fill:none;
-  stroke-width:2;
-  transition:all .3s;
-}
+.nav-item.active{color:var(--acc)}
+.nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;transition:all .3s}
 .nav-item.active svg{fill:var(--adim)}
-.nav-label{
-  font-size:10px;font-weight:500;
-  letter-spacing:.04em;
-}
+.nav-label{font-size:10px;font-weight:500;letter-spacing:.04em}
 .nav-dot{
   position:absolute;top:-2px;right:-4px;
-  min-width:16px;height:16px;
-  background:var(--accent);
-  color:#000;border-radius:8px;
-  font-size:9px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  padding:0 3px;
+  min-width:16px;height:16px;background:var(--acc);color:#000;border-radius:8px;
+  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 3px;
 }
 
-/* ═══════════════════════════════════════
-   CUSTOM SCROLLBAR
-═══════════════════════════════════════ */
+/* ── SCROLLBAR ─────────────────────────────── */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{
-  background:var(--border2);
-  border-radius:99px;
-}
+::-webkit-scrollbar-thumb{background:var(--br2);border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--ink3)}
 
-/* ═══════════════════════════════════════
-   PDF READER (Google Drive)
-═══════════════════════════════════════ */
+/* ── PDF READER ────────────────────────────── */
 #reader-view{
-  position:fixed;inset:0;z-index:200;
-  background:#0f0e0c;
-  display:none;flex-direction:column;
-  animation:fadeIn .3s ease;
+  position:fixed;inset:0;z-index:200;background:#0f0e0c;
+  display:none;flex-direction:column;animation:fadeIn .3s ease;
 }
 #reader-view.active{display:flex}
-
 .reader-topbar{
   height:50px;flex-shrink:0;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 14px;
-  background:rgba(10,9,7,.97);
+  padding:0 14px;background:rgba(10,9,7,.97);
   border-bottom:1px solid rgba(255,255,255,.06);
   backdrop-filter:blur(16px);z-index:2;
 }
 .reader-title{
-  font-family:'Playfair Display',serif;
-  font-size:.88rem;font-style:italic;
-  color:var(--accent);
-  flex:1;text-align:center;
-  white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;padding:0 8px;
+  font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;
+  color:var(--acc);flex:1;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px;
 }
 .reader-btn{
   width:34px;height:34px;border-radius:8px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.07);
-  color:rgba(240,236,228,.5);
-  cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  color:rgba(240,236,228,.5);cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all var(--transition-fast);
-  flex-shrink:0;
+  transition:all var(--tf);flex-shrink:0;
 }
-.reader-btn:hover{
-  background:var(--adim);
-  border-color:var(--accent);
-  color:var(--accent);
+.reader-btn:hover{background:var(--adim);border-color:var(--acc);color:var(--acc)}
+.reader-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.reader-pdf-container{flex:1;position:relative;width:100%;height:100%;background:#0f0e0c}
+.reader-pdf-container iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.reader-loading,.reader-error{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;background:#0f0e0c;z-index:1;
 }
-.reader-btn svg{
-  width:16px;height:16px;
-  stroke:currentColor;fill:none;
-  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-}
+.reader-error{color:var(--ink3);font-size:.85rem;text-align:center;padding:2rem}
+.reader-error svg{width:40px;height:40px;stroke:var(--acc);opacity:.5}
+.hidden{display:none !important}
+.r-spinner{width:32px;height:32px;border:3px solid rgba(201,169,110,.12);border-top-color:var(--acc);border-radius:50%;animation:rspin .7s linear infinite}
+.loading-text{color:var(--ink3);font-size:.82rem;font-family:'DM Mono',monospace;letter-spacing:.04em}
 
-/* PDF iframe container */
-.reader-pdf-container{
-  flex:1;position:relative;
-  width:100%;height:100%;
-  background:#0f0e0c;
-}
-.reader-pdf-container iframe{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  border:none;
-}
-.reader-loading{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:16px;
-  background:#0f0e0c;
-  z-index:1;
-}
-.reader-loading.hidden{display:none}
-.r-spinner{
-  width:32px;height:32px;
-  border:3px solid rgba(201,169,110,.12);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:rspin .7s linear infinite;
-}
-@keyframes rspin{to{transform:rotate(360deg)}}
-.loading-text{
-  color:var(--ink3);
-  font-size:.82rem;
-  font-family:'DM Mono',monospace;
-  letter-spacing:.04em;
-}
-
-/* Error state */
-.reader-error{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:12px;
-  background:#0f0e0c;
-  color:var(--ink3);
-  font-size:.85rem;
-  text-align:center;
-  padding:2rem;
-  z-index:1;
-}
-.reader-error.hidden{display:none}
-.reader-error svg{
-  width:40px;height:40px;
-  stroke:var(--accent);
-  opacity:.5;
-}
-
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
-@media (min-width: 600px) {
+/* ── RESPONSIVE ────────────────────────────── */
+@media(min-width:600px){
   .lib-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
   .mini-card{width:150px}
   .detail-cover{width:180px}
 }
-@media (min-width: 900px) {
+@media(min-width:900px){
   body{padding-bottom:2rem}
   .bottom-nav{display:none}
   .top-bar{padding:.8rem 2rem}
@@ -907,26 +413,21 @@ img{max-width:100%;height:auto;display:block}
 
 <body>
 
-<!-- ═══════════════════════════════════════
-     TOP BAR
-═══════════════════════════════════════ -->
-<header class="top-bar" id="top-bar">
+<header class="top-bar">
   <div class="tb-left" id="tb-default">
-    <span class="logo-text" onclick="goHome()" title="Inicio">Ж</span>
+    <span class="logo-text" onclick="goHome()">Ж</span>
     <div class="tb-divider"></div>
-    <div class="tb-institution">
+    <div>
       <div class="tb-inst-title">Matemáticas</div>
       <div class="tb-inst-sub">Facultad de Ciencias · UNAM</div>
     </div>
   </div>
-  
   <div class="back-btn-container" id="tb-back" style="display:none">
     <button class="icon-btn" onclick="navBack()" aria-label="Volver">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <span class="back-title" id="tb-title"></span>
   </div>
-  
   <div class="tb-right">
     <button class="icon-btn" onclick="showSearch()" aria-label="Buscar">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -934,20 +435,14 @@ img{max-width:100%;height:auto;display:block}
   </div>
 </header>
 
-<!-- ═══════════════════════════════════════
-     MAIN VIEWS
-═══════════════════════════════════════ -->
 <main>
-  <div id="home" class="view active" role="main"></div>
-  <div id="search-view" class="view" role="search"></div>
-  <div id="detail" class="view" role="article"></div>
-  <div id="favs-view" class="view" role="complementary"></div>
+  <div id="home" class="view active"></div>
+  <div id="search-view" class="view"></div>
+  <div id="detail" class="view"></div>
+  <div id="favs-view" class="view"></div>
 </main>
 
-<!-- ═══════════════════════════════════════
-     BOTTOM NAVIGATION
-═══════════════════════════════════════ -->
-<nav class="bottom-nav" aria-label="Navegación principal">
+<nav class="bottom-nav">
   <div class="nav-item active" data-nav="home" onclick="goHome()">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
     <span class="nav-label">Inicio</span>
@@ -957,29 +452,25 @@ img{max-width:100%;height:auto;display:block}
     <span class="nav-label">Buscar</span>
   </div>
   <div class="nav-item" data-nav="favs-view" onclick="showFavs()">
-    <svg viewBox="0 0 24 24" id="nav-fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <span class="nav-label">Favoritos</span>
-    <span class="nav-dot" id="fav-count" style="display:none">0</span>
+    <span class="nav-dot hidden" id="fav-count">0</span>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     PDF READER
-═══════════════════════════════════════ -->
-<div id="reader-view" aria-label="Lector de PDF">
+<div id="reader-view">
   <div class="reader-topbar">
     <div class="reader-title" id="r-title">—</div>
     <div style="display:flex;gap:6px">
-      <button class="reader-btn" onclick="Reader.openInNewTab()" title="Abrir en nueva pestaña" aria-label="Abrir en Drive">
+      <button class="reader-btn" onclick="Reader.openTab()" aria-label="Abrir en Drive">
         <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </button>
-      <button class="reader-btn" onclick="Reader.close()" title="Cerrar lector" aria-label="Cerrar">
+      <button class="reader-btn" onclick="Reader.close()" aria-label="Cerrar">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
   </div>
-  
-  <div class="reader-pdf-container" id="r-pdf-container">
+  <div class="reader-pdf-container">
     <div class="reader-loading" id="r-loading">
       <div class="r-spinner"></div>
       <span class="loading-text">Cargando PDF...</span>
@@ -987,7 +478,7 @@ img{max-width:100%;height:auto;display:block}
     <div class="reader-error hidden" id="r-error">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <span>No se pudo cargar el PDF.<br>Intenta abrirlo en Drive.</span>
-      <button class="action-btn primary" onclick="Reader.openInNewTab()" style="margin-top:8px">
+      <button class="action-btn primary" onclick="Reader.openTab()" style="margin-top:8px">
         <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Abrir en Drive
       </button>
@@ -997,1208 +488,573 @@ img{max-width:100%;height:auto;display:block}
 </div>
 
 <script>
-/* ══════════════════════════════════════════
-   UTILITY FUNCTIONS
-══════════════════════════════════════════ */
-const debounce = (fn, delay) => {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), delay);
-  };
-};
-
-/* ══════════════════════════════════════════
-   DATA STORE
-══════════════════════════════════════════ */
+/* ─── DATA ───────────────────────────────────────── */
 const LIBRARY = [
   {
     label: "Álgebra Superior I",
     books: [
-      {
-        id: "bib_as1_Cardenas",
-        title: "Álgebra Superior",
-        author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_as1_Nachbin",
-        title: "Álgebra Elemental",
-        author: "L. Nachbin 1986",
-        pages: 0,
-        tracks: []
-      },
+      { id:"bib_as1_Cardenas", title:"Álgebra Superior", author:"H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", pages:0, tracks:[] },
+      { id:"bib_as1_Nachbin", title:"Álgebra Elemental", author:"L. Nachbin 1986", pages:0, tracks:[] }
     ]
   },
   {
     label: "Cálculo Diferencial e Integral I",
     books: [
-      {
-        id: "bib_cal1_Arizmendi",
-        title: "Cálculo. Primer Curso",
-        author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Courant",
-        title: "Introducción al Cálculo y al Análisis",
-        author: "R. Courant, F. John 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Lang",
-        title: "Cálculo I",
-        author: "S. Lang 1990",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Spivak",
-        title: "Cálculo Infinitesimal (2a ed)",
-        author: "M. Spivak 1998",
-        pages: 680,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Thomas",
-        title: "Cálculo con Geometría Analítica (9a ed)",
-        author: "G. B. Thomas, R. L. Finney 1987",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_cal1_Arizmendi", title:"Cálculo. Primer Curso", author:"H. Arizmendi, H. Carrillo, M. Lara 1987", pages:0, tracks:[] },
+      { id:"bib_cal1_Courant", title:"Introducción al Cálculo y al Análisis", author:"R. Courant, F. John 1974", pages:0, tracks:[] },
+      { id:"bib_cal1_Lang", title:"Cálculo I", author:"S. Lang 1990", pages:0, tracks:[] },
+      { id:"bib_cal1_Spivak", title:"Cálculo Infinitesimal (2a ed)", author:"M. Spivak 1998", pages:680, tracks:[] },
+      { id:"bib_cal1_Thomas", title:"Cálculo con Geometría Analítica (9a ed)", author:"G. B. Thomas, R. L. Finney 1987", pages:0, tracks:[] }
     ]
   },
   {
     label: "Geometría Analítica I",
     books: [
-      {
-        id: "bib_geo1_Bracho",
-        title: "Geometría Analítica",
-        author: "J. Bracho",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo1_Efimov",
-        title: "Geometría Superior",
-        author: "N. Efimov 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo1_Preston",
-        title: "Modern Analytic Geometry",
-        author: "G. C. Preston, A. R. Lovaglia 1971",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo1_Ramirez",
-        title: "Geometría Analítica: Una Introducción a la Geometría",
-        author: "A. Ramírez Galarza 2004",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_geo1_Bracho", title:"Geometría Analítica", author:"J. Bracho", pages:0, tracks:[] },
+      { id:"bib_geo1_Efimov", title:"Geometría Superior", author:"N. Efimov 1984", pages:0, tracks:[] },
+      { id:"bib_geo1_Preston", title:"Modern Analytic Geometry", author:"G. C. Preston, A. R. Lovaglia 1971", pages:0, tracks:[] },
+      { id:"bib_geo1_Ramirez", title:"Geometría Analítica: Una Introducción a la Geometría", author:"A. Ramírez Galarza 2004", pages:0, tracks:[] }
     ]
   },
   {
     label: "Álgebra Superior II",
     books: [
-      {
-        id: "bib_as2_Cardenas",
-        title: "Álgebra Superior",
-        author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_as2_Nachbin",
-        title: "Álgebra Elemental",
-        author: "L. Nachbin 1986",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_as2_Cardenas", title:"Álgebra Superior", author:"H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", pages:0, tracks:[] },
+      { id:"bib_as2_Nachbin", title:"Álgebra Elemental", author:"L. Nachbin 1986", pages:0, tracks:[] }
     ]
   },
   {
     label: "Cálculo Diferencial e Integral II",
     books: [
-      {
-        id: "bib_cal2_Arizmendi",
-        title: "Cálculo. Primer Curso",
-        author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Courant",
-        title: "Introducción al Cálculo y al Análisis",
-        author: "R. Courant, F. John 1996",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Lang",
-        title: "Cálculo I",
-        author: "S. Lang 1990",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Spivak",
-        title: "Cálculo Infinitesimal (2ª ed.)",
-        author: "M. Spivak 1998",
-        pages: 680,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Thomas",
-        title: "Cálculo con Geometría Analítica (9ª ed.)",
-        author: "G. B. Thomas, R. L. Finney 1987",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_cal2_Arizmendi", title:"Cálculo. Primer Curso", author:"H. Arizmendi, H. Carrillo, M. Lara 1987", pages:0, tracks:[] },
+      { id:"bib_cal2_Courant", title:"Introducción al Cálculo y al Análisis", author:"R. Courant, F. John 1996", pages:0, tracks:[] },
+      { id:"bib_cal2_Lang", title:"Cálculo I", author:"S. Lang 1990", pages:0, tracks:[] },
+      { id:"bib_cal2_Spivak", title:"Cálculo Infinitesimal (2ª ed.)", author:"M. Spivak 1998", pages:680, tracks:[] },
+      { id:"bib_cal2_Thomas", title:"Cálculo con Geometría Analítica (9ª ed.)", author:"G. B. Thomas, R. L. Finney 1987", pages:0, tracks:[] }
     ]
   },
   {
     label: "Geometría Analítica II",
     books: [
-      {
-        id: "bib_geo2_Bracho",
-        title: "Geometría Analítica",
-        author: "J. Bracho",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo2_Efimov",
-        title: "Geometría Superior",
-        author: "N. Efimov 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo2_Preston",
-        title: "Modern Analytic Geometry",
-        author: "G. C. Preston, A. R. Lovaglia 1971",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo2_Ramirez",
-        title: "Geometría Analítica: Una Introducción a la Geometría",
-        author: "A. Ramírez Galarza 1998",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_geo2_Bracho", title:"Geometría Analítica", author:"J. Bracho", pages:0, tracks:[] },
+      { id:"bib_geo2_Efimov", title:"Geometría Superior", author:"N. Efimov 1984", pages:0, tracks:[] },
+      { id:"bib_geo2_Preston", title:"Modern Analytic Geometry", author:"G. C. Preston, A. R. Lovaglia 1971", pages:0, tracks:[] },
+      { id:"bib_geo2_Ramirez", title:"Geometría Analítica: Una Introducción a la Geometría", author:"A. Ramírez Galarza 1998", pages:0, tracks:[] }
     ]
   },
   {
     label: "Álgebra Lineal I",
     books: [
-      {
-        id: "bib_al1_Curtis",
-        title: "Linear Algebra",
-        author: "C. W. Curtis 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Friedberg",
-        title: "Álgebra Lineal",
-        author: "S. H. Friedberg, A. J. Insel, L. E. Spence 1982",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Hoffman",
-        title: "Álgebra Lineal",
-        author: "K. Hoffman, R. Kunze 1973",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Lang",
-        title: "Álgebra Lineal",
-        author: "S. Lang 1986",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Nomizu",
-        title: "Fundamentals of Linear Algebra",
-        author: "K. Nomizu 1966",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Rincon",
-        title: "Álgebra Lineal",
-        author: "H. A. Rincón 2002",
-        pages: 0,
-        tracks: []
-      }
-    ]
-  },
-  {
-    label: "Cálculo Diferencial e Integral III",
-    books: [
-      {
-        id: "bib_cal3_Apostol",
-        title: "Calculus, Volumen I",
-        author: "T. M. Apostol 2001",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Courant2",
-        title: "Differential and Integral Calculus, Volumen II",
-        author: "R. Courant 1936",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_CourantJohn",
-        title: "Introducción al Cálculo y al Análisis Matemático, Volumen II",
-        author: "R. Courant, F. John 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Lang",
-        title: "Calculus of Several Variables",
-        author: "S. Lang 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Marsden",
-        title: "Cálculo Vectorial",
-        author: "J. Marsden, A. Tromba 1998",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Thomas",
-        title: "Cálculo: varias variables",
-        author: "G. B. Thomas, R. L. Finney 1999",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_al1_Curtis", title:"Linear Algebra", author:"C. W. Curtis 1984", pages:0, tracks:[] },
+      { id:"bib_al1_Friedberg", title:"Álgebra Lineal", author:"S. H. Friedberg, A. J. Insel, L. E. Spence 1982", pages:0, tracks:[] },
+      { id:"bib_al1_Hoffman", title:"Álgebra Lineal", author:"K. Hoffman, R. Kunze 1973", pages:0, tracks:[] },
+      { id:"bib_al1_Lang", title:"Álgebra Lineal", author:"S. Lang 1986", pages:0, tracks:[] },
+      { id:"bib_al1_Nomizu", title:"Fundamentals of Linear Algebra", author:"K. Nomizu 1966", pages:0, tracks:[] },
+      { id:"bib_al1_Rincon", title:"Álgebra Lineal", author:"H. A. Rincón 2002", pages:0, tracks:[] }
     ]
   }
-];const allBooks = LIBRARY.flatMap(c => c.books);
-const allTracks = allBooks.flatMap(b => 
-  b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover }))
+];
+
+const PDF = {
+  'bib_as1_Cardenas':  { title:'Álgebra Superior - Cárdenas',        driveId:'1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL' },
+  'bib_as1_Nachbin':   { title:'Álgebra Elemental - Nachbin',         driveId:'1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F' },
+  'bib_cal1_Spivak':   { title:'Cálculo Infinitesimal (2a ed) - Spivak', driveId:'1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ' },
+  'bib_as2_Cardenas':  { title:'Álgebra Superior - Cárdenas',        driveId:'1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL' },
+  'bib_as2_Nachbin':   { title:'Álgebra Elemental - Nachbin',         driveId:'1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F' },
+  // Agrega más IDs de Drive aquí
+};
+
+/* Computed lookups */
+const allBooks  = LIBRARY.flatMap(c => c.books);
+const bookMap   = Object.fromEntries(allBooks.map(b => [b.id, b]));
+const allTracks = allBooks.flatMap(b =>
+  b.tracks.map(t => ({ ...t, bookId:b.id, bookTitle:b.title, bookEmoji:b.emoji, bookCover:b.cover }))
 );
 
-/* ══════════════════════════════════════════
-   APPLICATION STATE
-══════════════════════════════════════════ */
-const AppState = {
+/* ─── STATE ──────────────────────────────────────── */
+function loadFavs() {
+  try {
+    const raw = localStorage.getItem('np_favs');
+    if (!raw) return [];
+    return JSON.parse(raw).filter(x => typeof x === 'string');
+  } catch { localStorage.removeItem('np_favs'); return []; }
+}
+function loadRecent() {
+  try { return JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0,4); }
+  catch { return []; }
+}
+
+const S = {
   view: 'home',
-  prevView: null,
-  currentBookId: null,
-  currentTrackKey: null,
-  favorites: new Set(
-    (() => {
-      const stored = localStorage.getItem('np_favs');
-      if (!stored) return [];
-      try {
-        const parsed = JSON.parse(stored);
-        return parsed.filter(item => 
-          typeof item === 'string' && 
-          (item.includes(':') ? item.split(':').length === 2 : true)
-        );
-      } catch (e) {
-        console.warn('Datos de favoritos corruptos, reiniciando');
-        localStorage.removeItem('np_favs');
-        return [];
-      }
-    })()
-  ),
+  prev: null,
+  bookId: null,
+  favs: new Set(loadFavs()),
   openTracks: new Set(),
-  recentTracks: JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0, 4),
-  
-  isFav(key) { return this.favorites.has(key); },
-  
-  addFavorite(key) {
-    this.favorites.add(key);
-    this.saveFavorites();
+  recent: loadRecent(),
+
+  isFav(k)   { return this.favs.has(k) },
+  toggleFav(k) {
+    this.favs[this.favs.has(k) ? 'delete' : 'add'](k);
+    localStorage.setItem('np_favs', JSON.stringify([...this.favs]));
+    this._syncFavCount();
+    return this.favs.has(k);
   },
-  
-  removeFavorite(key) {
-    this.favorites.delete(key);
-    this.saveFavorites();
+  addRecent(bookId, num) {
+    const k = `${bookId}:${num}`;
+    this.recent = [k, ...this.recent.filter(x => x !== k)].slice(0,4);
+    localStorage.setItem('np_recent', JSON.stringify(this.recent));
   },
-  
-  toggleFavorite(key) {
-    if (this.isFav(key)) {
-      this.removeFavorite(key);
-      return false;
-    } else {
-      this.addFavorite(key);
-      return true;
-    }
-  },
-  
-  saveFavorites() {
-    localStorage.setItem('np_favs', JSON.stringify([...this.favorites]));
-    this.updateFavCount();
-  },
-  
-  addRecent(bookId, trackNum) {
-    const key = `${bookId}:${trackNum}`;
-    this.recentTracks = [key, ...this.recentTracks.filter(k => k !== key)].slice(0, 4);
-    localStorage.setItem('np_recent', JSON.stringify(this.recentTracks));
-  },
-  
-  updateFavCount() {
-    const count = this.favorites.size;
+  _syncFavCount() {
     const el = document.getElementById('fav-count');
-    if (el) {
-      el.textContent = count;
-      el.style.display = count > 0 ? 'flex' : 'none';
-    }
+    const n  = this.favs.size;
+    el.textContent = n;
+    el.classList.toggle('hidden', n === 0);
   },
-  
-  getBookCoverUrl(bookId) {
-    const cfg = PDF_CONFIGS[bookId];
-    if (!cfg?.driveId) return null;
-    return `https://drive.google.com/thumbnail?id=${cfg.driveId}&sz=w400`;
+  coverUrl(bookId) {
+    const id = PDF[bookId]?.driveId;
+    return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : null;
   }
 };
 
-/* ══════════════════════════════════════════
-   PDF CONFIGURATION (Google Drive Links)
-   ⚠️ REEMPLAZA estos IDs con los reales de tus PDFs
-══════════════════════════════════════════ */
-const PDF_CONFIGS = {
-  // Álgebra Superior I
-  'bib_as1_Cardenas': {
-    title: 'Álgebra Superior - Cárdenas',
-    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL'
-  },
-  'bib_as1_Nachbin': {
-    title: 'Álgebra Elemental - Nachbin',
-    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
-  },
+/* ─── HELPERS ────────────────────────────────────── */
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms) } };
 
-  // Cálculo Diferencial e Integral I
-  'bib_cal1_Arizmendi': {
-    title: 'Cálculo. Primer Curso - Arizmendi',
-    driveId: '' 
-  },
-  'bib_cal1_Courant': {
-    title: 'Introducción al Cálculo y al Análisis - Courant',
-    driveId: '' 
-  },
-  'bib_cal1_Lang': {
-    title: 'Cálculo I - Lang',
-    driveId: '' 
-  },
-  'bib_cal1_Spivak': {
-    title: 'Cálculo Infinitesimal (2a ed) - Spivak',
-    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ'
-  },
-  'bib_cal1_Thomas': {
-    title: 'Cálculo con Geometría Analítica (9a ed) - Thomas',
-    driveId: '' 
-  },
-
-  //
-  'bib_geo1_Bracho': {
-    title: 'Geometría Analítica - Bracho',
-    driveId: ''
-  },
-  'bib_geo1_Efimov': {
-    title: 'Geometría Superior - Efimov',
-    driveId: ''
-  },
-  'bib_geo1_Preston': {
-    title: 'Modern Analytic Geometry - Preston & Lovaglia',
-    driveId: ''
-  },
-  'bib_geo1_Ramirez': {
-    title: 'Geometría Analítica - Ramírez Galarza',
-    driveId: ''
-  },
-
-  //
-  'bib_as2_Cardenas': {
-    title: 'Álgebra Superior - Cárdenas',
-    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL'
-  },
-  'bib_as2_Nachbin': {
-    title: 'Álgebra Elemental - Nachbin',
-    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
-  },
-
-
-  'bib_cal2_Arizmendi': {
-    title: 'Cálculo. Primer Curso - Arizmendi',
-    driveId: ''
-  },
-  'bib_cal2_Courant': {
-    title: 'Introducción al Cálculo y al Análisis - Courant',
-    driveId: ''
-  },
-  'bib_cal2_Lang': {
-    title: 'Cálculo I - Lang',
-    driveId: ''
-  },
-  'bib_cal2_Spivak': {
-    title: 'Cálculo Infinitesimal (2ª ed.) - Spivak',
-    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ'
-  },
-  'bib_cal2_Thomas': {
-    title: 'Cálculo con Geometría Analítica (9ª ed.) - Thomas',
-    driveId: ''
-  },
-
-
-  'bib_geo2_Bracho': {
-    title: 'Geometría Analítica - Bracho',
-    driveId: ''
-  },
-  'bib_geo2_Efimov': {
-    title: 'Geometría Superior - Efimov',
-    driveId: ''
-  },
-  'bib_geo2_Preston': {
-    title: 'Modern Analytic Geometry - Preston & Lovaglia',
-    driveId: ''
-  },
-  'bib_geo2_Ramirez': {
-    title: 'Geometría Analítica - Ramírez Galarza',
-    driveId: ''
-  },
-
-
-  'bib_al1_Curtis': {
-    title: 'Linear Algebra - Curtis',
-    driveId: ''
-  },
-  'bib_al1_Friedberg': {
-    title: 'Álgebra Lineal - Friedberg, Insel & Spence',
-    driveId: ''
-  },
-  'bib_al1_Hoffman': {
-    title: 'Álgebra Lineal - Hoffman & Kunze',
-    driveId: ''
-  },
-  'bib_al1_Lang': {
-    title: 'Álgebra Lineal - Lang',
-    driveId: ''
-  },
-  'bib_al1_Nomizu': {
-    title: 'Fundamentals of Linear Algebra - Nomizu',
-    driveId: ''
-  },
-  'bib_al1_Rincon': {
-    title: 'Álgebra Lineal - Rincón',
-    driveId: ''
-  },
-
-
-  'bib_cal3_Apostol': {
-    title: 'Calculus, Volumen I - Apostol',
-    driveId: ''
-  },
-  'bib_cal3_Courant2': {
-    title: 'Differential and Integral Calculus, Volumen II - Courant',
-    driveId: ''
-  },
-  'bib_cal3_CourantJohn': {
-    title: 'Introducción al Cálculo y al Análisis Matemático, Volumen II - Courant & John',
-    driveId: ''
-  },
-  'bib_cal3_Lang': {
-    title: 'Calculus of Several Variables - Lang',
-    driveId: ''
-  },
-  'bib_cal3_Marsden': {
-    title: 'Cálculo Vectorial - Marsden & Tromba',
-    driveId: ''
-  },
-  'bib_cal3_Thomas': {
-    title: 'Cálculo: varias variables - Thomas & Finney',
-    driveId: ''
-  }
-
-
-};
-function getDriveViewerUrl(driveId) {
-  return `https://drive.google.com/file/d/${driveId}/preview`;
+function coverHTML(bookId, alt = '', cls = '') {
+  const url  = S.coverUrl(bookId);
+  const book = bookMap[bookId];
+  return url
+    ? `<img src="${url}" alt="${alt}" loading="lazy"${cls ? ` class="${cls}"` : ''}>`
+    : `<span>${book?.emoji ?? ''}</span>`;
 }
 
-function getDriveDirectUrl(driveId) {
-  return `https://drive.google.com/file/d/${driveId}/view`;
-}
-
-/* ══════════════════════════════════════════
-   RENDER FUNCTIONS
-══════════════════════════════════════════ */
-const Renderer = {
+/* ─── RENDER ─────────────────────────────────────── */
+const R = {
   home() {
     let html = '';
 
-    if (AppState.recentTracks.length > 0) {
-      const recentItems = AppState.recentTracks
-        .map(key => {
-          const [bId, numStr] = key.split(':');
-          const book = allBooks.find(b => b.id === bId);
-          const track = book?.tracks.find(t => t.num === parseInt(numStr));
-          return book && track ? { book, track } : null;
-        })
-        .filter(Boolean);
+    // Recent
+    const recentItems = S.recent
+      .map(k => { const [bid, n] = k.split(':'); const b = bookMap[bid]; const t = b?.tracks.find(x => x.num === +n); return b && t ? {b,t} : null })
+      .filter(Boolean);
 
-      if (recentItems.length > 0) {
-        html += `
-          <div class="section">
-            <div class="section-header">
-              <span class="section-title">Continuar leyendo</span>
-            </div>
-            <div class="continue-list">
-              ${recentItems.map(({ book: b, track: t }) => {
-                const coverUrl = AppState.getBookCoverUrl(b.id);
-                const thumbContent = coverUrl 
-                  ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` 
-                  : b.emoji;
-                return `
-                <div class="continue-item" onclick="Navigation.playTrack('${b.id}',${t.num})">
-                  <div class="c-thumb" style="background:${b.cover}">${thumbContent}</div>
-                  <div class="c-info">
-                    <div class="c-title">${t.title}</div>
-                    <div class="c-sub">${b.title} · ${b.author.split('·')[0].trim()}</div>
-                  </div>
-                </div>`;
-              }).join('')}
-            </div>
-          </div>`;
-      }
+    if (recentItems.length) {
+      html += `<div class="section">
+        <div class="section-header"><span class="section-title">Continuar leyendo</span></div>
+        <div class="continue-list">
+          ${recentItems.map(({b,t}) => `
+            <div class="continue-item" onclick="Nav.play('${b.id}',${t.num})">
+              <div class="c-thumb" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div>
+              <div class="c-info">
+                <div class="c-title">${t.title}</div>
+                <div class="c-sub">${b.title} · ${b.author.split('·')[0].trim()}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
     }
 
+    // Sections
     html += LIBRARY.map(cat => {
-      const sorted = [...cat.books].sort((a, b) => {
-        const af = AppState.isFav(a.id) ? 0 : 1;
-        const bf = AppState.isFav(b.id) ? 0 : 1;
-        return af - bf;
-      });
-
-      const itemsCount = sorted.length;
-      const scrollClass = itemsCount <= 1 ? 'hscroll single-item' : 
-                          itemsCount <= 3 ? 'hscroll few-items' : 'hscroll';
-
-      return `
-      <div class="section">
-        <div class="section-header">
-          <span class="section-title">${cat.label}</span>
-        </div>
-        <div class="${scrollClass}" role="list" aria-label="${cat.label}">
-          ${sorted.map(b => {
-            const coverUrl = AppState.getBookCoverUrl(b.id);
-            return `
-            <div class="mini-card" onclick="Navigation.openDetail('${b.id}')" role="listitem">
+      const sorted = [...cat.books].sort((a,b) => (S.isFav(a.id) ? 0:1) - (S.isFav(b.id) ? 0:1));
+      return `<div class="section">
+        <div class="section-header"><span class="section-title">${cat.label}</span></div>
+        <div class="hscroll">
+          ${sorted.map(b => `
+            <div class="mini-card" onclick="Nav.detail('${b.id}')">
               <div class="mini-cover" style="background:${b.cover}">
-                ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` : `<span aria-hidden="true">${b.emoji}</span>`}
-                <button class="fav-dot ${AppState.isFav(b.id)?'faved':''}" 
-                        onclick="event.stopPropagation();Actions.toggleBookFav('${b.id}',this)"
-                        aria-label="${AppState.isFav(b.id)?'Quitar de favoritos':'Agregar a favoritos'}">
-                  ${AppState.isFav(b.id)?'★':'☆'}
-                </button>
+                ${coverHTML(b.id, b.title)}
+                <button class="fav-dot ${S.isFav(b.id)?'faved':''}"
+                        onclick="event.stopPropagation();A.bookFav('${b.id}',this)"
+                        aria-label="Favorito">${S.isFav(b.id)?'★':'☆'}</button>
               </div>
               <div class="mini-info">
                 <div class="mini-title">${b.title}</div>
                 <div class="mini-meta">${b.author.split('·')[0].trim()}</div>
               </div>
-            </div>`;
-          }).join('')}
+            </div>`).join('')}
         </div>
       </div>`;
     }).join('');
 
     document.getElementById('home').innerHTML = html;
   },
-  
+
   detail(book) {
     if (!book) return;
-    AppState.currentBookId = book.id;
-    
-    const coverUrl = AppState.getBookCoverUrl(book.id);
-    const coverInner = coverUrl 
-      ? `<img src="${coverUrl}" alt="${book.title}">` 
-      : `<span>${book.emoji}</span>`;
-    
+    S.bookId = book.id;
+    const url = S.coverUrl(book.id);
+    const coverInner = url ? `<img src="${url}" alt="${book.title}">` : `<span>${book.emoji}</span>`;
+
     let html = `
       <div class="detail-header">
-        <div class="detail-cover" style="background:${book.cover}">
-          ${coverInner}
-        </div>
+        <div class="detail-cover" style="background:${book.cover}">${coverInner}</div>
         <div class="detail-info">
           <h1 class="detail-title">${book.title}</h1>
           <p class="detail-author">${book.author} · ${book.pages} páginas</p>
         </div>
         <div class="detail-actions">
-          <button class="action-btn ${AppState.isFav(book.id)?'faved':''}" id="fav-btn" 
-                  onclick="Actions.toggleBookFav('${book.id}',this,true)">
-            ${AppState.isFav(book.id)?'★ Guardado':'☆ Guardar'}
+          <button class="action-btn ${S.isFav(book.id)?'faved':''}" id="fav-btn"
+                  onclick="A.bookFav('${book.id}',this,true)">
+            ${S.isFav(book.id)?'★ Guardado':'☆ Guardar'}
           </button>
           <button class="action-btn primary" onclick="Reader.open('${book.id}')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
             Leer PDF
           </button>
         </div>
-        <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
+        <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime ?? ''}</div>
       </div>
-      
       <div class="section-header" style="padding:0 1rem .5rem">
         <span class="section-title">Temas</span>
       </div>
-      <div class="episode-list" id="ep-list">`;
+      <div class="episode-list">
+        ${book.tracks.map((t, i) => {
+          const key = `${book.id}:${t.num}`;
+          const open = S.openTracks.has(key);
+          return `
+            <div id="wrap-${book.id}-${t.num}" style="animation-delay:${i*.03}s">
+              <div class="ep-item ${open?'open':''}" id="ep-${book.id}-${t.num}"
+                   onclick="A.toggle('${book.id}',${t.num})">
+                <span class="ep-num">${String(t.num).padStart(2,'0')}</span>
+                <div class="ep-info">
+                  <div class="ep-title">${t.title}</div>
+                  <div class="ep-meta"><span>${t.sub}</span></div>
+                </div>
+                <div class="ep-actions">
+                  <button class="ep-fav ${S.isFav(key)?'faved':''}"
+                          onclick="event.stopPropagation();A.trackFav('${book.id}',${t.num},this)"
+                          aria-label="Favorito">${S.isFav(key)?'★':'☆'}</button>
+                  <button class="ep-play" onclick="event.stopPropagation();A.toggle('${book.id}',${t.num})">
+                    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="apunte-wrap ${open?'open':''}" id="apunte-${book.id}-${t.num}">
+                <div class="apunte-inner" id="ai-${book.id}-${t.num}">${open ? t.latex : ''}</div>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
 
-    book.tracks.forEach((t, index) => {
-      const key = `${book.id}:${t.num}`;
-      const isOpen = AppState.openTracks.has(key);
-      html += `
-        <div id="wrap-${book.id}-${t.num}" style="animation-delay:${index * 0.03}s">
-          <div class="ep-item ${isOpen?'open':''}" id="ep-${book.id}-${t.num}" 
-               onclick="Navigation.playTrack('${book.id}',${t.num})">
-            <span class="ep-num">${String(t.num).padStart(2,'0')}</span>
-            <div class="ep-info">
-              <div class="ep-title">${t.title}</div>
-              <div class="ep-meta"><span>${t.sub}</span></div>
-            </div>
-            <div class="ep-actions">
-              <button class="ep-fav ${AppState.isFav(key)?'faved':''}" 
-                      onclick="event.stopPropagation();Actions.toggleTrackFav('${book.id}',${t.num},this)"
-                      aria-label="Favorito">
-                ${AppState.isFav(key)?'★':'☆'}
-              </button>
-              <button class="ep-play" onclick="event.stopPropagation();Navigation.playTrack('${book.id}',${t.num})">
-                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="apunte-wrap ${isOpen?'open':''}" id="apunte-${book.id}-${t.num}">
-            <div class="apunte-inner" id="ai-${book.id}-${t.num}">
-              ${isOpen ? t.latex : ''}
-            </div>
-          </div>
-        </div>`;
-    });
-
-    html += `</div>`;
     document.getElementById('detail').innerHTML = html;
-    
-    if (AppState.openTracks.size > 0) {
+
+    if (S.openTracks.size) {
       setTimeout(() => {
-        AppState.openTracks.forEach(key => {
-          const el = document.getElementById('ai-' + key.replace(':', '-'));
-          if (el && el.innerHTML) KaTeXRenderer.render(el);
+        S.openTracks.forEach(k => {
+          const el = document.getElementById('ai-' + k.replace(':', '-'));
+          if (el?.innerHTML) KaTex.render(el);
         });
       }, 100);
     }
   },
-  
-  search(query = '') {
-    const searchView = document.getElementById('search-view');
-    
-    let html = `
+
+  search(q = '') {
+    document.getElementById('search-view').innerHTML = `
       <div class="search-wrap">
         <div class="search-bar">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="search-input" placeholder="Buscar libros, temas, materias..." 
-                 value="${query}" autofocus oninput="Actions.doSearch(this.value)">
-          <span class="search-clear ${query?'visible':''}" id="search-clear" onclick="Actions.clearSearch()">✕</span>
+          <input type="text" id="search-input" placeholder="Buscar libros, temas, materias…"
+                 value="${q}" autofocus oninput="A.search(this.value)">
+          <span class="search-clear ${q?'visible':''}" id="search-clear" onclick="A.clearSearch()">✕</span>
         </div>
       </div>
-      <div class="search-results" id="search-results" style="display:${query?'block':'none'}">
-        <div class="search-empty">Escribe para buscar en tu biblioteca</div>
-      </div>
-      <div class="lib-grid-section" id="library-grid" style="display:${query?'none':'block'}">
-        ${this.buildLibraryGrid()}
+      <div class="search-results" id="search-results" style="display:${q?'block':'none'}"></div>
+      <div class="lib-grid-section" id="library-grid" style="display:${q?'none':'block'}">
+        ${this._grid()}
       </div>`;
-    
-    searchView.innerHTML = html;
+    if (q) A._runSearch(q);
   },
-  
-  buildLibraryGrid() {
+
+  _grid() {
     const seen = new Set();
-    const unique = allBooks.filter(b => {
-      const key = b.title + '|' + b.author;
-      return seen.has(key) ? false : seen.add(key);
-    });
-    
-    const sorted = unique.sort((a, b) => a.title.localeCompare(b.title, 'es'));
-    
-    const cards = sorted.map(b => {
-      const coverUrl = AppState.getBookCoverUrl(b.id);
-      return `
-        <div class="lib-grid-card" onclick="Navigation.openDetail('${b.id}')">
-          <div class="lib-grid-cover" style="background:${b.cover}">
-            ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` : `<span>${b.emoji}</span>`}
-          </div>
-          <div class="lib-grid-info">
-            <div class="lib-grid-name">${b.title}</div>
-            <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
-          </div>
-        </div>`;
-    }).join('');
-    
-    return `<div class="lib-grid">${cards}</div>`;
+    const unique = allBooks.filter(b => { const k = b.title+'|'+b.author; return seen.has(k)?false:seen.add(k) });
+    unique.sort((a,b) => a.title.localeCompare(b.title,'es'));
+    return `<div class="lib-grid">${unique.map(b => `
+      <div class="lib-grid-card" onclick="Nav.detail('${b.id}')">
+        <div class="lib-grid-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div>
+        <div class="lib-grid-info">
+          <div class="lib-grid-name">${b.title}</div>
+          <div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div>
+        </div>
+      </div>`).join('')}</div>`;
   },
-  
-  favorites() {
-    const favBooks = allBooks.filter(b => AppState.isFav(b.id));
-    const favTracks = allTracks.filter(t => AppState.isFav(`${t.bookId}:${t.num}`));
-    
+
+  favs() {
+    const favBooks  = allBooks.filter(b => S.isFav(b.id));
+    const favTracks = allTracks.filter(t => S.isFav(`${t.bookId}:${t.num}`));
     let html = '';
-    
+
     if (!favBooks.length && !favTracks.length) {
       html = '<div class="search-empty" style="padding:4rem 1rem">Aún no tienes favoritos.<br>Guarda libros o temas con ☆</div>';
     } else {
       if (favBooks.length) {
         html += `<div class="section">
           <div class="section-header"><span class="section-title">Libros guardados</span></div>
-          <div class="hscroll">${favBooks.map(b => {
-            const coverUrl = AppState.getBookCoverUrl(b.id);
-            return `<div class="mini-card" onclick="Navigation.openDetail('${b.id}')">
-              <div class="mini-cover" style="background:${b.cover}">
-                ${coverUrl ? `<img src="${coverUrl}" alt="${b.title}" loading="lazy">` : `<span>${b.emoji}</span>`}
-              </div>
-              <div class="mini-info">
-                <div class="mini-title">${b.title}</div>
-                <div class="mini-meta">${b.author.split('·')[0].trim()}</div>
-              </div>
-            </div>`;
-          }).join('')}</div>
+          <div class="hscroll">
+            ${favBooks.map(b => `
+              <div class="mini-card" onclick="Nav.detail('${b.id}')">
+                <div class="mini-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div>
+                <div class="mini-info">
+                  <div class="mini-title">${b.title}</div>
+                  <div class="mini-meta">${b.author.split('·')[0].trim()}</div>
+                </div>
+              </div>`).join('')}
+          </div>
         </div>`;
       }
-      
       if (favTracks.length) {
         html += `<div class="section">
           <div class="section-header"><span class="section-title">Temas guardados</span></div>
-          <div class="continue-list">${favTracks.map(t => `
-            <div class="continue-item" onclick="Navigation.openDetail('${t.bookId}')">
-              <div class="c-thumb" style="background:${t.bookCover}">${t.bookEmoji}</div>
-              <div class="c-info">
-                <div class="c-title">${t.title}</div>
-                <div class="c-sub">${t.bookTitle} · ${t.sub}</div>
-              </div>
-            </div>`).join('')}
+          <div class="continue-list">
+            ${favTracks.map(t => `
+              <div class="continue-item" onclick="Nav.detail('${t.bookId}')">
+                <div class="c-thumb" style="background:${t.bookCover}">${t.bookEmoji}</div>
+                <div class="c-info">
+                  <div class="c-title">${t.title}</div>
+                  <div class="c-sub">${t.bookTitle} · ${t.sub}</div>
+                </div>
+              </div>`).join('')}
           </div>
         </div>`;
       }
     }
-    
     document.getElementById('favs-view').innerHTML = html;
   }
 };
 
-/* ══════════════════════════════════════════
-   NAVIGATION CONTROLLER
-══════════════════════════════════════════ */
-const Navigation = {
-  setTopBar(title, showBack) {
-    document.getElementById('tb-default').style.display = showBack ? 'none' : 'flex';
-    document.getElementById('tb-back').style.display = showBack ? 'flex' : 'none';
-    if (showBack) document.getElementById('tb-title').textContent = title || '';
+/* ─── NAVIGATION ─────────────────────────────────── */
+const Nav = {
+  _setBar(title, back) {
+    document.getElementById('tb-default').style.display = back ? 'none' : 'flex';
+    document.getElementById('tb-back').style.display    = back ? 'flex' : 'none';
+    if (back) document.getElementById('tb-title').textContent = title ?? '';
   },
-  
-  showView(id, skipHistory = false) {
+  _show(id, push = true) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    
-    const viewEl = document.getElementById(id);
-    if (viewEl) {
-      viewEl.classList.add('active');
-      viewEl.scrollTop = 0;
-    }
-    
-    document.querySelectorAll('.nav-item').forEach(n => {
-      n.classList.toggle('active', n.dataset.nav === id);
-    });
-    
-    AppState.prevView = AppState.view;
-    AppState.view = id;
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    if (!skipHistory) {
-      history.pushState({ view: id, bookId: AppState.currentBookId }, '', '#' + id);
-    }
+    document.getElementById(id)?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
+    window.scrollTo({ top:0, behavior:'smooth' });
+    S.prev = S.view; S.view = id;
+    if (push) history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
   },
-  
-  goHome() {
-    this.setTopBar('', false);
-    Renderer.home();
-    this.showView('home', true);
-    history.replaceState({ view: 'home' }, '', '#home');
+  home() {
+    this._setBar('', false);
+    R.home();
+    this._show('home', false);
+    history.replaceState({ view:'home' }, '', '#home');
   },
-  
-  showSearch() {
-    this.setTopBar('Buscar', true);
-    Renderer.search();
-    this.showView('search-view', false);
+  search() {
+    this._setBar('Buscar', true);
+    R.search();
+    this._show('search-view');
     setTimeout(() => document.getElementById('search-input')?.focus(), 100);
   },
-  
-  showFavs() {
-    this.setTopBar('Favoritos', false);
-    Renderer.favorites();
-    this.showView('favs-view', false);
+  favs() {
+    this._setBar('Favoritos', false);
+    R.favs();
+    this._show('favs-view');
   },
-  
-  openDetail(bookId, skipHistory = false) {
-    const book = allBooks.find(b => b.id === bookId);
-    if (!book) return;
-    
-    AppState.currentBookId = bookId;
-    this.setTopBar(book.title, true);
-    Renderer.detail(book);
-    this.showView('detail', skipHistory);
+  detail(bookId, push = true) {
+    const b = bookMap[bookId];
+    if (!b) return;
+    S.bookId = bookId;
+    this._setBar(b.title, true);
+    R.detail(b);
+    this._show('detail', push);
   },
-  
-  playTrack(bookId, num) {
-    const book = allBooks.find(b => b.id === bookId);
-    const track = book?.tracks.find(t => t.num === num);
-    if (!book || !track) return;
-    
-    const key = `${bookId}:${num}`;
-    
-    if (AppState.view !== 'detail' || AppState.currentBookId !== bookId) {
-      AppState.currentBookId = bookId;
-      AppState.addRecent(bookId, num);
-      this.openDetail(bookId, false);
-      setTimeout(() => Actions.toggleTrack(bookId, num), 300);
-      return;
+  play(bookId, num) {
+    if (S.view !== 'detail' || S.bookId !== bookId) {
+      S.bookId = bookId;
+      S.addRecent(bookId, num);
+      this.detail(bookId);
+      setTimeout(() => A.toggle(bookId, num), 300);
+    } else {
+      S.addRecent(bookId, num);
+      A.toggle(bookId, num);
     }
-    
-    AppState.addRecent(bookId, num);
-    Actions.toggleTrack(bookId, num);
   },
-  
-  navBack() {
-    const prev = AppState.prevView || 'home';
-    if (prev === 'home' || prev === AppState.view) {
-      this.goHome();
-      return;
-    }
-    
-    this.showView(prev, true);
-    if (prev === 'home') {
-      this.setTopBar('', false);
-    } else if (prev === 'detail') {
-      const book = allBooks.find(b => b.id === AppState.currentBookId);
-      this.setTopBar(book?.title || '', true);
-    }
+  back() {
+    const prev = S.prev || 'home';
+    if (prev === 'home' || prev === S.view) { this.home(); return; }
+    this._show(prev, false);
+    if (prev === 'home')        this._setBar('', false);
+    else if (prev === 'detail') this._setBar(bookMap[S.bookId]?.title ?? '', true);
   }
 };
 
-/* ══════════════════════════════════════════
-   USER ACTIONS
-══════════════════════════════════════════ */
-const Actions = {
-  toggleBookFav(bookId, el, isDetailBtn = false) {
-    const isNowFav = AppState.toggleFavorite(bookId);
-    
-    if (el) {
-      el.classList.toggle('faved', isNowFav);
-      if (isDetailBtn) {
-        el.textContent = isNowFav ? '★ Guardado' : '☆ Guardar';
-      } else {
-        el.textContent = isNowFav ? '★' : '☆';
-      }
-    }
-    
-    if (AppState.view === 'home') {
-      const card = document.querySelector(`.mini-card .fav-dot[onclick*="${bookId}"]`);
-      if (card) {
-        const miniCard = card.closest('.mini-card');
-        const hscroll = miniCard.closest('.hscroll');
-        if (isNowFav) {
-          hscroll.insertBefore(miniCard, hscroll.firstChild);
-        }
-      }
-    }
+/* ─── ACTIONS ────────────────────────────────────── */
+const A = {
+  bookFav(bookId, el, isBtn = false) {
+    const on = S.toggleFav(bookId);
+    el.classList.toggle('faved', on);
+    el.textContent = isBtn ? (on ? '★ Guardado' : '☆ Guardar') : (on ? '★' : '☆');
   },
-  
-  toggleTrackFav(bookId, num, el) {
-    const key = `${bookId}:${num}`;
-    const isNowFav = AppState.toggleFavorite(key);
-    
-    if (el) {
-      el.classList.toggle('faved', isNowFav);
-      el.textContent = isNowFav ? '★' : '☆';
-    }
+  trackFav(bookId, num, el) {
+    const k  = `${bookId}:${num}`;
+    const on = S.toggleFav(k);
+    el.classList.toggle('faved', on);
+    el.textContent = on ? '★' : '☆';
   },
-  
-  toggleTrack(bookId, num) {
-    const key = `${bookId}:${num}`;
-    const wrap = document.getElementById(`apunte-${bookId}-${num}`);
-    const epEl = document.getElementById(`ep-${bookId}-${num}`);
-    
+  toggle(bookId, num) {
+    const key   = `${bookId}:${num}`;
+    const wrap  = document.getElementById(`apunte-${bookId}-${num}`);
+    const epEl  = document.getElementById(`ep-${bookId}-${num}`);
     if (!wrap) return;
-    
-    const isCurrentlyOpen = wrap.classList.contains('open');
-    
-    if (isCurrentlyOpen) {
-      wrap.classList.remove('open');
-      epEl?.classList.remove('open');
-      AppState.openTracks.delete(key);
-    } else {
-      document.querySelectorAll('.apunte-wrap.open').forEach(el => {
-        el.classList.remove('open');
-        const elId = el.id.replace('apunte-', '').replace('-', ':');
-        AppState.openTracks.delete(elId);
-      });
-      document.querySelectorAll('.ep-item.open').forEach(el => {
-        el.classList.remove('open');
-      });
-      
+
+    const opening = !wrap.classList.contains('open');
+
+    // Close all open
+    document.querySelectorAll('.apunte-wrap.open').forEach(el => {
+      el.classList.remove('open');
+      const k = el.id.replace('apunte-','').replace(/-(\d+)$/,':$1');
+      S.openTracks.delete(k);
+    });
+    document.querySelectorAll('.ep-item.open').forEach(el => el.classList.remove('open'));
+
+    if (opening) {
       wrap.classList.add('open');
       epEl?.classList.add('open');
-      AppState.openTracks.add(key);
-      
+      S.openTracks.add(key);
+
       const ai = document.getElementById(`ai-${bookId}-${num}`);
       if (!ai.dataset.rendered) {
-        const book = allBooks.find(b => b.id === bookId);
-        const track = book?.tracks.find(t => t.num === num);
-        if (track) {
-          ai.innerHTML = track.latex;
-          ai.dataset.rendered = 'true';
-          setTimeout(() => KaTeXRenderer.render(ai), 150);
-        }
+        const t = bookMap[bookId]?.tracks.find(x => x.num === num);
+        if (t) { ai.innerHTML = t.latex; ai.dataset.rendered = '1'; setTimeout(() => KaTex.render(ai), 150); }
       }
-      
-      setTimeout(() => {
-        epEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 200);
+      setTimeout(() => epEl?.scrollIntoView({ behavior:'smooth', block:'nearest' }), 200);
     }
   },
-  
-  doSearch: debounce(function(query) {
-    const clearBtn = document.getElementById('search-clear');
-    const resultsDiv = document.getElementById('search-results');
-    const gridDiv = document.getElementById('library-grid');
-    
-    if (clearBtn) {
-      clearBtn.classList.toggle('visible', query.length > 0);
-    }
-    
-    if (!query.trim()) {
-      if (resultsDiv) resultsDiv.style.display = 'none';
-      if (gridDiv) gridDiv.style.display = 'block';
+  search: debounce(function(q) {
+    const clear   = document.getElementById('search-clear');
+    const results = document.getElementById('search-results');
+    const grid    = document.getElementById('library-grid');
+    clear?.classList.toggle('visible', q.length > 0);
+    if (!q.trim()) {
+      if (results) results.style.display = 'none';
+      if (grid)    grid.style.display    = 'block';
       return;
     }
-    
-    if (resultsDiv) resultsDiv.style.display = 'block';
-    if (gridDiv) gridDiv.style.display = 'none';
-    
-    const ql = query.toLowerCase();
-    let matches = [];
-    
+    if (results) results.style.display = 'block';
+    if (grid)    grid.style.display    = 'none';
+    A._runSearch(q);
+  }, 300),
+  _runSearch(q) {
+    const ql = q.toLowerCase();
+    const results = document.getElementById('search-results');
+    if (!results) return;
+
+    const matches = [];
     allBooks.forEach(b => {
-      if (b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql)) {
-        matches.push({
-          type: 'book', bookId: b.id, 
-          title: b.title, sub: b.author, 
-          emoji: b.emoji, cover: b.cover 
-        });
-      }
-      
+      if (b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql))
+        matches.push({ type:'book', bookId:b.id, title:b.title, sub:b.author, emoji:b.emoji, cover:b.cover });
       b.tracks.forEach(t => {
-        if (t.title.toLowerCase().includes(ql) || t.sub.toLowerCase().includes(ql)) {
-          matches.push({
-            type: 'track', bookId: b.id, num: t.num,
-            title: t.title, sub: `${b.title} · ${t.sub}`,
-            emoji: b.emoji, cover: b.cover
-          });
-        }
+        if (t.title.toLowerCase().includes(ql) || t.sub?.toLowerCase().includes(ql))
+          matches.push({ type:'track', bookId:b.id, num:t.num, title:t.title, sub:`${b.title} · ${t.sub}`, emoji:b.emoji, cover:b.cover });
       });
     });
-    
-    if (matches.length === 0) {
-      resultsDiv.innerHTML = `<div class="search-empty">Sin resultados para "<strong>${query}</strong>"</div>`;
-      return;
-    }
-    
-    resultsDiv.innerHTML = matches.map((m, i) => `
-      <div class="search-result-item" style="animation-delay:${i * 0.02}s"
-           onclick="${m.type === 'book' ? `Navigation.openDetail('${m.bookId}')` : `Navigation.playTrack('${m.bookId}',${m.num})`}">
-        <div class="sr-cover" style="background:${m.cover}">${m.emoji}</div>
-        <div class="sr-info">
-          <div class="sr-title">${m.title}</div>
-          <div class="sr-sub">${m.sub.split('·')[0].trim()}</div>
-        </div>
-        <span class="sr-type">${m.type === 'book' ? 'Libro' : 'Tema'}</span>
-      </div>
-    `).join('');
-  }, 300),
-  
-  clearSearch() {
-    const input = document.getElementById('search-input');
-    if (input) {
-      input.value = '';
-      input.focus();
-    }
-    this.doSearch('');
-  }
-};
 
-/* ══════════════════════════════════════════
-   KATEX RENDERER
-══════════════════════════════════════════ */
-const KaTeXRenderer = {
-  render(element) {
-    if (!element || !window.renderMathInElement) {
-      setTimeout(() => this.render(element), 150);
-      return;
-    }
-    
-    try {
-      renderMathInElement(element, {
-        delimiters: [
-          { left: '$$', right: '$$', display: true },
-          { left: '$', right: '$', display: false }
-        ],
-        throwOnError: false,
-        strict: false,
-        trust: true
-      });
-    } catch (e) {
-      console.warn('KaTeX rendering error:', e);
-    }
-  }
-};
-
-/* ══════════════════════════════════════════
-   PDF READER (Google Drive)
-══════════════════════════════════════════ */
-const Reader = {
-  state: {
-    bookId: null,
-    driveId: null,
-    iframeLoaded: false
+    results.innerHTML = matches.length
+      ? matches.map((m,i) => `
+          <div class="search-result-item" style="animation-delay:${i*.02}s"
+               onclick="${m.type==='book' ? `Nav.detail('${m.bookId}')` : `Nav.play('${m.bookId}',${m.num})`}">
+            <div class="sr-cover" style="background:${m.cover}">${m.emoji}</div>
+            <div class="sr-info">
+              <div class="sr-title">${m.title}</div>
+              <div class="sr-sub">${m.sub.split('·')[0].trim()}</div>
+            </div>
+            <span class="sr-type">${m.type==='book'?'Libro':'Tema'}</span>
+          </div>`).join('')
+      : `<div class="search-empty">Sin resultados para "<strong>${q}</strong>"</div>`;
   },
-  
+  clearSearch() {
+    const inp = document.getElementById('search-input');
+    if (inp) { inp.value = ''; inp.focus(); }
+    this.search('');
+  }
+};
+
+/* ─── KATEX ──────────────────────────────────────── */
+const KaTex = {
+  render(el) {
+    if (!el) return;
+    if (!window.renderMathInElement) { setTimeout(() => this.render(el), 150); return; }
+    try {
+      renderMathInElement(el, {
+        delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+        throwOnError:false,strict:false,trust:true
+      });
+    } catch(e) { console.warn('KaTeX:', e); }
+  }
+};
+
+/* ─── PDF READER ─────────────────────────────────── */
+const Reader = {
+  driveId: null,
+
   open(bookId) {
-    const cfg = PDF_CONFIGS[bookId];
-    if (!cfg) {
-      console.warn('No PDF config for:', bookId);
-      return;
-    }
-    
-    this.state.bookId = bookId;
-    this.state.driveId = cfg.driveId;
-    this.state.iframeLoaded = false;
-    
-    document.getElementById('r-title').textContent = cfg.title || bookId;
-    
+    const cfg = PDF[bookId];
+    if (!cfg?.driveId) { console.warn('No PDF para:', bookId); return; }
+    this.driveId = cfg.driveId;
+
+    document.getElementById('r-title').textContent = cfg.title ?? bookId;
     document.getElementById('reader-view').classList.add('active');
     document.body.style.overflow = 'hidden';
-    history.pushState({ view: 'reader', bookId }, '', '#reader');
-    
-    document.getElementById('r-loading').classList.remove('hidden');
-    document.getElementById('r-error').classList.add('hidden');
-    
-    const iframe = document.getElementById('r-iframe');
-    const viewerUrl = getDriveViewerUrl(cfg.driveId);
-    
-    iframe.onload = () => {
-      this.state.iframeLoaded = true;
-      document.getElementById('r-loading').classList.add('hidden');
-    };
-    
-    iframe.onerror = () => {
-      document.getElementById('r-loading').classList.add('hidden');
-      document.getElementById('r-error').classList.remove('hidden');
-    };
-    
-    setTimeout(() => {
-      if (!this.state.iframeLoaded) {
-        document.getElementById('r-loading').classList.add('hidden');
-      }
-    }, 10000);
-    
-    iframe.src = viewerUrl;
+    history.pushState({ view:'reader', bookId }, '', '#reader');
+
+    const loading = document.getElementById('r-loading');
+    const error   = document.getElementById('r-error');
+    const iframe  = document.getElementById('r-iframe');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+
+    let loaded = false;
+    const done = () => { loaded = true; loading.classList.add('hidden'); };
+    iframe.onload = done;
+    iframe.onerror = () => { loading.classList.add('hidden'); error.classList.remove('hidden'); };
+    setTimeout(() => { if (!loaded) loading.classList.add('hidden'); }, 10000);
+    iframe.src = `https://drive.google.com/file/d/${this.driveId}/preview`;
   },
-  
-  openInNewTab() {
-    if (this.state.driveId) {
-      window.open(getDriveDirectUrl(this.state.driveId), '_blank');
-    }
+
+  openTab() {
+    if (this.driveId) window.open(`https://drive.google.com/file/d/${this.driveId}/view`, '_blank');
   },
-  
+
   close() {
-    const iframe = document.getElementById('r-iframe');
-    iframe.src = '';
-    
-    this.state.bookId = null;
-    this.state.driveId = null;
-    this.state.iframeLoaded = false;
-    
+    document.getElementById('r-iframe').src = '';
+    this.driveId = null;
     document.getElementById('reader-view').classList.remove('active');
     document.body.style.overflow = '';
-    
-    if (location.hash === '#reader') {
-      history.back();
-    }
+    if (location.hash === '#reader') history.back();
   }
 };
 
-/* ══════════════════════════════════════════
-   INITIALIZATION
-══════════════════════════════════════════ */
+/* ─── POPSTATE ───────────────────────────────────── */
+window.addEventListener('popstate', e => {
+  const v = e.state?.view;
+  if (!v || v === 'home')        Nav.home();
+  else if (v === 'detail' && e.state.bookId) Nav.detail(e.state.bookId, false);
+  else if (v === 'search-view') Nav.search();
+  else if (v === 'favs-view')   Nav.favs();
+  else if (v === 'reader')      Reader.close();
+  else                           Nav.home();
+});
+
+document.addEventListener('touchmove', e => {
+  if (document.getElementById('reader-view').classList.contains('active')) e.preventDefault();
+}, { passive:false });
+
+/* ─── GLOBAL ALIASES (para onclick inline) ───────── */
+window.goHome    = () => Nav.home();
+window.showSearch= () => Nav.search();
+window.showFavs  = () => Nav.favs();
+window.navBack   = () => Nav.back();
+
+/* ─── INIT ───────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  history.replaceState({ view: 'home' }, '', '#home');
-  Renderer.home();
-  AppState.updateFavCount();
-  window.scrollTo(0, 0);
+  history.replaceState({ view:'home' }, '', '#home');
+  R.home();
+  S._syncFavCount();
 });
-
-window.addEventListener('popstate', (e) => {
-  const data = e.state;
-  if (!data || data.view === 'home') {
-    Navigation.goHome();
-  } else if (data.view === 'detail' && data.bookId) {
-    Navigation.openDetail(data.bookId, true);
-  } else if (data.view === 'search-view') {
-    Navigation.showSearch();
-  } else if (data.view === 'favs-view') {
-    Navigation.showFavs();
-  } else if (data.view === 'reader') {
-    Reader.close();
-  } else {
-    Navigation.goHome();
-  }
-});
-
-document.addEventListener('touchmove', (e) => {
-  if (document.getElementById('reader-view').classList.contains('active')) {
-    e.preventDefault();
-  }
-}, { passive: false });
-
-/* ══════════════════════════════════════════
-   GLOBAL EXPORTS
-══════════════════════════════════════════ */
-window.goHome = () => Navigation.goHome();
-window.showSearch = () => Navigation.showSearch();
-window.showFavs = () => Navigation.showFavs();
-window.openDetail = (id) => Navigation.openDetail(id);
-window.playTrack = (bookId, num) => Navigation.playTrack(bookId, num);
-window.navBack = () => Navigation.navBack();
-window.toggleFavBook = (id, el, isBtn) => Actions.toggleBookFav(id, el, isBtn);
-window.toggleFavTrack = (bookId, num, el) => Actions.toggleTrackFav(bookId, num, el);
-window.doSearch = (q) => Actions.doSearch(q);
-window.clearSearch = () => Actions.clearSearch();
-window.openReader = (id) => Reader.open(id);
-window.closeReader = () => Reader.close();
 </script>
-
 </body>
 </html>
