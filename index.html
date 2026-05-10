@@ -239,6 +239,84 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
 
+
+/* ══════════════════════════════════════
+   BOOK READER VIEW
+══════════════════════════════════════ */
+#reader-view{position:fixed;inset:0;z-index:200;background:#0c0b09;display:none;flex-direction:column}
+#reader-view.active{display:flex}
+.reader-topbar{height:50px;flex-shrink:0;display:flex;align-items:center;
+  justify-content:space-between;padding:0 14px;
+  background:rgba(12,11,9,.92);border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(16px)}
+.reader-title{font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;
+  color:var(--accent);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reader-btn{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);color:rgba(240,236,228,.5);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.reader-btn:hover{background:rgba(201,169,110,.12);border-color:var(--accent);color:var(--accent)}
+.reader-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.reader-page-ct{font-size:.62rem;color:rgba(240,236,228,.3);min-width:56px;text-align:center;flex-shrink:0;font-family:'DM Mono',monospace}
+.reader-stage{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;perspective:1800px}
+.reader-book{position:relative;width:min(440px,90vw);height:min(640px,calc(100vh - 50px - 82px))}
+.reader-book::after{content:'';position:absolute;bottom:-18px;left:8%;right:8%;height:28px;
+  background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(0,0,0,.65) 0%,transparent 100%);
+  filter:blur(6px);pointer-events:none}
+.rpage{position:absolute;inset:0;border-radius:2px 8px 8px 2px;overflow:hidden;
+  transform-origin:left center;transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.4,0,.2,1),box-shadow .35s;
+  box-shadow:4px 0 18px rgba(0,0,0,.4),inset -1px 0 0 rgba(0,0,0,.12);
+  background:#f5f0e8}
+.rpage img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
+.rpage.turning-fwd{transform:rotateY(-180deg);box-shadow:-8px 4px 28px rgba(0,0,0,.65);z-index:20!important}
+.rpage.turning-bk{transform:rotateY(180deg);box-shadow:8px 4px 28px rgba(0,0,0,.65);z-index:20!important}
+.rpage-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f0e8}
+.rpage-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.35;animation:rdot 1s ease infinite}
+@keyframes rdot{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:.8;transform:scale(1.2)}}
+.rpage-spine{position:absolute;top:0;left:0;width:16px;height:100%;
+  background:linear-gradient(to right,rgba(0,0,0,.16) 0%,transparent 100%);pointer-events:none;z-index:2}
+.rpage-curl{position:absolute;top:0;right:0;width:14px;height:100%;
+  background:linear-gradient(to left,rgba(0,0,0,.1) 0%,transparent 100%);pointer-events:none;z-index:2}
+.reader-zone-prev{position:absolute;left:0;top:0;bottom:0;width:36%;z-index:30;cursor:w-resize}
+.reader-zone-next{position:absolute;right:0;top:0;bottom:0;width:36%;z-index:30;cursor:e-resize}
+.reader-controls{height:82px;flex-shrink:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:9px;
+  background:rgba(12,11,9,.92);border-top:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(16px);padding:0 18px env(safe-area-inset-bottom,0)}
+.reader-track{width:100%;max-width:480px;height:3px;background:rgba(255,255,255,.07);
+  border-radius:99px;cursor:pointer;position:relative}
+.reader-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .2s;position:relative}
+.reader-fill::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+  width:10px;height:10px;border-radius:50%;background:var(--accent2)}
+.reader-btns{display:flex;align-items:center;gap:14px}
+.reader-nav-btn{display:flex;align-items:center;gap:5px;padding:7px 16px;border-radius:99px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  color:rgba(240,236,228,.5);font-family:'DM Mono',monospace;font-size:.67rem;
+  letter-spacing:.07em;cursor:pointer;transition:all .2s}
+.reader-nav-btn:hover{background:rgba(201,169,110,.12);border-color:var(--accent);color:var(--accent)}
+.reader-nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:500}
+.reader-nav-btn.primary:hover{background:var(--accent2)}
+.reader-nav-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+/* goto modal */
+#reader-goto{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
+#reader-goto.open{display:flex}
+.goto-box{background:#1a1714;border:1px solid rgba(201,169,110,.22);border-radius:14px;
+  padding:24px 28px;width:min(300px,88vw);display:flex;flex-direction:column;gap:14px;
+  animation:gotoIn .22s cubic-bezier(.34,1.56,.64,1)}
+@keyframes gotoIn{from{opacity:0;transform:scale(.9)}}
+.goto-title{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;
+  color:var(--accent);text-align:center}
+.goto-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  border-radius:8px;padding:9px 12px;color:var(--ink);font-family:'DM Mono',monospace;
+  font-size:.88rem;outline:none;text-align:center;width:100%;transition:border-color .2s}
+.goto-input:focus{border-color:var(--accent)}
+.goto-row{display:flex;gap:8px}
+.goto-btn{flex:1;padding:9px;border-radius:7px;cursor:pointer;font-family:'DM Mono',monospace;
+  font-size:.73rem;letter-spacing:.05em;border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.05);color:rgba(240,236,228,.5);transition:all .2s}
+.goto-btn.ok{background:var(--accent);border-color:var(--accent);color:#0c0b09;font-weight:500}
+.goto-hint{font-size:.6rem;color:rgba(240,236,228,.3);text-align:center;letter-spacing:.06em}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 </head>
@@ -925,7 +1003,7 @@ const LIBRARY = [
     ]
   }
 ];
-
+/*
 /* ══════════════════════════════════════════
    STATE
 ══════════════════════════════════════════ */
@@ -1035,9 +1113,9 @@ function openDetail(bookId, skipHistory) {
         <button class="action-btn ${isFav(book.id)?'faved':''}" id="fav-btn" onclick="toggleFavBook('${book.id}',this,true)">
           ${isFav(book.id)?'★ Guardado':'☆ Guardar'}
         </button>
-        <button class="action-btn primary" onclick="openPdf('${book.id}')">
+        <button class="action-btn primary" onclick="openReader('${book.id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
-          Ver PDF</button>
+          Leer</button>
         <button class="action-btn" onclick="refreshCover('${book.id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Actualizar portada</button>
@@ -1426,6 +1504,9 @@ window.addEventListener('popstate', (e) => {
   } else if (v === 'detail') {
     if (data.bookId) openDetail(data.bookId, true);
     else goHome();
+  } else if (v === 'reader') {
+    // reader back — just close it
+    document.getElementById('reader-view').classList.remove('active');
   } else if (v === 'search-view') {
     showSearch(true);
   } else if (v === 'favs-view') {
@@ -1434,6 +1515,270 @@ window.addEventListener('popstate', (e) => {
     goHome();
   }
 });
+
+
+/* ══════════════════════════════════════════
+   BOOK READER ENGINE
+══════════════════════════════════════════ */
+const R = {
+  bookId: null,
+  total: 0,
+  current: 1,
+  base: '',
+  prefix: '',
+  ext: '.jpg',
+  animating: false,
+  cache: {},
+};
+
+// Config per book — add your books here
+const READER_BOOKS = {
+  'bib_as1_cardenas': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/Cardenas/',
+    prefix: 'Cardenas-Algebra-superior_page-',
+    ext: '.jpg',
+    total: 327,
+  },
+  // Agrega más libros aquí con el mismo formato:
+  // 'id_del_libro': { base: '...url...', prefix: '...', ext: '.jpg', total: N },
+};
+
+function rPageUrl(n) {
+  return R.base + R.prefix + String(n).padStart(4, '0') + R.ext;
+}
+
+function rPreload(n, radius) {
+  for (let i = n; i <= Math.min(R.total, n + radius); i++) rLoad(i);
+  for (let i = Math.max(1, n - radius); i < n; i++) rLoad(i);
+}
+
+function rLoad(n) {
+  if (n < 1 || n > R.total || R.cache[n]) return;
+  const img = new Image();
+  img.onload = img.onerror = () => { R.cache[n] = img; };
+  img.src = rPageUrl(n);
+  R.cache[n] = img;
+}
+
+function openReader(bookId) {
+  const cfg = READER_BOOKS[bookId];
+  if (!cfg) {
+    // No reader config — try the PDF fallback
+    openPdf(bookId);
+    return;
+  }
+  R.bookId = bookId;
+  R.base = cfg.base;
+  R.prefix = cfg.prefix;
+  R.ext = cfg.ext;
+  R.total = cfg.total;
+  R.current = parseInt(localStorage.getItem('reader_pg_' + bookId) || '1');
+  R.animating = false;
+  R.cache = {};
+
+  // Set UI
+  const book = allBooks.find(b => b.id === bookId);
+  document.getElementById('r-title').textContent = book?.title || bookId;
+  document.getElementById('goto-hint').textContent = 'Total: ' + R.total + ' páginas';
+  document.getElementById('goto-inp').max = R.total;
+
+  // Show reader
+  document.getElementById('reader-view').classList.add('active');
+  history.pushState({ view: 'reader', bookId }, '', '#reader');
+
+  // Preload and render
+  rPreload(R.current, 4);
+  rRender();
+
+  // Progress bar
+  const track = document.getElementById('r-track');
+  track.onclick = (e) => {
+    const ratio = e.offsetX / track.offsetWidth;
+    rGoTo(Math.round(1 + ratio * (R.total - 1)));
+  };
+
+  // Swipe
+  let sx = 0, sy = 0;
+  const stage = document.getElementById('r-stage');
+  stage.ontouchstart = (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; };
+  stage.ontouchend = (e) => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 38) {
+      if (dx < 0) rNext(); else rPrev();
+    }
+  };
+}
+
+function closeReader() {
+  document.getElementById('reader-view').classList.remove('active');
+  history.back();
+}
+
+function rRender() {
+  const book = document.getElementById('r-book');
+  book.querySelectorAll('.rpage').forEach(p => p.remove());
+  const page = rMakePage(R.current);
+  book.appendChild(page);
+  rUpdateUI();
+}
+
+function rMakePage(n) {
+  const div = document.createElement('div');
+  div.className = 'rpage';
+  div.dataset.n = n;
+
+  const img = R.cache[n];
+  if (img?.complete && img.naturalWidth > 0) {
+    const el = document.createElement('img');
+    el.src = img.src; el.draggable = false;
+    div.appendChild(el);
+  } else {
+    const pl = document.createElement('div');
+    pl.className = 'rpage-loading';
+    pl.innerHTML = '<div class="rpage-dot"></div>';
+    div.appendChild(pl);
+    rLoad(n);
+    const poll = setInterval(() => {
+      const c = R.cache[n];
+      if (c?.complete && c.naturalWidth > 0) {
+        clearInterval(poll);
+        const el = document.createElement('img');
+        el.src = c.src; el.draggable = false;
+        pl.replaceWith(el);
+      }
+    }, 120);
+  }
+
+  const spine = document.createElement('div'); spine.className = 'rpage-spine';
+  const curl = document.createElement('div'); curl.className = 'rpage-curl';
+  div.appendChild(spine); div.appendChild(curl);
+  return div;
+}
+
+function rTurn(dir) {
+  if (R.animating) return;
+  const isFwd = dir === 'fwd';
+  const next = isFwd ? R.current + 1 : R.current - 1;
+  if (next < 1 || next > R.total) return;
+  R.animating = true;
+
+  const book = document.getElementById('r-book');
+  const cur = book.querySelector('.rpage');
+
+  rLoad(next);
+  rPreload(next, 3);
+
+  if (cur) {
+    cur.classList.add(isFwd ? 'turning-fwd' : 'turning-bk');
+    cur.style.zIndex = 20;
+  }
+
+  setTimeout(() => {
+    R.current = next;
+    localStorage.setItem('reader_pg_' + R.bookId, R.current);
+    const newP = rMakePage(R.current);
+    newP.style.zIndex = 1;
+    book.insertBefore(newP, book.firstChild);
+    rUpdateUI();
+  }, 280);
+
+  setTimeout(() => {
+    book.querySelectorAll('.rpage.turning-fwd,.rpage.turning-bk').forEach(p => p.remove());
+    R.animating = false;
+  }, 640);
+}
+
+function rNext() { rTurn('fwd'); }
+function rPrev() { rTurn('bk'); }
+
+function rGoTo(n) {
+  if (R.animating) return;
+  const t = Math.max(1, Math.min(R.total, n));
+  if (t === R.current) return;
+  R.current = t;
+  localStorage.setItem('reader_pg_' + R.bookId, R.current);
+  rPreload(t, 4);
+  rRender();
+}
+
+function rUpdateUI() {
+  document.getElementById('r-counter').textContent = 'p. ' + R.current + ' / ' + R.total;
+  const pct = ((R.current - 1) / (R.total - 1)) * 100;
+  document.getElementById('r-fill').style.width = pct + '%';
+}
+
+function readerGoto() {
+  document.getElementById('goto-inp').value = R.current;
+  document.getElementById('reader-goto').classList.add('open');
+  setTimeout(() => { document.getElementById('goto-inp').focus(); }, 100);
+}
+
+function closeGoto() { document.getElementById('reader-goto').classList.remove('open'); }
+
+function gotoConfirm() {
+  const v = parseInt(document.getElementById('goto-inp').value);
+  if (!isNaN(v)) rGoTo(v);
+  closeGoto();
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('reader-view').classList.contains('active')) return;
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); rNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); rPrev(); }
+  if (e.key === 'Escape') { closeGoto(); closeReader(); }
+  if (e.key === 'g') readerGoto();
+});
 </script>
+
+<!-- ════════════════════════════════
+     BOOK READER
+════════════════════════════════ -->
+<div id="reader-view">
+  <div class="reader-topbar">
+    <div class="reader-page-ct" id="r-counter">p. — / —</div>
+    <div class="reader-title" id="r-title">—</div>
+    <div style="display:flex;gap:5px">
+      <button class="reader-btn" onclick="readerGoto()" title="Ir a página">
+        <svg viewBox="0 0 24 24"><line x1="9" y1="12" x2="15" y2="12"/><polyline points="12 9 15 12 12 15"/></svg>
+      </button>
+      <button class="reader-btn" onclick="closeReader()" title="Cerrar">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="reader-stage" id="r-stage">
+    <div id="r-book"></div>
+    <div class="reader-zone-prev" onclick="rPrev()"></div>
+    <div class="reader-zone-next" onclick="rNext()"></div>
+  </div>
+  <div class="reader-controls">
+    <div class="reader-track" id="r-track">
+      <div class="reader-fill" id="r-fill"></div>
+    </div>
+    <div class="reader-btns">
+      <button class="reader-nav-btn" onclick="rPrev()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Anterior
+      </button>
+      <button class="reader-nav-btn primary" onclick="rNext()">
+        Siguiente <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="reader-goto">
+  <div class="goto-box">
+    <div class="goto-title">Ir a página</div>
+    <input class="goto-input" id="goto-inp" type="number" min="1"
+           placeholder="número de página" onkeydown="if(event.key==='Enter')gotoConfirm()">
+    <div class="goto-hint" id="goto-hint">Total: — páginas</div>
+    <div class="goto-row">
+      <button class="goto-btn" onclick="closeGoto()">Cancelar</button>
+      <button class="goto-btn ok" onclick="gotoConfirm()">Ir</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
