@@ -1162,6 +1162,39 @@ const LIBRARY = [
         tracks: []
       }
     ]
+  },
+  {
+    label: "Geometría Analítica II",
+    books: [
+      {
+        id: "bib_geo2_Bracho",
+        title: "Geometría Analítica",
+        author: "J. Bracho",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_geo2_Efimov",
+        title: "Geometría Superior",
+        author: "N. Efimov 1984",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_geo2_Preston",
+        title: "Modern Analytic Geometry",
+        author: "G. C. Preston, A. R. Lovaglia 1971",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_geo2_Ramirez",
+        title: "Geometría Analítica: Una Introducción a la Geometría",
+        author: "A. Ramírez Galarza 1998",
+        pages: 0,
+        tracks: []
+      }
+    ]
   }
 ];const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
@@ -1310,7 +1343,7 @@ const PDF_CONFIGS = {
     driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
   },
 
-  
+
   'bib_cal2_Arizmendi': {
     title: 'Cálculo. Primer Curso - Arizmendi',
     driveId: ''
@@ -1329,6 +1362,24 @@ const PDF_CONFIGS = {
   },
   'bib_cal2_Thomas': {
     title: 'Cálculo con Geometría Analítica (9ª ed.) - Thomas',
+    driveId: ''
+  },
+
+  
+  'bib_geo2_Bracho': {
+    title: 'Geometría Analítica - Bracho',
+    driveId: ''
+  },
+  'bib_geo2_Efimov': {
+    title: 'Geometría Superior - Efimov',
+    driveId: ''
+  },
+  'bib_geo2_Preston': {
+    title: 'Modern Analytic Geometry - Preston & Lovaglia',
+    driveId: ''
+  },
+  'bib_geo2_Ramirez': {
+    title: 'Geometría Analítica - Ramírez Galarza',
     driveId: ''
   }
 
