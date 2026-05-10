@@ -1196,12 +1196,9 @@ const LIBRARY = [
     books: [
       {
         id: "bib_as1_cardenas", title: "Álgebra Superior", emoji: "📘",
-        cover: "linear-gradient(135deg, #1a1a3e, #3a3a7e)", 
-        author: "Cárdenas, Lluis, Raggi, Tomás · Trillas, 1974", 
-        pages: 450, totalTime: "Completo",
+        cover: "linear-gradient(135deg, #1a1a3e, #3a3a7e)", author: "Cárdenas, Lluis, Raggi, Tomás · Trillas, 1974", pages: 450, totalTime: "Completo",
         tracks: [
-          { num: 1, title: "Conjuntos", sub: "Cap. 1 · 12h", 
-            diff: "Esencial", diffStyle: "background:var(--success);color:var(--success-text)", time: "—",
+          { num: 1, title: "Conjuntos", sub: "Cap. 1 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
             latex: `<h1>Conjuntos</h1><span class="subtitle">Capítulo 1 · Álgebra Superior</span>
 <h2>Noción intuitiva de conjuntos</h2>
 <p>Igualdad de conjuntos. Subconjuntos. Conjunto vacío. Conjunto Universal.</p>
@@ -1209,20 +1206,307 @@ const LIBRARY = [
 <p>Unión, intersección, complemento y diferencia.</p>
 <h2>Conjunto potencia</h2>
 <p>Producto cartesiano. Familias de conjuntos.</p>` },
-          { num: 2, title: "Relaciones y funciones", sub: "Cap. 2 · 19h", 
-            diff: "Esencial", diffStyle: "background:var(--success);color:var(--success-text)", time: "—",
+          { num: 2, title: "Relaciones y funciones", sub: "Cap. 2 · 19h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
             latex: `<h1>Relaciones y Funciones</h1><span class="subtitle">Capítulo 2 · Álgebra Superior</span>
 <p>Relaciones: dominio, codominio e imagen. Funciones: imágenes e imágenes inversas.</p>
 <p>Composición de funciones. Función inversa. Inyectivas, suprayectivas y biyectivas.</p>
 <p>Cardinalidad. Conjuntos finitos e infinitos. Relaciones de equivalencia.</p>` },
-          // ... (más temas)
+          { num: 3, title: "Números naturales y combinatoria", sub: "Cap. 3 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Números Naturales</h1><span class="subtitle">Capítulo 3 · Álgebra Superior</span>
+<p>Principio de inducción. Ordenaciones con repetición, permutaciones y combinaciones.</p>
+<p>Teorema del binomio. Relaciones entre coeficientes binomiales.</p>` },
+          { num: 4, title: "Espacios vectoriales", sub: "Cap. 4 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Espacios Vectoriales</h1><span class="subtitle">Capítulo 4 · Álgebra Superior</span>
+<p>ℝ² y ℝ³. Interpretación geométrica. El espacio ℝⁿ.</p>
+<p>Subespacios. Combinaciones lineales. Dependencia e independencia lineal. Bases.</p>` },
+          { num: 5, title: "Matrices y determinantes", sub: "Cap. 5 · 13h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Matrices y Determinantes</h1><span class="subtitle">Capítulo 5 · Álgebra Superior</span>
+<p>Definición y operaciones. Transpuesta. Operaciones elementales. Rango.</p>
+<p>Determinante: definición y propiedades. Cálculo de determinantes.</p>` },
+          { num: 6, title: "Sistemas de ecuaciones lineales", sub: "Cap. 6 · 12h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Sistemas de Ecuaciones</h1><span class="subtitle">Capítulo 6 · Álgebra Superior</span>
+<p>Matriz y matriz aumentada. Criterios de existencia. Regla de Cramer.</p>
+<p>Espacio de soluciones. Eliminación gaussiana.</p>` }
+        ]
+      },
+      {
+        id: "bib_as1_nachbin", title: "Álgebra Elemental", emoji: "📗",
+        cover: "linear-gradient(135deg, #1a3a1a, #3a7a3a)", author: "L. Nachbin · OEA, 1986", pages: 320, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Teoría de conjuntos", sub: "Cap. 1", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Teoría de Conjuntos</h1><span class="subtitle">Nachbin · OEA, 1986</span><p>Fundamentos de teoría de conjuntos para álgebra superior.</p>` },
+          { num: 2, title: "Funciones e Inducción", sub: "Cap. 2-3", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Funciones e Inducción</h1><span class="subtitle">Nachbin · OEA, 1986</span><p>Estudio detallado de funciones y principio de inducción.</p>` },
+          { num: 3, title: "Ecuaciones lineales", sub: "Cap. 4", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Ecuaciones Lineales</h1><span class="subtitle">Nachbin · OEA, 1986</span><p>Sistemas de ecuaciones lineales y matrices elementales.</p>` }
         ]
       }
     ]
   },
-  // ... (más materias)
+  {
+    label: "Cálculo Diferencial e Integral I",
+    books: [
+      {
+        id: "bib_cal1_spivak", title: "Cálculo Infinitesimal", emoji: "📐",
+        cover: "linear-gradient(135deg, #1a1a2e, #4a4a8e)", author: "M. Spivak · Reverté, 1998", pages: 680, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Propiedades básicas de los números", sub: "Cap. 1-2 · 21h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Propiedades Básicas</h1><span class="subtitle">Spivak · Cap. 1-2</span><p>Propiedades de los números enteros, racionales y reales. Desigualdades.</p><p>Valor absoluto. Propiedad de compleción. Expansiones decimales.</p>` },
+          { num: 2, title: "Funciones y sucesiones", sub: "Cap. 3-4 · 30h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Funciones y Sucesiones</h1><span class="subtitle">Spivak · Cap. 3-4</span><p>Definición, ejemplos y gráficas. Sucesiones de números reales y de Cauchy.</p>` },
+          { num: 3, title: "Límite de funciones", sub: "Cap. 5 · 30h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Límite de Funciones</h1><span class="subtitle">Spivak · Cap. 5</span><p>Definición ε-δ. Propiedades del límite. Límites al infinito. Asíntotas.</p>` },
+          { num: 4, title: "Continuidad", sub: "Cap. 6 · 22h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Continuidad</h1><span class="subtitle">Spivak · Cap. 6</span><p>Funciones continuas. Continuidad en intervalos cerrados. Teorema del Valor Intermedio.</p>` },
+          { num: 5, title: "Derivadas", sub: "Cap. 7-10 · 41h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Derivadas</h1><span class="subtitle">Spivak · Cap. 7-10</span><p>Razón de cambio. Tangentes. Definición de derivada. Reglas de derivación.</p><p>Regla de la cadena. Teorema del Valor Medio. Optimización. Polinomios de Taylor.</p>` }
+        ]
+      },
+      {
+        id: "bib_cal1_thomas", title: "Cálculo con Geometría Analítica", emoji: "📕",
+        cover: "linear-gradient(135deg, #2a0a0a, #7a1a1a)", author: "Thomas & Finney · Addison-Wesley, 1987", pages: 850, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Preliminares y Límites", sub: "Cap. 1-2", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Preliminares</h1><span class="subtitle">Thomas & Finney, 1987</span><p>Fundamentos de geometría analítica. Límites y continuidad.</p>` },
+          { num: 2, title: "Derivadas", sub: "Cap. 3-4", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Derivadas</h1><span class="subtitle">Thomas & Finney, 1987</span><p>Reglas de derivación. Aplicaciones de la derivada.</p>` }
+        ]
+      },
+      {
+        id: "bib_cal1_arizmendi", title: "Cálculo. Primer Curso", emoji: "📙",
+        cover: "linear-gradient(135deg, #2a1a0a, #7a4a1a)", author: "Arizmendi, Carrillo, Lara · Addison Wesley, 1987", pages: 400, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Curso introductorio completo", sub: "Todos los capítulos", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Cálculo. Primer Curso</h1><span class="subtitle">Arizmendi et al., 1987</span><p>Introducción. Números reales. Funciones. Límite. Continuidad. Derivada.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Geometría Analítica I",
+    books: [
+      {
+        id: "bib_ga1_bracho", title: "Geometría Analítica", emoji: "📏",
+        cover: "linear-gradient(135deg, #0a1a2a, #2a5a8a)", author: "J. Bracho · Notas", pages: 300, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Introducción y Trigonometría", sub: "Cap. 1-2 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Introducción</h1><span class="subtitle">Bracho · Cap. 1-2</span><p>Conceptos geométricos elementales. Coordenadas cartesianas. Trigonometría.</p>` },
+          { num: 2, title: "Espacios vectoriales básicos", sub: "Cap. 3 · 20h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Espacios Vectoriales</h1><span class="subtitle">Bracho · Cap. 3</span><p>Definición y ejemplos. Subespacios. Independencia lineal, base, dimensión.</p>` },
+          { num: 3, title: "Rectas, planos y Cónicas", sub: "Cap. 4-5 · 35h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Rectas, Planos y Cónicas</h1><span class="subtitle">Bracho · Cap. 4-5</span><p>Ecuaciones de recta en ℝ² y ℝ³. Planos en ℝ³. Cónicas: definición y ecuaciones canónicas.</p>` }
+        ]
+      },
+      {
+        id: "bib_ga1_ramirez", title: "Geometría Analítica: Una Introducción", emoji: "📐",
+        cover: "linear-gradient(135deg, #1a0a3a, #5a2a8a)", author: "A. Ramírez Galarza · Las Prensas de Ciencias, 2004", pages: 350, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Geometría elemental y Trigonometría", sub: "Cap. 1-2", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Geometría Elemental</h1><span class="subtitle">Ramírez Galarza, 2004</span><p>Fundamentos de geometría elemental y trigonometría.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Geometría Moderna I",
+    books: [
+      {
+        id: "bib_gm1_efimov", title: "Geometría Superior", emoji: "🔺",
+        cover: "linear-gradient(135deg, #2a1a0a, #8a4a1a)", author: "N. Efimov · MIR, 1984", pages: 400, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Geometría del triángulo", sub: "Cap. 1 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Geometría del Triángulo</h1><span class="subtitle">Efimov · Cap. 1</span><p>Congruencia y semejanza. Teorema de Pitágoras. Circuncentro, incentro, baricentro.</p>` },
+          { num: 2, title: "Circunferencia y cuadriláteros", sub: "Cap. 2 · 15h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Circunferencia</h1><span class="subtitle">Efimov · Cap. 2</span><p>Cuadriláteros cíclicos. Teorema de Ptolomeo. Línea de Simson.</p>` },
+          { num: 3, title: "Geometría moderna", sub: "Cap. 3 · 30h", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Geometría Moderna</h1><span class="subtitle">Efimov · Cap. 3</span><p>Postulados euclidianos. Puntos al infinito. División armónica. Homotecia.</p>` },
+          { num: 4, title: "Teoremas fundamentales", sub: "Cap. 4 · 10h", diff: "Intermedio", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Teoremas</h1><span class="subtitle">Efimov · Cap. 4</span><p>Teorema de Ceva. Teorema de Menelao. Teorema de Desargues. Teorema de Pascal.</p>` }
+        ]
+      },
+      {
+        id: "bib_gm1_shively", title: "Introducción a la Geometría Moderna", emoji: "📐",
+        cover: "linear-gradient(135deg, #0a2a1a, #2a7a4a)", author: "L. Shively · Continental, 1961", pages: 280, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Triángulo y Circunferencia", sub: "Cap. 1-2", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Geometría Moderna</h1><span class="subtitle">Shively, 1961</span><p>Estudio del triángulo, circunferencia y teoremas de Ceva y Menelao.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Álgebra Superior II",
+    books: [
+      {
+        id: "bib_as2_cardenas", title: "Álgebra Superior", emoji: "📘",
+        cover: "linear-gradient(135deg, #1a1a3e, #3a3a7e)", author: "Cárdenas, Lluis, Raggi, Tomás · Trillas, 1974", pages: 450, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Números enteros", sub: "Cap. 7 · 15h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Números Enteros</h1><span class="subtitle">Capítulo 7</span><p>El anillo ℤ. Dominio entero. Orden en ℤ. Principio de inducción.</p>` },
+          { num: 2, title: "Divisibilidad", sub: "Cap. 8 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Divisibilidad</h1><span class="subtitle">Capítulo 8</span><p>Algoritmo de la división. MCD. Algoritmo de Euclides. Números primos. Congruencias.</p>` },
+          { num: 3, title: "Números complejos", sub: "Cap. 9 · 15h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Números Complejos</h1><span class="subtitle">Capítulo 9</span><p>El campo ℂ. Módulo. Representación polar. Teorema de De Moivre.</p>` },
+          { num: 4, title: "Polinomios", sub: "Cap. 10 · 25h", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Polinomios</h1><span class="subtitle">Capítulo 10</span><p>Polinomios sobre un campo. Divisibilidad. Polinomios irreducibles. Teorema fundamental del álgebra.</p>` }
+        ]
+      },
+      {
+        id: "bib_as2_nachbin", title: "Álgebra Elemental", emoji: "📗",
+        cover: "linear-gradient(135deg, #1a3a1a, #3a7a3a)", author: "L. Nachbin · OEA, 1986", pages: 320, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Enteros y Divisibilidad", sub: "Cap. 5-6", diff: "Esencial", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Enteros</h1><span class="subtitle">Nachbin, 1986</span><p>Propiedades de los números enteros y divisibilidad.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Cálculo Diferencial e Integral II",
+    books: [
+      {
+        id: "bib_cal2_spivak", title: "Cálculo Infinitesimal", emoji: "📐",
+        cover: "linear-gradient(135deg, #1a1a2e, #4a4a8e)", author: "M. Spivak · Reverté, 1998", pages: 680, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Integral definida", sub: "Cap. 11 · 28h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Integral Definida</h1><span class="subtitle">Spivak · Cap. 11</span><p>Sumas de Riemann. Definición de integral. Propiedades. Teorema del valor medio.</p>` },
+          { num: 2, title: "Teorema Fundamental del Cálculo", sub: "Cap. 12 · 19h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>TFC</h1><span class="subtitle">Spivak · Cap. 12</span><p>La integral como función. Teoremas fundamentales. Integrales impropias.</p>` },
+          { num: 3, title: "Logaritmo y exponencial", sub: "Cap. 13 · 19h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Logaritmo y Exponencial</h1><span class="subtitle">Spivak · Cap. 13</span><p>Definición de logaritmo vía integral. Exponencial como inversa.</p>` },
+          { num: 4, title: "Métodos de integración", sub: "Cap. 14 · 28h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Métodos de Integración</h1><span class="subtitle">Spivak · Cap. 14</span><p>Sustitución. Por partes. Fracciones parciales. Métodos numéricos.</p>` },
+          { num: 5, title: "Aplicaciones y Series", sub: "Cap. 15-16 · 43h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Aplicaciones y Series</h1><span class="subtitle">Spivak · Cap. 15-16</span><p>Cálculo de áreas, longitudes, volúmenes. Series convergentes. Series de potencias.</p>` }
+        ]
+      },
+      {
+        id: "bib_cal2_thomas", title: "Cálculo con Geometría Analítica", emoji: "📕",
+        cover: "linear-gradient(135deg, #2a0a0a, #7a1a1a)", author: "Thomas & Finney · Addison-Wesley, 1987", pages: 850, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Integrales y Series", sub: "Cap. 5-8", diff: "Básico", diffStyle: "background:rgba(123,165,135,.14);color:#7ba587", time: "—",
+            latex: `<h1>Integrales y Series</h1><span class="subtitle">Thomas & Finney, 1987</span><p>Integral definida. TFC. Técnicas de integración. Series infinitas.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Álgebra Lineal I",
+    books: [
+      {
+        id: "bib_al1_curtis", title: "Linear Algebra", emoji: "📊",
+        cover: "linear-gradient(135deg, #0a1a2a, #1a5a8a)", author: "C.W. Curtis · Springer, 1984", pages: 350, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Espacios vectoriales", sub: "Cap. 1 · 15h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Espacios Vectoriales</h1><span class="subtitle">Curtis · Cap. 1</span><p>Campos. Espacios vectoriales. Subespacios. Dependencia lineal. Bases y dimensión.</p>` },
+          { num: 2, title: "Matrices", sub: "Cap. 2 · 10h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Matrices</h1><span class="subtitle">Curtis · Cap. 2</span><p>Multiplicación. Matrices elementales. Matriz inversa. Sistemas lineales.</p>` },
+          { num: 3, title: "Transformaciones lineales", sub: "Cap. 3-4 · 24h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Transformaciones Lineales</h1><span class="subtitle">Curtis · Cap. 3-4</span><p>Núcleo e imagen. Composición. Isomorfismos. Cambios de base.</p>` },
+          { num: 4, title: "Producto escalar", sub: "Cap. 5 · 17h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Producto Escalar</h1><span class="subtitle">Curtis · Cap. 5</span><p>Productos escalares y hermitianos. Ortogonalidad. Coeficientes de Fourier.</p>` },
+          { num: 5, title: "Determinantes", sub: "Cap. 6 · 10h", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Determinantes</h1><span class="subtitle">Curtis · Cap. 6</span><p>Unicidad. Determinante del producto. Invertibilidad.</p>` }
+        ]
+      },
+      {
+        id: "bib_al1_hoffman", title: "Álgebra Lineal", emoji: "📋",
+        cover: "linear-gradient(135deg, #1a0a2a, #5a1a7a)", author: "Hoffman & Kunze · Prentice Hall, 1973", pages: 400, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Espacios y Transformaciones", sub: "Cap. 1-3", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Álgebra Lineal</h1><span class="subtitle">Hoffman & Kunze, 1973</span><p>Espacios vectoriales. Transformaciones lineales. Matrices elementales.</p>` }
+        ]
+      },
+      {
+        id: "bib_al1_rincon", title: "Álgebra Lineal", emoji: "📓",
+        cover: "linear-gradient(135deg, #0a2a1a, #1a7a4a)", author: "H.A. Rincón · Las Prensas de Ciencias, UNAM, 2002", pages: 380, totalTime: "Curso UNAM",
+        tracks: [
+          { num: 1, title: "Curso completo", sub: "Todos los capítulos", diff: "Fundamental", diffStyle: "background:rgba(201,169,110,.14);color:#c9a96e", time: "—",
+            latex: `<h1>Álgebra Lineal</h1><span class="subtitle">Rincón, 2002</span><p>Texto diseñado para el curso de Álgebra Lineal I y II de la FC-UNAM.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Análisis Matemático I",
+    books: [
+      {
+        id: "bib_an1_apostol", title: "Análisis Matemático", emoji: "📈",
+        cover: "linear-gradient(135deg, #0a1a0a, #1a5a1a)", author: "T. Apostol · Reverté, 1996", pages: 500, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Espacios métricos", sub: "Cap. 1 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Espacios Métricos</h1><span class="subtitle">Apostol · Cap. 1</span><p>Continuidad. Nociones topológicas básicas. Convergencia.</p>` },
+          { num: 2, title: "Convergencia uniforme", sub: "Cap. 2 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Convergencia Uniforme</h1><span class="subtitle">Apostol · Cap. 2</span><p>Criterio de Cauchy. Espacios completos. Teorema de punto fijo.</p>` },
+          { num: 3, title: "Compacidad", sub: "Cap. 3 · 10h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Compacidad</h1><span class="subtitle">Apostol · Cap. 3</span><p>Heine-Borel. Arzelá. Aplicaciones.</p>` },
+          { num: 4, title: "Weierstrass y Riemann-Stieltjes", sub: "Cap. 4-5 · 30h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Weierstrass</h1><span class="subtitle">Apostol · Cap. 4-5</span><p>Teorema de Aproximación. Integral de Riemann-Stieltjes.</p>` }
+        ]
+      },
+      {
+        id: "bib_an1_rudin", title: "Principios de Análisis Matemático", emoji: "📉",
+        cover: "linear-gradient(135deg, #1a1a0a, #5a5a1a)", author: "W. Rudin · McGraw-Hill, 1980", pages: 350, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Espacios métricos y Convergencia", sub: "Cap. 1-3", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Baby Rudin</h1><span class="subtitle">Rudin, 1976</span><p>Espacios métricos. Convergencia uniforme. Compacidad.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Variable Compleja I",
+    books: [
+      {
+        id: "bib_vc1_ahlfors", title: "Complex Analysis", emoji: "ℂ",
+        cover: "linear-gradient(135deg, #2a0a0a, #8a1a1a)", author: "L.V. Ahlfors · McGraw-Hill, 1979", pages: 330, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Preliminares y analicidad", sub: "Cap. 1-2 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Funciones Analíticas</h1><span class="subtitle">Ahlfors · Cap. 1-2</span><p>Álgebra compleja. Funciones elementales. Cauchy-Riemann. Conformalidad.</p>` },
+          { num: 2, title: "Integración compleja", sub: "Cap. 3 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Integración</h1><span class="subtitle">Ahlfors · Cap. 3</span><p>Teorema de Cauchy. Fórmulas integrales. Liouville. Teorema fundamental del álgebra.</p>` },
+          { num: 3, title: "Series y Residuos", sub: "Cap. 4-5 · 40h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Series</h1><span class="subtitle">Ahlfors · Cap. 4-5</span><p>Taylor. Laurent. Singularidades. Teorema del residuo. Integrales impropias.</p>` }
+        ]
+      },
+      {
+        id: "bib_vc1_churchill", title: "Complex Variables and Applications", emoji: "📗",
+        cover: "linear-gradient(135deg, #0a2a2a, #1a7a7a)", author: "R.V. Churchill · McGraw-Hill, 1996", pages: 380, totalTime: "Complementario",
+        tracks: [
+          { num: 1, title: "Variable Compleja", sub: "Completo", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Variable Compleja</h1><span class="subtitle">Churchill, 1996</span><p>Funciones analíticas, integración, series y residuos con aplicaciones.</p>` }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Análisis Matemático II",
+    books: [
+      {
+        id: "bib_an2_rudin", title: "Principios de Análisis Matemático", emoji: "📉",
+        cover: "linear-gradient(135deg, #1a1a0a, #5a5a1a)", author: "W. Rudin · McGraw-Hill, 1980", pages: 350, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Medida de Lebesgue en ℝⁿ", sub: "Cap. 10 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Medida de Lebesgue</h1><span class="subtitle">Rudin · Cap. 10</span><p>Construcción de la medida de Lebesgue en ℝⁿ.</p>` },
+          { num: 2, title: "Integral de Lebesgue", sub: "Cap. 11 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Integral de Lebesgue</h1><span class="subtitle">Rudin · Cap. 11</span><p>Teorema de Fubini. Teorema de cambio de variable.</p>` },
+          { num: 3, title: "Teoremas de convergencia", sub: "Cap. 12 · 20h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Convergencia</h1><span class="subtitle">Rudin · Cap. 12</span><p>Convergencia monótona. Lema de Fatou. Convergencia dominada.</p>` },
+          { num: 4, title: "Espacio L² y Series de Fourier", sub: "Cap. 13 · 13h", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Espacio L²</h1><span class="subtitle">Rudin · Cap. 13</span><p>El espacio L². Series de Fourier.</p>` }
+        ]
+      },
+      {
+        id: "bib_an2_apostol", title: "Análisis Matemático", emoji: "📈",
+        cover: "linear-gradient(135deg, #0a1a0a, #1a5a1a)", author: "T. Apostol · Reverté, 1996", pages: 500, totalTime: "Principal",
+        tracks: [
+          { num: 1, title: "Medida e Integración", sub: "Cap. 6-8", diff: "Avanzado", diffStyle: "background:rgba(139,157,195,.14);color:#8b9dc3", time: "—",
+            latex: `<h1>Medida</h1><span class="subtitle">Apostol, 1996</span><p>Medida de Lebesgue. Integral de Lebesgue. Teoremas de convergencia.</p>` }
+        ]
+      }
+    ]
+  }
 ];
-
 // Aplanar datos para búsquedas eficientes
 const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
