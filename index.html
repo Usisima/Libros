@@ -1195,6 +1195,53 @@ const LIBRARY = [
         tracks: []
       }
     ]
+  },
+  {
+    label: "Álgebra Lineal I",
+    books: [
+      {
+        id: "bib_al1_Curtis",
+        title: "Linear Algebra",
+        author: "C. W. Curtis 1984",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_al1_Friedberg",
+        title: "Álgebra Lineal",
+        author: "S. H. Friedberg, A. J. Insel, L. E. Spence 1982",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_al1_Hoffman",
+        title: "Álgebra Lineal",
+        author: "K. Hoffman, R. Kunze 1973",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_al1_Lang",
+        title: "Álgebra Lineal",
+        author: "S. Lang 1986",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_al1_Nomizu",
+        title: "Fundamentals of Linear Algebra",
+        author: "K. Nomizu 1966",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_al1_Rincon",
+        title: "Álgebra Lineal",
+        author: "H. A. Rincón 2002",
+        pages: 0,
+        tracks: []
+      }
+    ]
   }
 ];const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
@@ -1365,7 +1412,7 @@ const PDF_CONFIGS = {
     driveId: ''
   },
 
-  
+
   'bib_geo2_Bracho': {
     title: 'Geometría Analítica - Bracho',
     driveId: ''
@@ -1380,6 +1427,32 @@ const PDF_CONFIGS = {
   },
   'bib_geo2_Ramirez': {
     title: 'Geometría Analítica - Ramírez Galarza',
+    driveId: ''
+  },
+
+  
+  'bib_al1_Curtis': {
+    title: 'Linear Algebra - Curtis',
+    driveId: ''
+  },
+  'bib_al1_Friedberg': {
+    title: 'Álgebra Lineal - Friedberg, Insel & Spence',
+    driveId: ''
+  },
+  'bib_al1_Hoffman': {
+    title: 'Álgebra Lineal - Hoffman & Kunze',
+    driveId: ''
+  },
+  'bib_al1_Lang': {
+    title: 'Álgebra Lineal - Lang',
+    driveId: ''
+  },
+  'bib_al1_Nomizu': {
+    title: 'Fundamentals of Linear Algebra - Nomizu',
+    driveId: ''
+  },
+  'bib_al1_Rincon': {
+    title: 'Álgebra Lineal - Rincón',
     driveId: ''
   }
 
