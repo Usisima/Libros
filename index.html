@@ -187,24 +187,12 @@ img{max-width:100%;height:auto;display:block}
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
   scroll-snap-type:x proximity;
-  /* NUEVO: Para alinear con el título cuando hay pocos items */
   scroll-padding: 0 1rem;
 }
 .hscroll::-webkit-scrollbar{display:none}
-.hscroll::after{
-  content:'';flex:0 0 1px;
-}
-
-/* NUEVA REGLA: Carruseles con pocos items */
-.hscroll.few-items {
-  justify-content: flex-start;
-  padding-left: 1rem;
-}
-
-/* NUEVA REGLA: Para 1 solo libro */
-.hscroll.single-item {
-  justify-content: flex-start;
-}
+.hscroll::after{content:'';flex:0 0 1px}
+.hscroll.few-items{justify-content:flex-start;padding-left:1rem}
+.hscroll.single-item{justify-content:flex-start}
 
 /* ═══════════════════════════════════════
    CARDS - Mini, Grid, Continue
@@ -798,13 +786,12 @@ img{max-width:100%;height:auto;display:block}
 ::-webkit-scrollbar-thumb:hover{background:var(--ink3)}
 
 /* ═══════════════════════════════════════
-   BOOK READER
+   PDF READER (Google Drive)
 ═══════════════════════════════════════ */
 #reader-view{
   position:fixed;inset:0;z-index:200;
   background:#0f0e0c;
   display:none;flex-direction:column;
-  -webkit-user-select:none;user-select:none;
   animation:fadeIn .3s ease;
 }
 #reader-view.active{display:flex}
@@ -845,205 +832,60 @@ img{max-width:100%;height:auto;display:block}
   stroke:currentColor;fill:none;
   stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
 }
-.reader-page-ct{
-  font-size:.65rem;color:rgba(240,236,228,.35);
-  min-width:65px;text-align:center;flex-shrink:0;
-  font-family:'DM Mono',monospace;letter-spacing:.05em;
-}
 
-/* Reader Stage */
-.reader-stage{
-  flex:1;position:relative;overflow:hidden;
-  background:#0f0e0c;
-  display:flex;align-items:center;justify-content:center;
-}
-#r-book{position:absolute;inset:0;overflow:hidden}
-
-/* Reader Pages */
-.rpage{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  background:#0f0e0c;
-  will-change:transform,opacity;
-  transition:transform .15s ease,opacity .15s ease;
-}
-.rpage img{
-  max-width:100%;max-height:100%;
-  object-fit:contain;display:block;
-  pointer-events:none;
-  box-shadow:0 2px 24px rgba(0,0,0,.8);
-  transition:transform .3s ease;
-}
-
-/* Slide animations */
-@keyframes slideOutL{
-  0%{opacity:1;transform:translateX(0)}
-  100%{opacity:0;transform:translateX(-4%)}
-}
-@keyframes slideOutR{
-  0%{opacity:1;transform:translateX(0)}
-  100%{opacity:0;transform:translateX(4%)}
-}
-@keyframes slideInR{
-  0%{opacity:0;transform:translateX(3%)}
-  100%{opacity:1;transform:translateX(0)}
-}
-@keyframes slideInL{
-  0%{opacity:0;transform:translateX(-3%)}
-  100%{opacity:1;transform:translateX(0)}
-}
-.rpage.out-left{animation:slideOutL .15s ease-out forwards;z-index:2}
-.rpage.out-right{animation:slideOutR .15s ease-out forwards;z-index:2}
-.rpage.in-right{animation:slideInR .15s ease-out forwards;z-index:1}
-.rpage.in-left{animation:slideInL .15s ease-out forwards;z-index:1}
-
-/* Loading */
-.rpage-loading{
-  display:flex;align-items:center;justify-content:center;
+/* PDF iframe container */
+.reader-pdf-container{
+  flex:1;position:relative;
   width:100%;height:100%;
+  background:#0f0e0c;
 }
+.reader-pdf-container iframe{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  border:none;
+}
+.reader-loading{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:16px;
+  background:#0f0e0c;
+  z-index:1;
+}
+.reader-loading.hidden{display:none}
 .r-spinner{
-  width:28px;height:28px;
+  width:32px;height:32px;
   border:3px solid rgba(201,169,110,.12);
   border-top-color:var(--accent);
   border-radius:50%;
   animation:rspin .7s linear infinite;
 }
 @keyframes rspin{to{transform:rotate(360deg)}}
-
-/* Tap Zones */
-.reader-zone-prev,.reader-zone-next{
-  position:absolute;top:0;bottom:0;width:33%;z-index:10;
+.loading-text{
+  color:var(--ink3);
+  font-size:.82rem;
+  font-family:'DM Mono',monospace;
+  letter-spacing:.04em;
 }
-.reader-zone-prev{left:0;cursor:w-resize}
-.reader-zone-next{right:0;cursor:e-resize}
 
-/* Reader Controls */
-.reader-controls{
-  flex-shrink:0;
-  display:flex;flex-direction:column;align-items:center;
+/* Error state */
+.reader-error{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
   gap:12px;
-  background:rgba(10,9,7,.97);
-  border-top:1px solid rgba(255,255,255,.06);
-  backdrop-filter:blur(16px);
-  padding:12px 18px env(safe-area-inset-bottom,12px);
+  background:#0f0e0c;
+  color:var(--ink3);
+  font-size:.85rem;
+  text-align:center;
+  padding:2rem;
+  z-index:1;
 }
-.reader-track{
-  width:100%;max-width:480px;height:4px;
-  background:rgba(255,255,255,.08);
-  border-radius:99px;
-  cursor:pointer;position:relative;
-  touch-action:none;
-  transition:height .2s;
-}
-.reader-track:hover{height:6px}
-.reader-fill{
-  height:100%;background:var(--accent);
-  border-radius:99px;
-  transition:width .15s;
-  position:relative;pointer-events:none;
-}
-.reader-fill::after{
-  content:'';position:absolute;
-  right:-7px;top:50%;transform:translateY(-50%);
-  width:14px;height:14px;
-  border-radius:50%;
-  background:var(--accent2);
-  box-shadow:0 0 0 4px rgba(201,169,110,.18);
-  opacity:0;transition:opacity .2s;
-}
-.reader-track:hover .reader-fill::after{opacity:1}
-
-.reader-btns{display:flex;align-items:center;gap:10px}
-.reader-nav-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:10px 22px;border-radius:99px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  color:rgba(240,236,228,.55);
-  font-family:'DM Mono',monospace;
-  font-size:.68rem;letter-spacing:.07em;
-  cursor:pointer;
-  transition:all var(--transition-fast);
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
-}
-.reader-nav-btn:active{
-  background:var(--adim);
-  border-color:var(--accent);
-  color:var(--accent);
-  transform:scale(.95);
-}
-.reader-nav-btn.primary{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#0c0b09;font-weight:600;
-}
-.reader-nav-btn.primary:active{
-  background:var(--accent2);
-}
-.reader-nav-btn svg{
-  width:14px;height:14px;
-  stroke:currentColor;fill:none;
-  stroke-width:2;stroke-linecap:round;
-}
-
-/* Goto Modal */
-#reader-goto{
-  position:fixed;inset:0;z-index:210;
-  background:rgba(0,0,0,.75);
-  backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;
-  animation:fadeIn .2s ease;
-}
-#reader-goto.open{display:flex}
-.goto-box{
-  background:#1c1a16;
-  border:1px solid rgba(201,169,110,.22);
-  border-radius:14px;
-  padding:28px 32px;
-  width:min(320px,90vw);
-  display:flex;flex-direction:column;gap:16px;
-  animation:gotoIn .25s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes gotoIn{from{opacity:0;transform:scale(.9)}}
-.goto-title{
-  font-family:'Playfair Display',serif;
-  font-size:1.1rem;font-style:italic;
-  color:var(--accent);text-align:center;
-}
-.goto-input{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:8px;padding:10px 14px;
-  color:var(--ink);
-  font-family:'DM Mono',monospace;
-  font-size:.9rem;outline:none;
-  text-align:center;width:100%;
-  transition:border-color .2s;
-}
-.goto-input:focus{border-color:var(--accent)}
-.goto-row{display:flex;gap:10px}
-.goto-btn{
-  flex:1;padding:10px;border-radius:8px;
-  cursor:pointer;
-  font-family:'DM Mono',monospace;
-  font-size:.75rem;letter-spacing:.05em;
-  border:1px solid rgba(255,255,255,.07);
-  background:rgba(255,255,255,.05);
-  color:rgba(240,236,228,.5);
-  transition:all .2s;
-}
-.goto-btn:hover{background:rgba(255,255,255,.1)}
-.goto-btn.ok{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#0c0b09;font-weight:600;
-}
-.goto-btn.ok:hover{background:var(--accent2)}
-.goto-hint{
-  font-size:.62rem;color:rgba(240,236,228,.3);
-  text-align:center;letter-spacing:.06em;
+.reader-error.hidden{display:none}
+.reader-error svg{
+  width:40px;height:40px;
+  stroke:var(--accent);
+  opacity:.5;
 }
 
 /* ═══════════════════════════════════════
@@ -1069,7 +911,6 @@ img{max-width:100%;height:auto;display:block}
      TOP BAR
 ═══════════════════════════════════════ -->
 <header class="top-bar" id="top-bar">
-  <!-- Default: Logo + Institution -->
   <div class="tb-left" id="tb-default">
     <span class="logo-text" onclick="goHome()" title="Inicio">Ж</span>
     <div class="tb-divider"></div>
@@ -1079,7 +920,6 @@ img{max-width:100%;height:auto;display:block}
     </div>
   </div>
   
-  <!-- Back: Shown in detail/search views -->
   <div class="back-btn-container" id="tb-back" style="display:none">
     <button class="icon-btn" onclick="navBack()" aria-label="Volver">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1124,56 +964,35 @@ img{max-width:100%;height:auto;display:block}
 </nav>
 
 <!-- ═══════════════════════════════════════
-     BOOK READER
+     PDF READER
 ═══════════════════════════════════════ -->
-<div id="reader-view" aria-label="Lector de libros">
+<div id="reader-view" aria-label="Lector de PDF">
   <div class="reader-topbar">
-    <div class="reader-page-ct" id="r-counter">p. — / —</div>
     <div class="reader-title" id="r-title">—</div>
     <div style="display:flex;gap:6px">
-      <button class="reader-btn" onclick="readerGoto()" title="Ir a página" aria-label="Ir a página específica">
-        <svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+      <button class="reader-btn" onclick="Reader.openInNewTab()" title="Abrir en nueva pestaña" aria-label="Abrir en Drive">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </button>
-      <button class="reader-btn" onclick="closeReader()" title="Cerrar lector" aria-label="Cerrar">
+      <button class="reader-btn" onclick="Reader.close()" title="Cerrar lector" aria-label="Cerrar">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
   </div>
   
-  <div class="reader-stage" id="r-stage">
-    <div id="r-book"></div>
-    <div class="reader-zone-prev" aria-label="Página anterior"></div>
-    <div class="reader-zone-next" aria-label="Página siguiente"></div>
-  </div>
-  
-  <div class="reader-controls">
-    <div class="reader-track" id="r-track" role="slider" aria-label="Progreso de lectura">
-      <div class="reader-fill" id="r-fill"></div>
+  <div class="reader-pdf-container" id="r-pdf-container">
+    <div class="reader-loading" id="r-loading">
+      <div class="r-spinner"></div>
+      <span class="loading-text">Cargando PDF...</span>
     </div>
-    <div class="reader-btns">
-      <button class="reader-nav-btn" id="r-prev-btn" aria-label="Anterior">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Anterior
-      </button>
-      <button class="reader-nav-btn primary" id="r-next-btn" aria-label="Siguiente">
-        Siguiente <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    <div class="reader-error hidden" id="r-error">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>No se pudo cargar el PDF.<br>Intenta abrirlo en Drive.</span>
+      <button class="action-btn primary" onclick="Reader.openInNewTab()" style="margin-top:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Abrir en Drive
       </button>
     </div>
-  </div>
-</div>
-
-<!-- Goto Modal -->
-<div id="reader-goto" aria-label="Ir a página" role="dialog">
-  <div class="goto-box">
-    <div class="goto-title">Ir a página</div>
-    <input class="goto-input" id="goto-inp" type="number" min="1" 
-           placeholder="número de página" 
-           onkeydown="if(event.key==='Enter')gotoConfirm()"
-           aria-label="Número de página">
-    <div class="goto-hint" id="goto-hint">Total: — páginas</div>
-    <div class="goto-row">
-      <button class="goto-btn" onclick="closeGoto()">Cancelar</button>
-      <button class="goto-btn ok" onclick="gotoConfirm()">Ir</button>
-    </div>
+    <iframe id="r-iframe" allow="autoplay" allowfullscreen></iframe>
   </div>
 </div>
 
@@ -1186,17 +1005,6 @@ const debounce = (fn, delay) => {
   return (...args) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => fn(...args), delay);
-  };
-};
-
-const throttle = (fn, limit) => {
-  let inThrottle;
-  return (...args) => {
-    if (!inThrottle) {
-      fn(...args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
   };
 };
 
@@ -1520,7 +1328,7 @@ const LIBRARY = [
     ]
   }
 ];
-// Aplanar datos para búsquedas eficientes
+
 const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
   b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover }))
@@ -1535,27 +1343,25 @@ const AppState = {
   currentBookId: null,
   currentTrackKey: null,
   favorites: new Set(
-  (() => {
-    const stored = localStorage.getItem('np_favs');
-    if (!stored) return [];
-    try {
-      const parsed = JSON.parse(stored);
-      // Filtrar solo strings válidos (bookId o bookId:num)
-      return parsed.filter(item => 
-        typeof item === 'string' && 
-        (item.includes(':') ? item.split(':').length === 2 : true)
-      );
-    } catch (e) {
-      console.warn('Datos de favoritos corruptos, reiniciando');
-      localStorage.removeItem('np_favs');
-      return [];
-    }
-  })()
-),
+    (() => {
+      const stored = localStorage.getItem('np_favs');
+      if (!stored) return [];
+      try {
+        const parsed = JSON.parse(stored);
+        return parsed.filter(item => 
+          typeof item === 'string' && 
+          (item.includes(':') ? item.split(':').length === 2 : true)
+        );
+      } catch (e) {
+        console.warn('Datos de favoritos corruptos, reiniciando');
+        localStorage.removeItem('np_favs');
+        return [];
+      }
+    })()
+  ),
   openTracks: new Set(),
   recentTracks: JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0, 4),
   
-  // Métodos de estado
   isFav(key) { return this.favorites.has(key); },
   
   addFavorite(key) {
@@ -1591,8 +1397,6 @@ const AppState = {
   
   updateFavCount() {
     const count = this.favorites.size;
-    console.log('Favoritos actuales:', [...this.favorites]); // DEBUG
-    console.log('Total:', count); // DEBUG
     const el = document.getElementById('fav-count');
     if (el) {
       el.textContent = count;
@@ -1601,11 +1405,114 @@ const AppState = {
   },
   
   getBookCoverUrl(bookId) {
-    const cfg = READER_CONFIGS[bookId];
-    if (!cfg) return null;
-    return cfg.base + cfg.prefix + '0001' + cfg.ext;
+    const cfg = PDF_CONFIGS[bookId];
+    if (!cfg?.driveId) return null;
+    return `https://drive.google.com/thumbnail?id=${cfg.driveId}&sz=w400`;
   }
 };
+
+/* ══════════════════════════════════════════
+   PDF CONFIGURATION (Google Drive Links)
+   ⚠️ REEMPLAZA estos IDs con los reales de tus PDFs
+══════════════════════════════════════════ */
+const PDF_CONFIGS = {
+  'bib_as1_cardenas': {
+    title: 'Álgebra Superior - Cárdenas',
+    driveId: '1ABC123...' // ← REEMPLAZAR con ID real
+  },
+  'bib_as1_nachbin': {
+    title: 'Álgebra Elemental - Nachbin',
+    driveId: '1DEF456...' // ← REEMPLAZAR con ID real
+  },
+  'bib_cal1_spivak': {
+    title: 'Cálculo Infinitesimal - Spivak',
+    driveId: '1GHI789...' // ← REEMPLAZAR con ID real
+  },
+  'bib_cal1_thomas': {
+    title: 'Cálculo con Geometría Analítica - Thomas',
+    driveId: '1JKL012...' // ← REEMPLAZAR con ID real
+  },
+  'bib_cal1_arizmendi': {
+    title: 'Cálculo Primer Curso - Arizmendi',
+    driveId: '1MNO345...' // ← REEMPLAZAR con ID real
+  },
+  'bib_ga1_bracho': {
+    title: 'Geometría Analítica - Bracho',
+    driveId: '1PQR678...' // ← REEMPLAZAR con ID real
+  },
+  'bib_ga1_ramirez': {
+    title: 'Geometría Analítica - Ramírez Galarza',
+    driveId: '1STU901...' // ← REEMPLAZAR con ID real
+  },
+  'bib_gm1_efimov': {
+    title: 'Geometría Superior - Efimov',
+    driveId: '1VWX234...' // ← REEMPLAZAR con ID real
+  },
+  'bib_gm1_shively': {
+    title: 'Introducción a la Geometría Moderna - Shively',
+    driveId: '1YZA567...' // ← REEMPLAZAR con ID real
+  },
+  'bib_as2_cardenas': {
+    title: 'Álgebra Superior - Cárdenas',
+    driveId: '1BCD890...' // ← REEMPLAZAR con ID real
+  },
+  'bib_as2_nachbin': {
+    title: 'Álgebra Elemental - Nachbin',
+    driveId: '1EFG123...' // ← REEMPLAZAR con ID real
+  },
+  'bib_cal2_spivak': {
+    title: 'Cálculo Infinitesimal - Spivak',
+    driveId: '1HIJ456...' // ← REEMPLAZAR con ID real
+  },
+  'bib_cal2_thomas': {
+    title: 'Cálculo con Geometría Analítica - Thomas',
+    driveId: '1KLM789...' // ← REEMPLAZAR con ID real
+  },
+  'bib_al1_curtis': {
+    title: 'Linear Algebra - Curtis',
+    driveId: '1NOP012...' // ← REEMPLAZAR con ID real
+  },
+  'bib_al1_hoffman': {
+    title: 'Álgebra Lineal - Hoffman & Kunze',
+    driveId: '1QRS345...' // ← REEMPLAZAR con ID real
+  },
+  'bib_al1_rincon': {
+    title: 'Álgebra Lineal - Rincón',
+    driveId: '1TUV678...' // ← REEMPLAZAR con ID real
+  },
+  'bib_an1_apostol': {
+    title: 'Análisis Matemático - Apostol',
+    driveId: '1WXY901...' // ← REEMPLAZAR con ID real
+  },
+  'bib_an1_rudin': {
+    title: 'Principios de Análisis Matemático - Rudin',
+    driveId: '1ZAB234...' // ← REEMPLAZAR con ID real
+  },
+  'bib_vc1_ahlfors': {
+    title: 'Complex Analysis - Ahlfors',
+    driveId: '1CDE567...' // ← REEMPLAZAR con ID real
+  },
+  'bib_vc1_churchill': {
+    title: 'Complex Variables - Churchill',
+    driveId: '1FGH890...' // ← REEMPLAZAR con ID real
+  },
+  'bib_an2_rudin': {
+    title: 'Principios de Análisis Matemático - Rudin',
+    driveId: '1IJK123...' // ← REEMPLAZAR con ID real
+  },
+  'bib_an2_apostol': {
+    title: 'Análisis Matemático - Apostol',
+    driveId: '1LMN456...' // ← REEMPLAZAR con ID real
+  }
+};
+
+function getDriveViewerUrl(driveId) {
+  return `https://drive.google.com/file/d/${driveId}/preview`;
+}
+
+function getDriveDirectUrl(driveId) {
+  return `https://drive.google.com/file/d/${driveId}/view`;
+}
 
 /* ══════════════════════════════════════════
    RENDER FUNCTIONS
@@ -1614,7 +1521,6 @@ const Renderer = {
   home() {
     let html = '';
 
-    // Sección: Continuar leyendo (si hay historial)
     if (AppState.recentTracks.length > 0) {
       const recentItems = AppState.recentTracks
         .map(key => {
@@ -1651,7 +1557,6 @@ const Renderer = {
       }
     }
 
-    // Secciones de materias con carruseles
     html += LIBRARY.map(cat => {
       const sorted = [...cat.books].sort((a, b) => {
         const af = AppState.isFav(a.id) ? 0 : 1;
@@ -1661,7 +1566,7 @@ const Renderer = {
 
       const itemsCount = sorted.length;
       const scrollClass = itemsCount <= 1 ? 'hscroll single-item' : 
-                    itemsCount <= 3 ? 'hscroll few-items' : 'hscroll';
+                          itemsCount <= 3 ? 'hscroll few-items' : 'hscroll';
 
       return `
       <div class="section">
@@ -1703,7 +1608,6 @@ const Renderer = {
       ? `<img src="${coverUrl}" alt="${book.title}">` 
       : `<span>${book.emoji}</span>`;
     
-    // Header del detalle
     let html = `
       <div class="detail-header">
         <div class="detail-cover" style="background:${book.cover}">
@@ -1720,7 +1624,7 @@ const Renderer = {
           </button>
           <button class="action-btn primary" onclick="Reader.open('${book.id}')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-            Leer
+            Leer PDF
           </button>
         </div>
         <div class="detail-stats">${book.tracks.length} temas · ${book.totalTime}</div>
@@ -1731,7 +1635,6 @@ const Renderer = {
       </div>
       <div class="episode-list" id="ep-list">`;
 
-    // Lista de temas
     book.tracks.forEach((t, index) => {
       const key = `${book.id}:${t.num}`;
       const isOpen = AppState.openTracks.has(key);
@@ -1766,7 +1669,6 @@ const Renderer = {
     html += `</div>`;
     document.getElementById('detail').innerHTML = html;
     
-    // Renderizar KaTeX para temas que ya están abiertos
     if (AppState.openTracks.size > 0) {
       setTimeout(() => {
         AppState.openTracks.forEach(key => {
@@ -1883,29 +1785,23 @@ const Navigation = {
   },
   
   showView(id, skipHistory = false) {
-    // Ocultar vista actual
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     
-    // Mostrar nueva vista
     const viewEl = document.getElementById(id);
     if (viewEl) {
       viewEl.classList.add('active');
       viewEl.scrollTop = 0;
     }
     
-    // Actualizar navegación inferior
     document.querySelectorAll('.nav-item').forEach(n => {
       n.classList.toggle('active', n.dataset.nav === id);
     });
     
-    // Actualizar estado
     AppState.prevView = AppState.view;
     AppState.view = id;
     
-    // Scroll al inicio
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // Historial
     if (!skipHistory) {
       history.pushState({ view: id, bookId: AppState.currentBookId }, '', '#' + id);
     }
@@ -1948,7 +1844,6 @@ const Navigation = {
     
     const key = `${bookId}:${num}`;
     
-    // Asegurar que estamos en la vista de detalle correcta
     if (AppState.view !== 'detail' || AppState.currentBookId !== bookId) {
       AppState.currentBookId = bookId;
       AppState.addRecent(bookId, num);
@@ -1985,7 +1880,6 @@ const Actions = {
   toggleBookFav(bookId, el, isDetailBtn = false) {
     const isNowFav = AppState.toggleFavorite(bookId);
     
-    // Actualizar UI específica
     if (el) {
       el.classList.toggle('faved', isNowFav);
       if (isDetailBtn) {
@@ -1995,9 +1889,7 @@ const Actions = {
       }
     }
     
-    // Actualizar otras vistas si es necesario
     if (AppState.view === 'home') {
-      // Solo reordenar, no re-renderizar todo
       const card = document.querySelector(`.mini-card .fav-dot[onclick*="${bookId}"]`);
       if (card) {
         const miniCard = card.closest('.mini-card');
@@ -2029,12 +1921,10 @@ const Actions = {
     const isCurrentlyOpen = wrap.classList.contains('open');
     
     if (isCurrentlyOpen) {
-      // Cerrar
       wrap.classList.remove('open');
       epEl?.classList.remove('open');
       AppState.openTracks.delete(key);
     } else {
-      // Cerrar otros abiertos
       document.querySelectorAll('.apunte-wrap.open').forEach(el => {
         el.classList.remove('open');
         const elId = el.id.replace('apunte-', '').replace('-', ':');
@@ -2044,12 +1934,10 @@ const Actions = {
         el.classList.remove('open');
       });
       
-      // Abrir este
       wrap.classList.add('open');
       epEl?.classList.add('open');
       AppState.openTracks.add(key);
       
-      // Renderizar contenido si es necesario
       const ai = document.getElementById(`ai-${bookId}-${num}`);
       if (!ai.dataset.rendered) {
         const book = allBooks.find(b => b.id === bookId);
@@ -2061,7 +1949,6 @@ const Actions = {
         }
       }
       
-      // Scroll suave al elemento
       setTimeout(() => {
         epEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 200);
@@ -2073,23 +1960,19 @@ const Actions = {
     const resultsDiv = document.getElementById('search-results');
     const gridDiv = document.getElementById('library-grid');
     
-    // Actualizar botón de limpiar
     if (clearBtn) {
       clearBtn.classList.toggle('visible', query.length > 0);
     }
     
     if (!query.trim()) {
-      // Mostrar grid, ocultar resultados
       if (resultsDiv) resultsDiv.style.display = 'none';
       if (gridDiv) gridDiv.style.display = 'block';
       return;
     }
     
-    // Mostrar resultados, ocultar grid
     if (resultsDiv) resultsDiv.style.display = 'block';
     if (gridDiv) gridDiv.style.display = 'none';
     
-    // Buscar
     const ql = query.toLowerCase();
     let matches = [];
     
@@ -2168,228 +2051,70 @@ const KaTeXRenderer = {
 };
 
 /* ══════════════════════════════════════════
-   BOOK READER ENGINE
+   PDF READER (Google Drive)
 ══════════════════════════════════════════ */
-const READER_CONFIGS = {
-  // Álgebra Superior I
-  'bib_as1_cardenas': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Cardenas/',
-    prefix: 'Cardenas-Algebra-superior_page-',
-    ext: '.jpg',
-    total: 327
-  },
-  'bib_as1_nachbin': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Nachbin/',
-    prefix: 'Nachbin-Algebra-superior_page-',
-    ext: '.jpg',
-    total: 153
-  },
-  
-  // Cálculo Diferencial e Integral I
-  'bib_cal1_spivak': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal1_Spivak/',
-    prefix: '1778443072435-4377eac5-8690-4c22-adb3-694d0c2233e0_',
-    ext: '.jpg',
-    total: 821
-  },
-  'bib_cal1_thomas': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal1_Thomas/',
-    prefix: 'Thomas-Calculo-Geometria-Analitica_page-',
-    ext: '.jpg',
-    total: 991
-  },
-  'bib_cal1_arizmendi': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal1_Arizmendi/',
-    prefix: 'Arizmendi-Calculo-Primer-Curso_page-',
-    ext: '.jpg',
-    total: 472
-  },
-  
-  // Geometría Analítica I
-  'bib_ga1_bracho': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/ga1_Bracho/',
-    prefix: 'Bracho-Geometria-Analitica_page-',
-    ext: '.jpg',
-    total: 346
-  },
-  'bib_ga1_ramirez': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/ga1_Ramirez/',
-    prefix: 'Ramirez-Geometria-Analitica-Introduccion_page-',
-    ext: '.jpg',
-    total: 429
-  },
-  
-  // Geometría Moderna I
-  'bib_gm1_efimov': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/gm1_Efimov/',
-    prefix: 'Efimov-Geometria-Superior_page-',
-    ext: '.jpg',
-    total: 489
-  },
-  'bib_gm1_shively': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/gm1_Shively/',
-    prefix: 'Shively-Introduccion-Geometria-Moderna_page-',
-    ext: '.jpg',
-    total: 317
-  },
-  
-  // Álgebra Superior II
-  'bib_as2_cardenas': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Cardenas/',
-    prefix: 'Cardenas-Algebra-superior_page-',
-    ext: '.jpg',
-    total: 327
-  },
-  'bib_as2_nachbin': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Nachbin/',
-    prefix: 'Nachbin-Algebra-superior_page-',
-    ext: '.jpg',
-    total: 153
-  },
-  
-  // Cálculo Diferencial e Integral II
-  'bib_cal2_spivak': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal2_Spivak/',
-    prefix: '1778443072435-4377eac5-8690-4c22-adb3-694d0c2233e0_17_',
-    ext: '.jpg',
-    total: 821
-  },
-  'bib_cal2_thomas': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal2_Thomas/',
-    prefix: 'Thomas-Calculo-Geometria-Analitica_page-',
-    ext: '.jpg',
-    total: 991
-  },
-  
-  // Álgebra Lineal I
-  'bib_al1_curtis': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/al1_Curtis/',
-    prefix: 'Curtis-Linear-Algebra_page-',
-    ext: '.jpg',
-    total: 370
-  },
-  'bib_al1_hoffman': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/al1_Hoffman/',
-    prefix: 'Hoffman-Algebra-Lineal_page-',
-    ext: '.jpg',
-    total: 415
-  },
-  'bib_al1_rincon': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/al1_Rincon/',
-    prefix: 'Rincon-Algebra-Lineal_page-',
-    ext: '.jpg',
-    total: 398
-  },
-  
-  // Análisis Matemático I
-  'bib_an1_apostol': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an1_Apostol/',
-    prefix: 'Apostol-Analisis-Matematico_page-',
-    ext: '.jpg',
-    total: 606
-  },
-  'bib_an1_rudin': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an1_Rudin/',
-    prefix: 'Rudin-Principios-Analisis-Matematico_page-',
-    ext: '.jpg',
-    total: 360
-  },
-  
-  // Variable Compleja I
-  'bib_vc1_ahlfors': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/vc1_Ahlfors/',
-    prefix: 'Ahlfors-Complex-Analysis_page-',
-    ext: '.jpg',
-    total: 347
-  },
-  'bib_vc1_churchill': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/vc1_Churchill/',
-    prefix: 'Churchill-Complex-Variables_page-',
-    ext: '.jpg',
-    total: 407
-  },
-  
-  // Análisis Matemático II
-  'bib_an2_rudin': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an2_Rudin/',
-    prefix: 'Rudin-Principios-Analisis-Matematico_page-',
-    ext: '.jpg',
-    total: 360
-  },
-  'bib_an2_apostol': {
-    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an2_Apostol/',
-    prefix: 'Apostol-Analisis-Matematico_page-',
-    ext: '.jpg',
-    total: 606
-  }
-};
-
 const Reader = {
   state: {
     bookId: null,
-    total: 0,
-    current: 1,
-    base: '', prefix: '', ext: '.jpg',
-    blobs: {},        // Cache de blob URLs
-    fetching: {},     // Promesas pendientes
-    queue: 0,
-    processing: false,
-    fastTimer: null,
-    fetchToken: 0,    // Para cancelar fetches obsoletos
-    scale: 1,
-    isLoading: false
+    driveId: null,
+    iframeLoaded: false
   },
   
   open(bookId) {
-    const cfg = READER_CONFIGS[bookId];
+    const cfg = PDF_CONFIGS[bookId];
     if (!cfg) {
-      console.error('No reader config for:', bookId);
+      console.warn('No PDF config for:', bookId);
       return;
     }
     
-    const state = this.state;
-    state.bookId = bookId;
-    state.base = cfg.base;
-    state.prefix = cfg.prefix;
-    state.ext = cfg.ext;
-    state.total = cfg.total;
-    state.current = parseInt(localStorage.getItem('reader_pg_' + bookId) || '1');
-    state.blobs = {};
-    state.fetching = {};
-    state.queue = 0;
-    state.processing = false;
-    state.fetchToken = 0;
-    state.scale = 1;
-    state.isLoading = false;
+    this.state.bookId = bookId;
+    this.state.driveId = cfg.driveId;
+    this.state.iframeLoaded = false;
     
-    // Actualizar UI
-    const book = allBooks.find(b => b.id === bookId);
-    document.getElementById('r-title').textContent = book?.title || '';
-    document.getElementById('goto-hint').textContent = `Total: ${state.total} páginas`;
-    document.getElementById('goto-inp').max = state.total;
+    document.getElementById('r-title').textContent = cfg.title || bookId;
     
-    // Mostrar reader
     document.getElementById('reader-view').classList.add('active');
     document.body.style.overflow = 'hidden';
     history.pushState({ view: 'reader', bookId }, '', '#reader');
     
-    // Cargar página actual
-    this.prefetch(state.current, 4);
-    this.showPage(state.current, null);
-    this.setupInteractions();
+    document.getElementById('r-loading').classList.remove('hidden');
+    document.getElementById('r-error').classList.add('hidden');
+    
+    const iframe = document.getElementById('r-iframe');
+    const viewerUrl = getDriveViewerUrl(cfg.driveId);
+    
+    iframe.onload = () => {
+      this.state.iframeLoaded = true;
+      document.getElementById('r-loading').classList.add('hidden');
+    };
+    
+    iframe.onerror = () => {
+      document.getElementById('r-loading').classList.add('hidden');
+      document.getElementById('r-error').classList.remove('hidden');
+    };
+    
+    setTimeout(() => {
+      if (!this.state.iframeLoaded) {
+        document.getElementById('r-loading').classList.add('hidden');
+      }
+    }, 10000);
+    
+    iframe.src = viewerUrl;
+  },
+  
+  openInNewTab() {
+    if (this.state.driveId) {
+      window.open(getDriveDirectUrl(this.state.driveId), '_blank');
+    }
   },
   
   close() {
-    // Limpiar todos los blobs para evitar memory leaks
-    Object.keys(this.state.blobs).forEach(k => {
-      URL.revokeObjectURL(this.state.blobs[k]);
-    });
+    const iframe = document.getElementById('r-iframe');
+    iframe.src = '';
     
-    this.state.blobs = {};
-    this.state.fetching = {};
-    this.state.queue = 0;
-    this.state.processing = false;
-    this.stopFastNav();
+    this.state.bookId = null;
+    this.state.driveId = null;
+    this.state.iframeLoaded = false;
     
     document.getElementById('reader-view').classList.remove('active');
     document.body.style.overflow = '';
@@ -2397,349 +2122,6 @@ const Reader = {
     if (location.hash === '#reader') {
       history.back();
     }
-  },
-  
-  getUrl(n) {
-    return this.state.base + this.state.prefix + String(n).padStart(4, '0') + this.state.ext;
-  },
-  
-  async fetch(n) {
-    const state = this.state;
-    if (n < 1 || n > state.total) return null;
-    if (state.blobs[n]) return state.blobs[n];
-    if (state.fetching[n]) return state.fetching[n];
-    
-    const token = ++state.fetchToken;
-    const promise = fetch(this.getUrl(n))
-      .then(r => r.ok ? r.blob() : null)
-      .then(blob => {
-        if (!blob) return null;
-        if (token !== state.fetchToken) {
-          // Este fetch fue cancelado por uno más reciente
-          return null;
-        }
-        const url = URL.createObjectURL(blob);
-        state.blobs[n] = url;
-        delete state.fetching[n];
-        return url;
-      })
-      .catch(() => {
-        delete state.fetching[n];
-        return null;
-      });
-    
-    state.fetching[n] = promise;
-    return promise;
-  },
-  
-  prefetch(n, radius = 4) {
-    this.fetch(n); // Prioridad máxima
-    for (let d = 1; d <= radius; d++) {
-      this.fetch(n + d);
-      this.fetch(n - d);
-    }
-  },
-  
-  evict(current, keep = 12) {
-    const state = this.state;
-    Object.keys(state.blobs).forEach(k => {
-      const pg = parseInt(k);
-      if (Math.abs(pg - current) > keep) {
-        URL.revokeObjectURL(state.blobs[pg]);
-        delete state.blobs[pg];
-      }
-    });
-  },
-  
-  showPage(n, direction) {
-    const state = this.state;
-    const bookEl = document.getElementById('r-book');
-    
-    // Crear nuevo elemento de página
-    const div = document.createElement('div');
-    div.className = 'rpage';
-    
-    const blobUrl = state.blobs[n];
-    if (blobUrl) {
-      const img = document.createElement('img');
-      img.src = blobUrl;
-      img.draggable = false;
-      img.decoding = 'async';
-      img.style.transform = `scale(${state.scale})`;
-      div.appendChild(img);
-      this.swapPage(bookEl, div, direction);
-    } else {
-      // Mostrar spinner
-      const sp = document.createElement('div');
-      sp.className = 'rpage-loading';
-      sp.innerHTML = '<div class="r-spinner"></div>';
-      div.appendChild(sp);
-      this.swapPage(bookEl, div, direction);
-      
-      // Cargar imagen
-      this.fetch(n).then(url => {
-        if (!url || state.current !== n) return;
-        const img = document.createElement('img');
-        img.src = url;
-        img.draggable = false;
-        img.decoding = 'async';
-        img.style.transform = `scale(${state.scale})`;
-        sp.replaceWith(img);
-      });
-    }
-    
-    this.updateUI();
-    this.prefetch(n, 4);
-    this.evict(n, 12);
-    localStorage.setItem('reader_pg_' + state.bookId, n);
-  },
-  
-  swapPage(bookEl, newDiv, direction) {
-    const old = bookEl.querySelector('.rpage');
-    
-    if (!old || !direction) {
-      bookEl.innerHTML = '';
-      bookEl.appendChild(newDiv);
-      return;
-    }
-    
-    const outClass = direction === 'fwd' ? 'out-left' : 'out-right';
-    const inClass = direction === 'fwd' ? 'in-right' : 'in-left';
-    
-    old.classList.add(outClass);
-    newDiv.classList.add(inClass);
-    bookEl.appendChild(newDiv);
-    
-    old.addEventListener('animationend', () => old.remove(), { once: true });
-  },
-  
-  updateUI() {
-    const state = this.state;
-    document.getElementById('r-counter').textContent = 
-      `p. ${state.current} / ${state.total}`;
-    
-    const pct = state.total > 1 
-      ? ((state.current - 1) / (state.total - 1)) * 100 
-      : 0;
-    document.getElementById('r-fill').style.width = pct + '%';
-  },
-  
-  // Navegación
-  next() { this.enqueue(1); },
-  prev() { this.enqueue(-1); },
-  
-  enqueue(step) {
-    const state = this.state;
-    const target = state.current + state.queue + step;
-    if (target < 1 || target > state.total) return;
-    
-    state.queue += step;
-    if (!state.processing) this.flushQueue();
-  },
-  
-  flushQueue() {
-    const state = this.state;
-    if (state.queue === 0) {
-      state.processing = false;
-      return;
-    }
-    
-    state.processing = true;
-    const step = state.queue > 0 ? 1 : -1;
-    state.queue -= step;
-    
-    const next = state.current + step;
-    if (next < 1 || next > state.total) {
-      state.queue = 0;
-      state.processing = false;
-      return;
-    }
-    
-    state.current = next;
-    const direction = step > 0 ? 'fwd' : 'bk';
-    const animate = Math.abs(state.queue) <= 2;
-    this.showPage(state.current, animate ? direction : null);
-    
-    setTimeout(() => this.flushQueue(), state.queue !== 0 ? 60 : 0);
-  },
-  
-  goTo(n) {
-    this.stopFastNav();
-    const state = this.state;
-    state.queue = 0;
-    state.processing = false;
-    
-    const target = Math.max(1, Math.min(state.total, n));
-    if (target === state.current) return;
-    
-    const direction = target > state.current ? 'fwd' : 'bk';
-    state.current = target;
-    this.showPage(state.current, direction);
-  },
-  
-  // Navegación rápida (long press)
-  startFastNav(direction) {
-    this.stopFastNav();
-    const step = direction > 0 ? 1 : -1;
-    
-    if (step > 0) this.next();
-    else this.prev();
-    
-    let speed = 300;
-    const repeat = () => {
-      if (step > 0) this.next();
-      else this.prev();
-      speed = Math.max(60, speed - 30);
-      this.state.fastTimer = setTimeout(repeat, speed);
-    };
-    
-    this.state.fastTimer = setTimeout(repeat, 450);
-  },
-  
-  stopFastNav() {
-    clearTimeout(this.state.fastTimer);
-    this.state.fastTimer = null;
-  },
-  
-  // Interacciones
-  _interactionsSetup: false,
-  
-  setupInteractions() {
-    if (this._interactionsSetup) return;
-    this._interactionsSetup = true;
-    
-    const state = this.state;
-    
-    // Barra de progreso
-    const track = document.getElementById('r-track');
-    track.addEventListener('click', e => {
-      const ratio = e.offsetX / track.offsetWidth;
-      this.goTo(Math.round(1 + ratio * (state.total - 1)));
-    });
-    
-    track.addEventListener('touchmove', e => {
-      e.preventDefault();
-      const rect = track.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, 
-        (e.touches[0].clientX - rect.left) / rect.width
-      ));
-      this.goTo(Math.round(1 + ratio * (state.total - 1)));
-    }, { passive: false });
-    
-    // Gestos swipe
-    const stage = document.getElementById('r-stage');
-    let sx = 0, moved = false;
-    
-    stage.addEventListener('touchstart', e => {
-      sx = e.touches[0].clientX;
-      moved = false;
-    }, { passive: true });
-    
-    stage.addEventListener('touchmove', () => { moved = true; }, { passive: true });
-    
-    stage.addEventListener('touchend', e => {
-      if (!moved) return;
-      const dx = e.changedTouches[0].clientX - sx;
-      if (Math.abs(dx) > 40) {
-        dx < 0 ? this.next() : this.prev();
-      }
-    });
-    
-    // Zoom con gestos
-    let initialDistance = 0;
-    stage.addEventListener('touchstart', e => {
-      if (e.touches.length === 2) {
-        initialDistance = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-      }
-    }, { passive: true });
-    
-    stage.addEventListener('touchmove', e => {
-      if (e.touches.length === 2) {
-        const currentDistance = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-        const scale = currentDistance / initialDistance;
-        state.scale = Math.max(0.5, Math.min(3, state.scale * scale));
-        initialDistance = currentDistance;
-        
-        const img = document.querySelector('.rpage img');
-        if (img) img.style.transform = `scale(${state.scale})`;
-      }
-    }, { passive: true });
-    
-    // Long press en botones
-    const prevBtn = document.getElementById('r-prev-btn');
-    const nextBtn = document.getElementById('r-next-btn');
-    
-    ['mousedown', 'touchstart'].forEach(ev => {
-      prevBtn?.addEventListener(ev, e => {
-        e.preventDefault();
-        this.startFastNav(-1);
-      }, { passive: false });
-      
-      nextBtn?.addEventListener(ev, e => {
-        e.preventDefault();
-        this.startFastNav(1);
-      }, { passive: false });
-    });
-    
-    ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(ev => {
-      prevBtn?.addEventListener(ev, () => this.stopFastNav());
-      nextBtn?.addEventListener(ev, () => this.stopFastNav());
-    });
-    
-    // Tap zones
-    document.querySelector('.reader-zone-prev')?.addEventListener('click', () => this.prev());
-    document.querySelector('.reader-zone-next')?.addEventListener('click', () => this.next());
-    
-    // Keyboard
-    document.addEventListener('keydown', e => {
-      if (!document.getElementById('reader-view').classList.contains('active')) return;
-      if (e.target.tagName === 'INPUT') return;
-      
-      switch(e.key) {
-        case 'ArrowRight':
-        case ' ':
-          e.preventDefault();
-          this.next();
-          break;
-        case 'ArrowLeft':
-          e.preventDefault();
-          this.prev();
-          break;
-        case 'Escape':
-          this.close();
-          break;
-        case 'g':
-          ReaderModals.open();
-          break;
-      }
-    });
-  }
-};
-
-/* ══════════════════════════════════════════
-   READER MODALS
-══════════════════════════════════════════ */
-const ReaderModals = {
-  open() {
-    document.getElementById('goto-inp').value = Reader.state.current;
-    document.getElementById('reader-goto').classList.add('open');
-    setTimeout(() => document.getElementById('goto-inp').focus(), 100);
-  },
-  
-  close() {
-    document.getElementById('reader-goto').classList.remove('open');
-  },
-  
-  confirm() {
-    const v = parseInt(document.getElementById('goto-inp').value);
-    if (!isNaN(v)) Reader.goTo(v);
-    this.close();
   }
 };
 
@@ -2753,7 +2135,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.scrollTo(0, 0);
 });
 
-// Navegación del navegador
 window.addEventListener('popstate', (e) => {
   const data = e.state;
   if (!data || data.view === 'home') {
@@ -2771,7 +2152,6 @@ window.addEventListener('popstate', (e) => {
   }
 });
 
-// Prevenir scroll en reader
 document.addEventListener('touchmove', (e) => {
   if (document.getElementById('reader-view').classList.contains('active')) {
     e.preventDefault();
@@ -2779,7 +2159,7 @@ document.addEventListener('touchmove', (e) => {
 }, { passive: false });
 
 /* ══════════════════════════════════════════
-   EXPORTAR FUNCIONES GLOBALES PARA HTML
+   GLOBAL EXPORTS
 ══════════════════════════════════════════ */
 window.goHome = () => Navigation.goHome();
 window.showSearch = () => Navigation.showSearch();
@@ -2793,9 +2173,6 @@ window.doSearch = (q) => Actions.doSearch(q);
 window.clearSearch = () => Actions.clearSearch();
 window.openReader = (id) => Reader.open(id);
 window.closeReader = () => Reader.close();
-window.readerGoto = () => ReaderModals.open();
-window.closeGoto = () => ReaderModals.close();
-window.gotoConfirm = () => ReaderModals.confirm();
 </script>
 
 </body>
