@@ -2135,12 +2135,157 @@ const KaTeXRenderer = {
    BOOK READER ENGINE
 ══════════════════════════════════════════ */
 const READER_CONFIGS = {
+  // Álgebra Superior I
   'bib_as1_cardenas': {
     base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Cardenas/',
     prefix: 'Cardenas-Algebra-superior_page-',
-    ext: '.jpg', total: 327,
+    ext: '.jpg',
+    total: 327
   },
-  // ... más configuraciones
+  'bib_as1_nachbin': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as1_Nachbin/',
+    prefix: 'Nachbin-Algebra-superior_page-',
+    ext: '.jpg',
+    total: 153
+  },
+  
+  // Cálculo Diferencial e Integral I
+  'bib_cal1_spivak': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal1_Spivak/',
+    prefix: 'Spivak-Calculo-Infinitesimal_page-',
+    ext: '.jpg',
+    total: 821
+  },
+  'bib_cal1_thomas': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal1_Thomas/',
+    prefix: 'Thomas-Calculo-Geometria-Analitica_page-',
+    ext: '.jpg',
+    total: 991
+  },
+  'bib_cal1_arizmendi': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal1_Arizmendi/',
+    prefix: 'Arizmendi-Calculo-Primer-Curso_page-',
+    ext: '.jpg',
+    total: 472
+  },
+  
+  // Geometría Analítica I
+  'bib_ga1_bracho': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/ga1_Bracho/',
+    prefix: 'Bracho-Geometria-Analitica_page-',
+    ext: '.jpg',
+    total: 346
+  },
+  'bib_ga1_ramirez': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/ga1_Ramirez/',
+    prefix: 'Ramirez-Geometria-Analitica-Introduccion_page-',
+    ext: '.jpg',
+    total: 429
+  },
+  
+  // Geometría Moderna I
+  'bib_gm1_efimov': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/gm1_Efimov/',
+    prefix: 'Efimov-Geometria-Superior_page-',
+    ext: '.jpg',
+    total: 489
+  },
+  'bib_gm1_shively': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/gm1_Shively/',
+    prefix: 'Shively-Introduccion-Geometria-Moderna_page-',
+    ext: '.jpg',
+    total: 317
+  },
+  
+  // Álgebra Superior II
+  'bib_as2_cardenas': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as2_Cardenas/',
+    prefix: 'Cardenas-Algebra-superior_page-',
+    ext: '.jpg',
+    total: 327
+  },
+  'bib_as2_nachbin': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/as2_Nachbin/',
+    prefix: 'Nachbin-Algebra-superior_page-',
+    ext: '.jpg',
+    total: 153
+  },
+  
+  // Cálculo Diferencial e Integral II
+  'bib_cal2_spivak': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal2_Spivak/',
+    prefix: 'Spivak-Calculo-Infinitesimal_page-',
+    ext: '.jpg',
+    total: 821
+  },
+  'bib_cal2_thomas': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/cal2_Thomas/',
+    prefix: 'Thomas-Calculo-Geometria-Analitica_page-',
+    ext: '.jpg',
+    total: 991
+  },
+  
+  // Álgebra Lineal I
+  'bib_al1_curtis': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/al1_Curtis/',
+    prefix: 'Curtis-Linear-Algebra_page-',
+    ext: '.jpg',
+    total: 370
+  },
+  'bib_al1_hoffman': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/al1_Hoffman/',
+    prefix: 'Hoffman-Algebra-Lineal_page-',
+    ext: '.jpg',
+    total: 415
+  },
+  'bib_al1_rincon': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/al1_Rincon/',
+    prefix: 'Rincon-Algebra-Lineal_page-',
+    ext: '.jpg',
+    total: 398
+  },
+  
+  // Análisis Matemático I
+  'bib_an1_apostol': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an1_Apostol/',
+    prefix: 'Apostol-Analisis-Matematico_page-',
+    ext: '.jpg',
+    total: 606
+  },
+  'bib_an1_rudin': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an1_Rudin/',
+    prefix: 'Rudin-Principios-Analisis-Matematico_page-',
+    ext: '.jpg',
+    total: 360
+  },
+  
+  // Variable Compleja I
+  'bib_vc1_ahlfors': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/vc1_Ahlfors/',
+    prefix: 'Ahlfors-Complex-Analysis_page-',
+    ext: '.jpg',
+    total: 347
+  },
+  'bib_vc1_churchill': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/vc1_Churchill/',
+    prefix: 'Churchill-Complex-Variables_page-',
+    ext: '.jpg',
+    total: 407
+  },
+  
+  // Análisis Matemático II
+  'bib_an2_rudin': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an2_Rudin/',
+    prefix: 'Rudin-Principios-Analisis-Matematico_page-',
+    ext: '.jpg',
+    total: 360
+  },
+  'bib_an2_apostol': {
+    base: 'https://raw.githubusercontent.com/Usisima/Libros/main/an2_Apostol/',
+    prefix: 'Apostol-Analisis-Matematico_page-',
+    ext: '.jpg',
+    total: 606
+  }
 };
 
 const Reader = {
