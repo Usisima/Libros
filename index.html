@@ -1242,6 +1242,53 @@ const LIBRARY = [
         tracks: []
       }
     ]
+  },
+  {
+    label: "Cálculo Diferencial e Integral III",
+    books: [
+      {
+        id: "bib_cal3_Apostol",
+        title: "Calculus, Volumen I",
+        author: "T. M. Apostol 2001",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal3_Courant2",
+        title: "Differential and Integral Calculus, Volumen II",
+        author: "R. Courant 1936",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal3_CourantJohn",
+        title: "Introducción al Cálculo y al Análisis Matemático, Volumen II",
+        author: "R. Courant, F. John 1974",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal3_Lang",
+        title: "Calculus of Several Variables",
+        author: "S. Lang 1987",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal3_Marsden",
+        title: "Cálculo Vectorial",
+        author: "J. Marsden, A. Tromba 1998",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal3_Thomas",
+        title: "Cálculo: varias variables",
+        author: "G. B. Thomas, R. L. Finney 1999",
+        pages: 0,
+        tracks: []
+      }
+    ]
   }
 ];const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
@@ -1405,7 +1452,7 @@ const PDF_CONFIGS = {
   },
   'bib_cal2_Spivak': {
     title: 'Cálculo Infinitesimal (2ª ed.) - Spivak',
-    driveId: ''
+    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ'
   },
   'bib_cal2_Thomas': {
     title: 'Cálculo con Geometría Analítica (9ª ed.) - Thomas',
@@ -1430,7 +1477,7 @@ const PDF_CONFIGS = {
     driveId: ''
   },
 
-  
+
   'bib_al1_Curtis': {
     title: 'Linear Algebra - Curtis',
     driveId: ''
@@ -1453,6 +1500,32 @@ const PDF_CONFIGS = {
   },
   'bib_al1_Rincon': {
     title: 'Álgebra Lineal - Rincón',
+    driveId: ''
+  },
+
+
+  'bib_cal3_Apostol': {
+    title: 'Calculus, Volumen I - Apostol',
+    driveId: ''
+  },
+  'bib_cal3_Courant2': {
+    title: 'Differential and Integral Calculus, Volumen II - Courant',
+    driveId: ''
+  },
+  'bib_cal3_CourantJohn': {
+    title: 'Introducción al Cálculo y al Análisis Matemático, Volumen II - Courant & John',
+    driveId: ''
+  },
+  'bib_cal3_Lang': {
+    title: 'Calculus of Several Variables - Lang',
+    driveId: ''
+  },
+  'bib_cal3_Marsden': {
+    title: 'Cálculo Vectorial - Marsden & Tromba',
+    driveId: ''
+  },
+  'bib_cal3_Thomas': {
+    title: 'Cálculo: varias variables - Thomas & Finney',
     driveId: ''
   }
 
