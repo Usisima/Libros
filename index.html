@@ -1159,96 +1159,38 @@ const AppState = {
    ⚠️ REEMPLAZA estos IDs con los reales de tus PDFs
 ══════════════════════════════════════════ */
 const PDF_CONFIGS = {
-  'bib_as1_cardenas': {
+  // Álgebra Superior I
+  'bib_as1_Cardenas': {
     title: 'Álgebra Superior - Cárdenas',
-    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL' // ← REEMPLAZAR con ID real
+    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL'
   },
-  'bib_as1_nachbin': {
+  'bib_as1_Nachbin': {
     title: 'Álgebra Elemental - Nachbin',
-    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F' // ← REEMPLAZAR con ID real
+    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
   },
-  'bib_cal1_spivak': {
-    title: 'Cálculo Infinitesimal - Spivak',
-    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ' // ← REEMPLAZAR con ID real
+
+  // Cálculo Diferencial e Integral I
+  'bib_cal1_Arizmendi': {
+    title: 'Cálculo. Primer Curso - Arizmendi',
+    driveId: '' // ⬅️ REEMPLAZAR con ID real de Google Drive
   },
-  'bib_cal1_thomas': {
-    title: 'Cálculo con Geometría Analítica - Thomas',
-    driveId: '1JKL012...' // ← REEMPLAZAR con ID real
+  'bib_cal1_Courant': {
+    title: 'Introducción al Cálculo y al Análisis - Courant',
+    driveId: '' // ⬅️ REEMPLAZAR con ID real de Google Drive
   },
-  'bib_cal1_arizmendi': {
-    title: 'Cálculo Primer Curso - Arizmendi',
-    driveId: '1MNO345...' // ← REEMPLAZAR con ID real
+  'bib_cal1_Lang': {
+    title: 'Cálculo I - Lang',
+    driveId: '' // ⬅️ REEMPLAZAR con ID real de Google Drive
   },
-  'bib_ga1_bracho': {
-    title: 'Geometría Analítica - Bracho',
-    driveId: '1PQR678...' // ← REEMPLAZAR con ID real
+  'bib_cal1_Spivak': {
+    title: 'Cálculo Infinitesimal (2a ed) - Spivak',
+    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ'
   },
-  'bib_ga1_ramirez': {
-    title: 'Geometría Analítica - Ramírez Galarza',
-    driveId: '1STU901...' // ← REEMPLAZAR con ID real
-  },
-  'bib_gm1_efimov': {
-    title: 'Geometría Superior - Efimov',
-    driveId: '1VWX234...' // ← REEMPLAZAR con ID real
-  },
-  'bib_gm1_shively': {
-    title: 'Introducción a la Geometría Moderna - Shively',
-    driveId: '1YZA567...' // ← REEMPLAZAR con ID real
-  },
-  'bib_as2_cardenas': {
-    title: 'Álgebra Superior - Cárdenas',
-    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL' // ← REEMPLAZAR con ID real
-  },
-  'bib_as2_nachbin': {
-    title: 'Álgebra Elemental - Nachbin',
-    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F' // ← REEMPLAZAR con ID real
-  },
-  'bib_cal2_spivak': {
-    title: 'Cálculo Infinitesimal - Spivak',
-    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ' // ← REEMPLAZAR con ID real
-  },
-  'bib_cal2_thomas': {
-    title: 'Cálculo con Geometría Analítica - Thomas',
-    driveId: '1KLM789...' // ← REEMPLAZAR con ID real
-  },
-  'bib_al1_curtis': {
-    title: 'Linear Algebra - Curtis',
-    driveId: '1NOP012...' // ← REEMPLAZAR con ID real
-  },
-  'bib_al1_hoffman': {
-    title: 'Álgebra Lineal - Hoffman & Kunze',
-    driveId: '1QRS345...' // ← REEMPLAZAR con ID real
-  },
-  'bib_al1_rincon': {
-    title: 'Álgebra Lineal - Rincón',
-    driveId: '1TUV678...' // ← REEMPLAZAR con ID real
-  },
-  'bib_an1_apostol': {
-    title: 'Análisis Matemático - Apostol',
-    driveId: '1WXY901...' // ← REEMPLAZAR con ID real
-  },
-  'bib_an1_rudin': {
-    title: 'Principios de Análisis Matemático - Rudin',
-    driveId: '1ZAB234...' // ← REEMPLAZAR con ID real
-  },
-  'bib_vc1_ahlfors': {
-    title: 'Complex Analysis - Ahlfors',
-    driveId: '1CDE567...' // ← REEMPLAZAR con ID real
-  },
-  'bib_vc1_churchill': {
-    title: 'Complex Variables - Churchill',
-    driveId: '1FGH890...' // ← REEMPLAZAR con ID real
-  },
-  'bib_an2_rudin': {
-    title: 'Principios de Análisis Matemático - Rudin',
-    driveId: '1IJK123...' // ← REEMPLAZAR con ID real
-  },
-  'bib_an2_apostol': {
-    title: 'Análisis Matemático - Apostol',
-    driveId: '1LMN456...' // ← REEMPLAZAR con ID real
+  'bib_cal1_Thomas': {
+    title: 'Cálculo con Geometría Analítica (9a ed) - Thomas',
+    driveId: '' // ⬅️ REEMPLAZAR con ID real de Google Drive
   }
 };
-
 function getDriveViewerUrl(driveId) {
   return `https://drive.google.com/file/d/${driveId}/preview`;
 }
