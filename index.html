@@ -1068,7 +1068,9 @@ const LIBRARY = [
         author: "G. B. Thomas, R. L. Finney 1987",
         pages: 0,
         tracks: []
-      },
+      }
+    ]
+  },
   {
     label: "Geometría Analítica I",
     books: [
@@ -1099,14 +1101,10 @@ const LIBRARY = [
         author: "A. Ramírez Galarza 2004",
         pages: 0,
         tracks: []
-      },
+      }
     ]
   }
-      
-    ]
-  }
-];
-const allBooks = LIBRARY.flatMap(c => c.books);
+];const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
   b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover }))
 );
