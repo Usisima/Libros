@@ -1103,6 +1103,25 @@ const LIBRARY = [
         tracks: []
       }
     ]
+  },
+  {
+    label: "Álgebra Superior II",
+    books: [
+      {
+        id: "bib_as2_Cardenas",
+        title: "Álgebra Superior",
+        author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_as2_Nachbin",
+        title: "Álgebra Elemental",
+        author: "L. Nachbin 1986",
+        pages: 0,
+        tracks: []
+      }
+    ]
   }
 ];const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
@@ -1236,6 +1255,14 @@ const PDF_CONFIGS = {
   },
   'bib_geo1_Ramirez': {
     title: 'Geometría Analítica - Ramírez Galarza',
+    driveId: ''
+  },
+  'bib_as2_Cardenas': {
+    title: 'Álgebra Superior - Cárdenas',
+    driveId: ''
+  },
+  'bib_as2_Nachbin': {
+    title: 'Álgebra Elemental - Nachbin',
     driveId: ''
   }
 };
