@@ -1640,12 +1640,16 @@ const Renderer = {
         return af - bf;
       });
 
+      const itemsCount = sorted.length;
+      const scrollClass = itemsCount <= 1 ? 'hscroll single-item' : 
+                    itemsCount <= 3 ? 'hscroll few-items' : 'hscroll';
+
       return `
       <div class="section">
         <div class="section-header">
           <span class="section-title">${cat.label}</span>
         </div>
-        <div class="hscroll" role="list" aria-label="${cat.label}">
+        <div class="${scrollClass}" role="list" aria-label="${cat.label}">
           ${sorted.map(b => {
             const coverUrl = AppState.getBookCoverUrl(b.id);
             return `
