@@ -28,12 +28,19 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .view{display:none}.view.active{display:block}
 
 /* ── TOP BAR ── */
-.top-bar{position:sticky;top:0;z-index:100;padding:.75rem 1rem;
+.top-bar{position:sticky;top:0;z-index:100;padding:.7rem 1rem;
   display:flex;align-items:center;justify-content:space-between;gap:.6rem;
-  background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
+  background:rgba(0,0,0,.93);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border)}
+.top-bar::after{content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:.28;pointer-events:none}
 .tb-left,.tb-right{display:flex;align-items:center;gap:.5rem}
-.logo-text{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1;flex-shrink:0}
+.tb-divider{width:1px;height:22px;background:rgba(255,255,255,.13);flex-shrink:0;margin:0 .1rem}
+.tb-institution{display:flex;flex-direction:column;gap:1px}
+.tb-inst-title{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:900;color:var(--ink);line-height:1.1;letter-spacing:-.01em}
+.tb-inst-sub{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);font-weight:500}
 .icon-btn{width:36px;height:36px;border-radius:50%;background:transparent;
   border:1px solid var(--border2);color:var(--ink2);display:flex;align-items:center;
   justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
@@ -265,14 +272,21 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 
 <!-- TOP BAR -->
 <header class="top-bar">
+  <!-- Default state: logo + institution info -->
   <div class="tb-left" id="tb-left">
-    <span class="logo-text">NotePlayer</span>
+    <span class="logo-text">Ж</span>
+    <div class="tb-divider"></div>
+    <div class="tb-institution">
+      <div class="tb-inst-title">Matemáticas</div>
+      <div class="tb-inst-sub">Facultad de Ciencias · UNAM</div>
+    </div>
   </div>
+  <!-- Back state: shown when inside detail/search -->
   <div class="tb-left" id="tb-back" style="display:none">
     <button class="icon-btn" id="btn-back" onclick="navBack()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <span id="tb-title" style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700"></span>
+    <span id="tb-title" style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px"></span>
   </div>
   <div class="tb-right">
     <button class="icon-btn" onclick="showSearch()">
