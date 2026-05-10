@@ -891,7 +891,9 @@ function closeAllTracks(exceptBookId, exceptNum) {
    SEARCH
 ══════════════════════════════════════════ */
 function buildLibraryGrid() {
-  const sorted = [...allBooks].sort((a, b) => a.title.localeCompare(b.title, 'es'));
+  const seen = new Set();
+  const unique = allBooks.filter(b => seen.has(b.id) ? false : seen.add(b.id));
+  const sorted = unique.sort((a, b) => a.title.localeCompare(b.title, 'es'));
   const cards = sorted.map(b => {
     const cu = getBookCoverUrl(b.id);
     return `
