@@ -1122,6 +1122,46 @@ const LIBRARY = [
         tracks: []
       }
     ]
+  },
+  {
+    label: "Cálculo Diferencial e Integral II",
+    books: [
+      {
+        id: "bib_cal2_Arizmendi",
+        title: "Cálculo. Primer Curso",
+        author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal2_Courant",
+        title: "Introducción al Cálculo y al Análisis",
+        author: "R. Courant, F. John 1996",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal2_Lang",
+        title: "Cálculo I",
+        author: "S. Lang 1990",
+        pages: 0,
+        tracks: []
+      },
+      {
+        id: "bib_cal2_Spivak",
+        title: "Cálculo Infinitesimal (2ª ed.)",
+        author: "M. Spivak 1998",
+        pages: 680,
+        tracks: []
+      },
+      {
+        id: "bib_cal2_Thomas",
+        title: "Cálculo con Geometría Analítica (9ª ed.)",
+        author: "G. B. Thomas, R. L. Finney 1987",
+        pages: 0,
+        tracks: []
+      }
+    ]
   }
 ];const allBooks = LIBRARY.flatMap(c => c.books);
 const allTracks = allBooks.flatMap(b => 
@@ -1268,7 +1308,31 @@ const PDF_CONFIGS = {
   'bib_as2_Nachbin': {
     title: 'Álgebra Elemental - Nachbin',
     driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
+  },
+
+  
+  'bib_cal2_Arizmendi': {
+    title: 'Cálculo. Primer Curso - Arizmendi',
+    driveId: ''
+  },
+  'bib_cal2_Courant': {
+    title: 'Introducción al Cálculo y al Análisis - Courant',
+    driveId: ''
+  },
+  'bib_cal2_Lang': {
+    title: 'Cálculo I - Lang',
+    driveId: ''
+  },
+  'bib_cal2_Spivak': {
+    title: 'Cálculo Infinitesimal (2ª ed.) - Spivak',
+    driveId: ''
+  },
+  'bib_cal2_Thomas': {
+    title: 'Cálculo con Geometría Analítica (9ª ed.) - Thomas',
+    driveId: ''
   }
+
+
 };
 function getDriveViewerUrl(driveId) {
   return `https://drive.google.com/file/d/${driveId}/preview`;
