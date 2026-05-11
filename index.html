@@ -38,7 +38,6 @@ body{
 /* ── ANIMATIONS ────────────────────────────── */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
 @keyframes rspin{to{transform:rotate(360deg)}}
 
 /* ── VIEWS ─────────────────────────────────── */
@@ -136,7 +135,6 @@ body{
   transition:all var(--tf);
 }
 .mini-card:hover{border-color:var(--br2);box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.mini-card:active{}
 .mini-cover{
   width:100%;aspect-ratio:2/3;
   display:flex;align-items:center;justify-content:center;
@@ -145,7 +143,6 @@ body{
 .mini-cover img,.lib-grid-cover img,.c-thumb img,.detail-cover img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
 }
-
 .mini-cover span,.lib-grid-cover span,.detail-cover span{position:relative;z-index:1}
 .fav-dot{
   position:absolute;top:.4rem;right:.4rem;z-index:3;
@@ -297,7 +294,6 @@ body{
   background:transparent;border:1px solid var(--br2);color:var(--ink3);font-size:13px;
 }
 .ep-fav:hover,.ep-fav.faved{border-color:var(--acc);color:var(--acc)}
-.ep-fav.faved{}
 .ep-play{
   width:36px;height:36px;border-radius:50%;
   background:var(--adim);border:1px solid var(--acc);color:var(--acc);
@@ -491,8 +487,7 @@ body{
       <span>No se pudo cargar el PDF.<br>Intenta abrirlo en Drive.</span>
       <button class="action-btn primary" onclick="Reader.openTab()" style="margin-top:8px">
         <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Abrir en Drive
-      </button>
+        Abrir en Drive      </button>
     </div>
     <iframe id="r-iframe" allow="autoplay" allowfullscreen></iframe>
   </div>
@@ -644,23 +639,18 @@ const PDF = {
   'bib_cal4_Thomas':      { title:'Cálculo: Varias Variables - Thomas & Finney', driveId:'' }
 };
 
-/* ── DEDUP KEY ───────────────────────────────────────
-   Normaliza título (sin edición/volumen entre paréntesis/comas al final)
-   + primer apellido del primer autor, sin año.
-   Esto agrupa las mismas obras que aparecen en varias materias.           */
+/* ── DEDUP KEY ─────────────────────────────────────── */
 function dedupKey(b) {
-  // Quitar año al final del autor y quedarse con primer apellido
   const authorBase = b.author
-    .replace(/\d{4}.*$/, '')       // elimina año y lo que sigue
-    .split(',')[0]                  // primer autor
+    .replace(/\d{4}.*$/, '')
+    .split(',')[0]
     .trim()
-    .split(' ').pop()               // último token = apellido
+    .split(' ').pop()
     .toLowerCase();
-  // Normalizar título: quitar paréntesis de edición, números romanos finales, etc.
   const titleBase = b.title
-    .replace(/\s*\(.*?\)/g, '')    // quita (2a ed), (9ª ed.), etc.
-    .replace(/[·,].*$/, '')        // quita subtítulos tras · o ,
-    .replace(/\s+vol.*$/i, '')     // quita Vol. N al final
+    .replace(/\s*\(.*?\)/g, '')
+    .replace(/[·,].*$/, '')
+    .replace(/\s+vol.*$/i, '')
     .trim()
     .toLowerCase();
   return `${titleBase}||${authorBase}`;
@@ -954,12 +944,15 @@ const Nav = {
     document.getElementById(id)?.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
     if (id === 'detail') window.scrollTo({ top:0, behavior:'instant' });
-    S.prev = S.view; S.view = id;
+    S.prev = S.view; 
+    S.view = id;
     if (push) {
       history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
     }
   },
   home(fromPopstate = false) {
+    S.view = 'home';
+    S.bookId = null;
     this._setBar('', false);
     R.home();
     this._show('home', false);
@@ -968,12 +961,14 @@ const Nav = {
     }
   },
   search() {
+    S.view = 'search-view';
     this._setBar('Buscar', true);
     R.search();
     this._show('search-view');
     setTimeout(() => document.getElementById('search-input')?.focus(), 100);
   },
   favs() {
+    S.view = 'favs-view';
     this._setBar('Favoritos', false);
     R.favs();
     this._show('favs-view');
@@ -982,6 +977,7 @@ const Nav = {
     const b = bookMap[bookId];
     if (!b) return;
     S.bookId = bookId;
+    S.view = 'detail';
     this._setBar(b.title, true);
     R.detail(b);
     this._show('detail', push);
@@ -998,11 +994,7 @@ const Nav = {
     }
   },
   back() {
-    const prev = S.prev || 'home';
-    if (prev === 'home' || prev === S.view) { this.home(); return; }
-    this._show(prev, false);
-    if (prev === 'home')        this._setBar('', false);
-    else if (prev === 'detail') this._setBar(bookMap[S.bookId]?.title ?? '', true);
+    history.back();
   }
 };
 
@@ -1137,6 +1129,7 @@ const KaTex = {
 /* ─── PDF READER ─────────────────────────────────── */
 const Reader = {
   driveId: null,
+  previousState: null,
 
   open(bookId) {
     const cfg = PDF[bookId];
@@ -1148,16 +1141,14 @@ const Reader = {
     document.body.style.overflow = 'hidden';
     
     // Guardar el estado actual antes de abrir el reader
-    const currentState = {
+    this.previousState = {
       view: S.view,
       bookId: S.bookId
     };
     
-    // Push state para el reader con la información de la vista anterior
+    // Push state para el reader
     history.pushState({ 
-      view: 'reader', 
-      bookId: S.bookId,
-      previousView: currentState 
+      view: 'reader'
     }, '', '#reader');
 
     const loading = document.getElementById('r-loading');
@@ -1178,14 +1169,6 @@ const Reader = {
     if (this.driveId) window.open(`https://drive.google.com/file/d/${this.driveId}/view`, '_blank');
   },
 
-  close() {
-    document.getElementById('r-iframe').src = '';
-    this.driveId = null;
-    document.getElementById('reader-view').classList.remove('active');
-    document.body.style.overflow = '';
-  },
-
-  // Llamado desde el botón X - usa history.back() para mantener coherencia
   closeBtn() {
     history.back();
   },
@@ -1207,27 +1190,37 @@ window.addEventListener('popstate', e => {
     Reader._closeUI();
     
     // Restaurar la vista que estaba activa cuando se abrió el reader
-    const prevView = e.state?.previousView;
-    if (prevView) {
-      if (prevView.view === 'detail' && prevView.bookId) {
-        // Restaurar la vista de detalle del libro
-        Nav.detail(prevView.bookId, false);
-      } else if (prevView.view === 'home') {
-        Nav.home(true);
-      } else if (prevView.view === 'search-view') {
-        Nav.search();
-      } else if (prevView.view === 'favs-view') {
-        Nav.favs();
+    const prevView = Reader.previousState;
+    
+    // Usar setTimeout para asegurar que el DOM se actualice
+    setTimeout(() => {
+      if (prevView) {
+        if (prevView.view === 'detail' && prevView.bookId) {
+          const b = bookMap[prevView.bookId];
+          if (b) {
+            S.view = 'detail';
+            S.bookId = prevView.bookId;
+            Nav._setBar(b.title, true);
+            R.detail(b);
+            Nav._show('detail', false);
+          } else {
+            Nav.home(true);
+          }
+        } else if (prevView.view === 'home') {
+          Nav.home(true);
+        } else if (prevView.view === 'search-view') {
+          Nav.search();
+        } else if (prevView.view === 'favs-view') {
+          Nav.favs();
+        } else {
+          Nav.home(true);
+        }
+      } else if (S.bookId) {
+        Nav.detail(S.bookId, false);
       } else {
-        // Fallback: ir a home
         Nav.home(true);
       }
-    } else if (S.bookId) {
-      // Si no hay previousView pero hay un bookId, ir al detalle
-      Nav.detail(S.bookId, false);
-    } else {
-      Nav.home(true);
-    }
+    }, 50);
     return;
   }
 
