@@ -1198,8 +1198,69 @@ const Reader = {
   }
 };
 
+/* ─── PDF READER ─────────────────────────────────── */
+const Reader = {
+  driveId: null,
+  previousState: null, // Guardar estado anterior explícitamente
+
+  open(bookId) {
+    const cfg = PDF[bookId];
+    if (!cfg?.driveId) { console.warn('No PDF para:', bookId); return; }
+    this.driveId = cfg.driveId;
+
+    document.getElementById('r-title').textContent = cfg.title ?? bookId;
+    document.getElementById('reader-view').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Guardar el estado actual antes de abrir el reader
+    this.previousState = {
+      view: S.view,
+      bookId: S.bookId
+    };
+    
+    // Push state para el reader
+    history.pushState({ 
+      view: 'reader'
+    }, '', '#reader');
+
+    const loading = document.getElementById('r-loading');
+    const error   = document.getElementById('r-error');
+    const iframe  = document.getElementById('r-iframe');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+
+    let loaded = false;
+    const done = () => { loaded = true; loading.classList.add('hidden'); };
+    iframe.onload = done;
+    iframe.onerror = () => { loading.classList.add('hidden'); error.classList.remove('hidden'); };
+    setTimeout(() => { if (!loaded) loading.classList.add('hidden'); }, 10000);
+    iframe.src = `https://drive.google.com/file/d/${this.driveId}/preview`;
+  },
+
+  openTab() {
+    if (this.driveId) window.open(`https://drive.google.com/file/d/${this.driveId}/view`, '_blank');
+  },
+
+  closeBtn() {
+    // Simplemente hacer history.back()
+    history.back();
+  },
+
+  _closeUI() {
+    document.getElementById('r-iframe').src = '';
+    this.driveId = null;
+    document.getElementById('reader-view').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+};
+
 /* ─── POPSTATE ───────────────────────────────────── */
+let isPoppingState = false; // Flag para evitar bucles
+
 window.addEventListener('popstate', e => {
+  if (isPoppingState) return; // Evitar procesamiento recursivo
+  isPoppingState = true;
+  
   const v = e.state?.view;
   
   // Si el reader está abierto, cerrarlo y restaurar la vista anterior
@@ -1207,34 +1268,48 @@ window.addEventListener('popstate', e => {
     Reader._closeUI();
     
     // Restaurar la vista que estaba activa cuando se abrió el reader
-    const prevView = e.state?.previousView;
-    if (prevView) {
-      if (prevView.view === 'detail' && prevView.bookId) {
-        // Restaurar la vista de detalle del libro
-        Nav.detail(prevView.bookId, false);
-      } else if (prevView.view === 'home') {
-        Nav.home(true);
-      } else if (prevView.view === 'search-view') {
-        Nav.search();
-      } else if (prevView.view === 'favs-view') {
-        Nav.favs();
+    const prevView = Reader.previousState;
+    
+    // Pequeño delay para asegurar que el DOM se actualice
+    setTimeout(() => {
+      if (prevView) {
+        if (prevView.view === 'detail' && prevView.bookId) {
+          // Recuperar el libro y mostrarlo
+          S.view = 'detail';
+          S.bookId = prevView.bookId;
+          const b = bookMap[prevView.bookId];
+          if (b) {
+            Nav._setBar(b.title, true);
+            R.detail(b);
+            Nav._show('detail', false);
+          }
+        } else if (prevView.view === 'home') {
+          Nav.home(true);
+        } else if (prevView.view === 'search-view') {
+          Nav.search();
+        } else if (prevView.view === 'favs-view') {
+          Nav.favs();
+        } else {
+          Nav.home(true);
+        }
+      } else if (S.bookId) {
+        Nav.detail(S.bookId, false);
       } else {
-        // Fallback: ir a home
         Nav.home(true);
       }
-    } else if (S.bookId) {
-      // Si no hay previousView pero hay un bookId, ir al detalle
-      Nav.detail(S.bookId, false);
-    } else {
-      Nav.home(true);
-    }
+      isPoppingState = false;
+    }, 50);
     return;
   }
 
   // Manejo normal del popstate cuando el reader NO está abierto
   if (!v || v === 'home') {
+    S.view = 'home';
+    S.bookId = null;
     Nav.home(true);
   } else if (v === 'detail' && e.state.bookId) {
+    S.view = 'detail';
+    S.bookId = e.state.bookId;
     Nav.detail(e.state.bookId, false);
   } else if (v === 'search-view') {
     Nav.search();
@@ -1243,6 +1318,8 @@ window.addEventListener('popstate', e => {
   } else {
     Nav.home(true);
   }
+  
+  isPoppingState = false;
 });
 
 /* ─── GLOBAL ALIASES ─────────────────────────────── */
