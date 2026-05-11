@@ -1025,20 +1025,17 @@ const A = {
       const card = document.getElementById(`mc-${bookId}`);
       if (!card) return;
       const hscroll = card.parentElement;
+      const savedScroll = hscroll.scrollLeft;
 
       if (on) {
         card.classList.add('is-fav');
-        // Insertar antes del primer hijo que NO sea favorito
         const firstNonFav = [...hscroll.children].find(c => c !== card && !c.classList.contains('is-fav'));
         if (firstNonFav) hscroll.insertBefore(card, firstNonFav);
         else hscroll.appendChild(card);
+        hscroll.scrollLeft = savedScroll;
       } else {
-        // Quitar clase pero mantener dentro del bloque de favoritos:
-        // colocar justo antes del primer no-favorito (o al inicio si ya no hay favoritos).
+        // Solo cambiar la clase, sin mover el nodo: evita salto de scroll
         card.classList.remove('is-fav');
-        const firstNonFav = [...hscroll.children].find(c => c !== card && !c.classList.contains('is-fav'));
-        if (firstNonFav) hscroll.insertBefore(card, firstNonFav);
-        else hscroll.prepend(card);
       }
     }
   },
@@ -1104,7 +1101,8 @@ const A = {
       const bookMatches = b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql);
       if (bookMatches && !seenBooks.has(bk)) {
         seenBooks.set(bk, true);
-        matches.push({ type:'book', bookId:b.id, title:b.title, sub:b.author, emoji:b.emoji, cover:b.cover });
+        const authorClean = b.author.replace(/\s*\d{4}.*$/, '').trim();
+        matches.push({ type:'book', bookId:b.id, title:b.title, sub:authorClean, emoji:b.emoji, cover:b.cover });
       }
       b.tracks.forEach(t => {
         if (t.title.toLowerCase().includes(ql) || t.sub?.toLowerCase().includes(ql))
@@ -1119,7 +1117,7 @@ const A = {
             <div class="sr-cover" style="background:${m.cover}">${m.emoji}</div>
             <div class="sr-info">
               <div class="sr-title">${m.title}</div>
-              <div class="sr-sub">${m.sub.split('·')[0].trim()}</div>
+              <div class="sr-sub">${m.sub}</div>
             </div>
             <span class="sr-type">${m.type==='book'?'Libro':'Tema'}</span>
           </div>`).join('')
