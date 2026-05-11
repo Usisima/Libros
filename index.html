@@ -33,7 +33,6 @@ body{
   overflow-x:hidden;
   line-height:1.5;
 }
-/* detail view necesita padding para no quedar bajo el nav */
 #detail.active{padding-bottom:calc(var(--nav-h) + 1rem)}
 
 /* ── ANIMATIONS ────────────────────────────── */
@@ -46,8 +45,6 @@ body{
 .view{display:none;animation:fadeIn .3s ease}
 .view.active{display:block}
 
-/* home/search/favs son paneles fijos con scroll propio:
-   nunca "saltan" al tope al cambiar de tab */
 #home,#search-view,#favs-view{
   position:fixed;
   top:58px;left:0;right:0;bottom:var(--nav-h);
@@ -57,7 +54,6 @@ body{
   padding-bottom:.5rem;
 }
 #home.active,#search-view.active,#favs-view.active{display:block}
-/* detail: flujo normal (hace scroll al tope al abrir) */
 #detail{display:none}
 #detail.active{display:block}
 
@@ -422,7 +418,6 @@ body{
   .bottom-nav{display:none}
   .top-bar{padding:.8rem 2rem}
   .section{padding:0 2rem}
-  /* Sin nav abajo: los paneles llegan hasta el fondo */
   #home,#search-view,#favs-view{bottom:0}
   #detail.active{padding-bottom:2rem}
 }
@@ -511,561 +506,168 @@ const LIBRARY = [
   {
     label: "Álgebra Superior I",
     books: [
-      {
-        id: "bib_as1_Cardenas",
-        title: "Álgebra Superior",
-        author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_as1_Nachbin",
-        title: "Álgebra Elemental",
-        author: "L. Nachbin 1986",
-        pages: 0,
-        tracks: []
-      },
+      { id:"bib_as1_Cardenas", title:"Álgebra Superior", author:"H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", pages:0, tracks:[] },
+      { id:"bib_as1_Nachbin",  title:"Álgebra Elemental", author:"L. Nachbin 1986", pages:0, tracks:[] }
     ]
   },
   {
     label: "Cálculo Diferencial e Integral I",
     books: [
-      {
-        id: "bib_cal1_Arizmendi",
-        title: "Cálculo. Primer Curso",
-        author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Courant",
-        title: "Introducción al Cálculo y al Análisis",
-        author: "R. Courant, F. John 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Lang",
-        title: "Cálculo I",
-        author: "S. Lang 1990",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Spivak",
-        title: "Cálculo Infinitesimal (2a ed)",
-        author: "M. Spivak 1998",
-        pages: 680,
-        tracks: []
-      },
-      {
-        id: "bib_cal1_Thomas",
-        title: "Cálculo con Geometría Analítica (9a ed)",
-        author: "G. B. Thomas, R. L. Finney 1987",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_cal1_Arizmendi", title:"Cálculo. Primer Curso", author:"H. Arizmendi, H. Carrillo, M. Lara 1987", pages:0, tracks:[] },
+      { id:"bib_cal1_Courant",   title:"Introducción al Cálculo y al Análisis", author:"R. Courant, F. John 1974", pages:0, tracks:[] },
+      { id:"bib_cal1_Lang",      title:"Cálculo I", author:"S. Lang 1990", pages:0, tracks:[] },
+      { id:"bib_cal1_Spivak",    title:"Cálculo Infinitesimal (2a ed)", author:"M. Spivak 1998", pages:680, tracks:[] },
+      { id:"bib_cal1_Thomas",    title:"Cálculo con Geometría Analítica (9a ed)", author:"G. B. Thomas, R. L. Finney 1987", pages:0, tracks:[] }
     ]
   },
   {
     label: "Geometría Analítica I",
     books: [
-      {
-        id: "bib_geo1_Bracho",
-        title: "Geometría Analítica",
-        author: "J. Bracho",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo1_Efimov",
-        title: "Geometría Superior",
-        author: "N. Efimov 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo1_Preston",
-        title: "Modern Analytic Geometry",
-        author: "G. C. Preston, A. R. Lovaglia 1971",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo1_Ramirez",
-        title: "Geometría Analítica: Una Introducción a la Geometría",
-        author: "A. Ramírez Galarza 2004",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_geo1_Bracho",   title:"Geometría Analítica", author:"J. Bracho", pages:0, tracks:[] },
+      { id:"bib_geo1_Efimov",   title:"Geometría Superior", author:"N. Efimov 1984", pages:0, tracks:[] },
+      { id:"bib_geo1_Preston",  title:"Modern Analytic Geometry", author:"G. C. Preston, A. R. Lovaglia 1971", pages:0, tracks:[] },
+      { id:"bib_geo1_Ramirez",  title:"Geometría Analítica: Una Introducción a la Geometría", author:"A. Ramírez Galarza 2004", pages:0, tracks:[] }
     ]
   },
   {
     label: "Álgebra Superior II",
     books: [
-      {
-        id: "bib_as2_Cardenas",
-        title: "Álgebra Superior",
-        author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_as2_Nachbin",
-        title: "Álgebra Elemental",
-        author: "L. Nachbin 1986",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_as2_Cardenas", title:"Álgebra Superior", author:"H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", pages:0, tracks:[] },
+      { id:"bib_as2_Nachbin",  title:"Álgebra Elemental", author:"L. Nachbin 1986", pages:0, tracks:[] }
     ]
   },
   {
     label: "Cálculo Diferencial e Integral II",
     books: [
-      {
-        id: "bib_cal2_Arizmendi",
-        title: "Cálculo. Primer Curso",
-        author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Courant",
-        title: "Introducción al Cálculo y al Análisis",
-        author: "R. Courant, F. John 1996",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Lang",
-        title: "Cálculo I",
-        author: "S. Lang 1990",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Spivak",
-        title: "Cálculo Infinitesimal (2ª ed.)",
-        author: "M. Spivak 1998",
-        pages: 680,
-        tracks: []
-      },
-      {
-        id: "bib_cal2_Thomas",
-        title: "Cálculo con Geometría Analítica (9ª ed.)",
-        author: "G. B. Thomas, R. L. Finney 1987",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_cal2_Arizmendi", title:"Cálculo. Primer Curso", author:"H. Arizmendi, H. Carrillo, M. Lara 1987", pages:0, tracks:[] },
+      { id:"bib_cal2_Courant",   title:"Introducción al Cálculo y al Análisis", author:"R. Courant, F. John 1996", pages:0, tracks:[] },
+      { id:"bib_cal2_Lang",      title:"Cálculo I", author:"S. Lang 1990", pages:0, tracks:[] },
+      { id:"bib_cal2_Spivak",    title:"Cálculo Infinitesimal (2ª ed.)", author:"M. Spivak 1998", pages:680, tracks:[] },
+      { id:"bib_cal2_Thomas",    title:"Cálculo con Geometría Analítica (9ª ed.)", author:"G. B. Thomas, R. L. Finney 1987", pages:0, tracks:[] }
     ]
   },
   {
     label: "Geometría Analítica II",
     books: [
-      {
-        id: "bib_geo2_Bracho",
-        title: "Geometría Analítica",
-        author: "J. Bracho",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo2_Efimov",
-        title: "Geometría Superior",
-        author: "N. Efimov 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo2_Preston",
-        title: "Modern Analytic Geometry",
-        author: "G. C. Preston, A. R. Lovaglia 1971",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_geo2_Ramirez",
-        title: "Geometría Analítica: Una Introducción a la Geometría",
-        author: "A. Ramírez Galarza 1998",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_geo2_Bracho",  title:"Geometría Analítica", author:"J. Bracho", pages:0, tracks:[] },
+      { id:"bib_geo2_Efimov",  title:"Geometría Superior", author:"N. Efimov 1984", pages:0, tracks:[] },
+      { id:"bib_geo2_Preston", title:"Modern Analytic Geometry", author:"G. C. Preston, A. R. Lovaglia 1971", pages:0, tracks:[] },
+      { id:"bib_geo2_Ramirez", title:"Geometría Analítica: Una Introducción a la Geometría", author:"A. Ramírez Galarza 1998", pages:0, tracks:[] }
     ]
   },
   {
     label: "Álgebra Lineal I",
     books: [
-      {
-        id: "bib_al1_Curtis",
-        title: "Linear Algebra",
-        author: "C. W. Curtis 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Friedberg",
-        title: "Álgebra Lineal",
-        author: "S. H. Friedberg, A. J. Insel, L. E. Spence 1982",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Hoffman",
-        title: "Álgebra Lineal",
-        author: "K. Hoffman, R. Kunze 1973",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Lang",
-        title: "Álgebra Lineal",
-        author: "S. Lang 1986",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Nomizu",
-        title: "Fundamentals of Linear Algebra",
-        author: "K. Nomizu 1966",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al1_Rincon",
-        title: "Álgebra Lineal",
-        author: "H. A. Rincón 2002",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_al1_Curtis",    title:"Linear Algebra", author:"C. W. Curtis 1984", pages:0, tracks:[] },
+      { id:"bib_al1_Friedberg", title:"Álgebra Lineal", author:"S. H. Friedberg, A. J. Insel, L. E. Spence 1982", pages:0, tracks:[] },
+      { id:"bib_al1_Hoffman",   title:"Álgebra Lineal", author:"K. Hoffman, R. Kunze 1973", pages:0, tracks:[] },
+      { id:"bib_al1_Lang",      title:"Álgebra Lineal", author:"S. Lang 1986", pages:0, tracks:[] },
+      { id:"bib_al1_Nomizu",    title:"Fundamentals of Linear Algebra", author:"K. Nomizu 1966", pages:0, tracks:[] },
+      { id:"bib_al1_Rincon",    title:"Álgebra Lineal", author:"H. A. Rincón 2002", pages:0, tracks:[] }
     ]
   },
   {
     label: "Cálculo Diferencial e Integral III",
     books: [
-      {
-        id: "bib_cal3_Apostol",
-        title: "Calculus, Volumen I",
-        author: "T. M. Apostol 2001",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Courant2",
-        title: "Differential and Integral Calculus, Volumen II",
-        author: "R. Courant 1936",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_CourantJohn",
-        title: "Introducción al Cálculo y al Análisis Matemático, Volumen II",
-        author: "R. Courant, F. John 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Lang",
-        title: "Calculus of Several Variables",
-        author: "S. Lang 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Marsden",
-        title: "Cálculo Vectorial",
-        author: "J. Marsden, A. Tromba 1998",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal3_Thomas",
-        title: "Cálculo: varias variables",
-        author: "G. B. Thomas, R. L. Finney 1999",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_cal3_Apostol",     title:"Calculus, Volumen I", author:"T. M. Apostol 2001", pages:0, tracks:[] },
+      { id:"bib_cal3_Courant2",    title:"Differential and Integral Calculus, Volumen II", author:"R. Courant 1936", pages:0, tracks:[] },
+      { id:"bib_cal3_CourantJohn", title:"Introducción al Cálculo y al Análisis Matemático, Volumen II", author:"R. Courant, F. John 1974", pages:0, tracks:[] },
+      { id:"bib_cal3_Lang",        title:"Calculus of Several Variables", author:"S. Lang 1987", pages:0, tracks:[] },
+      { id:"bib_cal3_Marsden",     title:"Cálculo Vectorial", author:"J. Marsden, A. Tromba 1998", pages:0, tracks:[] },
+      { id:"bib_cal3_Thomas",      title:"Cálculo: varias variables", author:"G. B. Thomas, R. L. Finney 1999", pages:0, tracks:[] }
     ]
   },
   {
     label: "Álgebra Lineal II",
     books: [
-      {
-        id: "bib_al2_Curtis",
-        title: "Linear Algebra",
-        author: "C. W. Curtis 1984",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al2_Lang",
-        title: "Álgebra Lineal",
-        author: "S. Lang 1986",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al2_Nomizu",
-        title: "Fundamentals of Linear Algebra",
-        author: "K. Nomizu 1966",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_al2_Rincon",
-        title: "Álgebra Lineal",
-        author: "H. A. Rincón 2002",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_al2_Curtis",  title:"Linear Algebra", author:"C. W. Curtis 1984", pages:0, tracks:[] },
+      { id:"bib_al2_Lang",    title:"Álgebra Lineal", author:"S. Lang 1986", pages:0, tracks:[] },
+      { id:"bib_al2_Nomizu",  title:"Fundamentals of Linear Algebra", author:"K. Nomizu 1966", pages:0, tracks:[] },
+      { id:"bib_al2_Rincon",  title:"Álgebra Lineal", author:"H. A. Rincón 2002", pages:0, tracks:[] }
     ]
   },
   {
     label: "Cálculo Diferencial e Integral IV",
     books: [
-      {
-        id: "bib_cal4_Apostol",
-        title: "Calculus. Volumen I",
-        author: "T. M. Apostol 2001",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal4_Courant2",
-        title: "Differential and Integral Calculus. Vol 2",
-        author: "R. Courant 1936",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal4_CourantJohn",
-        title: "Introducción al Cálculo y al Análisis Matemático. Vol. 2",
-        author: "R. Courant, F. John 1974",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal4_Lang",
-        title: "Calculus of Several Variables",
-        author: "S. Lang 1987",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal4_Marsden",
-        title: "Cálculo Vectorial",
-        author: "J. Marsden, A. Tromba 1998",
-        pages: 0,
-        tracks: []
-      },
-      {
-        id: "bib_cal4_Thomas",
-        title: "Cálculo: Varias Variables",
-        author: "G. B. Thomas, R. L. Finney 1999",
-        pages: 0,
-        tracks: []
-      }
+      { id:"bib_cal4_Apostol",     title:"Calculus. Volumen I", author:"T. M. Apostol 2001", pages:0, tracks:[] },
+      { id:"bib_cal4_Courant2",    title:"Differential and Integral Calculus. Vol 2", author:"R. Courant 1936", pages:0, tracks:[] },
+      { id:"bib_cal4_CourantJohn", title:"Introducción al Cálculo y al Análisis Matemático. Vol. 2", author:"R. Courant, F. John 1974", pages:0, tracks:[] },
+      { id:"bib_cal4_Lang",        title:"Calculus of Several Variables", author:"S. Lang 1987", pages:0, tracks:[] },
+      { id:"bib_cal4_Marsden",     title:"Cálculo Vectorial", author:"J. Marsden, A. Tromba 1998", pages:0, tracks:[] },
+      { id:"bib_cal4_Thomas",      title:"Cálculo: Varias Variables", author:"G. B. Thomas, R. L. Finney 1999", pages:0, tracks:[] }
     ]
   }
 ];
 
 const PDF = {
-  // Álgebra Superior I
-  'bib_as1_Cardenas': {
-    title: 'Álgebra Superior - Cárdenas',
-    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL'
-  },
-  'bib_as1_Nachbin': {
-    title: 'Álgebra Elemental - Nachbin',
-    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
-  },
-
-  // Cálculo Diferencial e Integral I
-  'bib_cal1_Arizmendi': {
-    title: 'Cálculo. Primer Curso - Arizmendi',
-    driveId: '' 
-  },
-  'bib_cal1_Courant': {
-    title: 'Introducción al Cálculo y al Análisis - Courant',
-    driveId: '' 
-  },
-  'bib_cal1_Lang': {
-    title: 'Cálculo I - Lang',
-    driveId: '' 
-  },
-  'bib_cal1_Spivak': {
-    title: 'Cálculo Infinitesimal (2a ed) - Spivak',
-    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ'
-  },
-  'bib_cal1_Thomas': {
-    title: 'Cálculo con Geometría Analítica (9a ed) - Thomas',
-    driveId: '' 
-  },
-
-  //
-  'bib_geo1_Bracho': {
-    title: 'Geometría Analítica - Bracho',
-    driveId: ''
-  },
-  'bib_geo1_Efimov': {
-    title: 'Geometría Superior - Efimov',
-    driveId: ''
-  },
-  'bib_geo1_Preston': {
-    title: 'Modern Analytic Geometry - Preston & Lovaglia',
-    driveId: ''
-  },
-  'bib_geo1_Ramirez': {
-    title: 'Geometría Analítica - Ramírez Galarza',
-    driveId: ''
-  },
-
-  //
-  'bib_as2_Cardenas': {
-    title: 'Álgebra Superior - Cárdenas',
-    driveId: '1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL'
-  },
-  'bib_as2_Nachbin': {
-    title: 'Álgebra Elemental - Nachbin',
-    driveId: '1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F'
-  },
-
-
-  'bib_cal2_Arizmendi': {
-    title: 'Cálculo. Primer Curso - Arizmendi',
-    driveId: ''
-  },
-  'bib_cal2_Courant': {
-    title: 'Introducción al Cálculo y al Análisis - Courant',
-    driveId: ''
-  },
-  'bib_cal2_Lang': {
-    title: 'Cálculo I - Lang',
-    driveId: ''
-  },
-  'bib_cal2_Spivak': {
-    title: 'Cálculo Infinitesimal (2ª ed.) - Spivak',
-    driveId: '1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ'
-  },
-  'bib_cal2_Thomas': {
-    title: 'Cálculo con Geometría Analítica (9ª ed.) - Thomas',
-    driveId: ''
-  },
-
-
-  'bib_geo2_Bracho': {
-    title: 'Geometría Analítica - Bracho',
-    driveId: ''
-  },
-  'bib_geo2_Efimov': {
-    title: 'Geometría Superior - Efimov',
-    driveId: ''
-  },
-  'bib_geo2_Preston': {
-    title: 'Modern Analytic Geometry - Preston & Lovaglia',
-    driveId: ''
-  },
-  'bib_geo2_Ramirez': {
-    title: 'Geometría Analítica - Ramírez Galarza',
-    driveId: ''
-  },
-
-
-  'bib_al1_Curtis': {
-    title: 'Linear Algebra - Curtis',
-    driveId: ''
-  },
-  'bib_al1_Friedberg': {
-    title: 'Álgebra Lineal - Friedberg, Insel & Spence',
-    driveId: ''
-  },
-  'bib_al1_Hoffman': {
-    title: 'Álgebra Lineal - Hoffman & Kunze',
-    driveId: ''
-  },
-  'bib_al1_Lang': {
-    title: 'Álgebra Lineal - Lang',
-    driveId: ''
-  },
-  'bib_al1_Nomizu': {
-    title: 'Fundamentals of Linear Algebra - Nomizu',
-    driveId: ''
-  },
-  'bib_al1_Rincon': {
-    title: 'Álgebra Lineal - Rincón',
-    driveId: ''
-  },
-
-
-  'bib_cal3_Apostol': {
-    title: 'Calculus, Volumen I - Apostol',
-    driveId: ''
-  },
-  'bib_cal3_Courant2': {
-    title: 'Differential and Integral Calculus, Volumen II - Courant',
-    driveId: ''
-  },
-  'bib_cal3_CourantJohn': {
-    title: 'Introducción al Cálculo y al Análisis Matemático, Volumen II - Courant & John',
-    driveId: ''
-  },
-  'bib_cal3_Lang': {
-    title: 'Calculus of Several Variables - Lang',
-    driveId: ''
-  },
-  'bib_cal3_Marsden': {
-    title: 'Cálculo Vectorial - Marsden & Tromba',
-    driveId: ''
-  },
-  'bib_cal3_Thomas': {
-    title: 'Cálculo: varias variables - Thomas & Finney',
-    driveId: ''
-  },
-
-
-  'bib_al2_Curtis': {
-    title: 'Linear Algebra - Curtis',
-    driveId: ''
-  },
-  'bib_al2_Lang': {
-    title: 'Álgebra Lineal - Lang',
-    driveId: ''
-  },
-  'bib_al2_Nomizu': {
-    title: 'Fundamentals of Linear Algebra - Nomizu',
-    driveId: ''
-  },
-  'bib_al2_Rincon': {
-    title: 'Álgebra Lineal - Rincón',
-    driveId: ''
-  },
-  
-  'bib_cal4_Apostol': {
-    title: 'Calculus. Volumen I - Apostol',
-    driveId: ''
-  },
-  'bib_cal4_Courant2': {
-    title: 'Differential and Integral Calculus. Vol 2 - Courant',
-    driveId: ''
-  },
-  'bib_cal4_CourantJohn': {
-    title: 'Introducción al Cálculo y al Análisis Matemático. Vol. 2 - Courant & John',
-    driveId: ''
-  },
-  'bib_cal4_Lang': {
-    title: 'Calculus of Several Variables - Lang',
-    driveId: ''
-  },
-  'bib_cal4_Marsden': {
-    title: 'Cálculo Vectorial - Marsden & Tromba',
-    driveId: ''
-  },
-  'bib_cal4_Thomas': {
-    title: 'Cálculo: Varias Variables - Thomas & Finney',
-    driveId: ''
-  }
-
-
+  'bib_as1_Cardenas': { title:'Álgebra Superior - Cárdenas', driveId:'1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL' },
+  'bib_as1_Nachbin':  { title:'Álgebra Elemental - Nachbin',  driveId:'1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F' },
+  'bib_cal1_Arizmendi': { title:'Cálculo. Primer Curso - Arizmendi', driveId:'' },
+  'bib_cal1_Courant':   { title:'Introducción al Cálculo y al Análisis - Courant', driveId:'' },
+  'bib_cal1_Lang':      { title:'Cálculo I - Lang', driveId:'' },
+  'bib_cal1_Spivak':    { title:'Cálculo Infinitesimal (2a ed) - Spivak', driveId:'1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ' },
+  'bib_cal1_Thomas':    { title:'Cálculo con Geometría Analítica (9a ed) - Thomas', driveId:'' },
+  'bib_geo1_Bracho':    { title:'Geometría Analítica - Bracho', driveId:'' },
+  'bib_geo1_Efimov':    { title:'Geometría Superior - Efimov', driveId:'' },
+  'bib_geo1_Preston':   { title:'Modern Analytic Geometry - Preston & Lovaglia', driveId:'' },
+  'bib_geo1_Ramirez':   { title:'Geometría Analítica - Ramírez Galarza', driveId:'' },
+  'bib_as2_Cardenas':   { title:'Álgebra Superior - Cárdenas', driveId:'1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL' },
+  'bib_as2_Nachbin':    { title:'Álgebra Elemental - Nachbin', driveId:'1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F' },
+  'bib_cal2_Arizmendi': { title:'Cálculo. Primer Curso - Arizmendi', driveId:'' },
+  'bib_cal2_Courant':   { title:'Introducción al Cálculo y al Análisis - Courant', driveId:'' },
+  'bib_cal2_Lang':      { title:'Cálculo I - Lang', driveId:'' },
+  'bib_cal2_Spivak':    { title:'Cálculo Infinitesimal (2ª ed.) - Spivak', driveId:'1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ' },
+  'bib_cal2_Thomas':    { title:'Cálculo con Geometría Analítica (9ª ed.) - Thomas', driveId:'' },
+  'bib_geo2_Bracho':    { title:'Geometría Analítica - Bracho', driveId:'' },
+  'bib_geo2_Efimov':    { title:'Geometría Superior - Efimov', driveId:'' },
+  'bib_geo2_Preston':   { title:'Modern Analytic Geometry - Preston & Lovaglia', driveId:'' },
+  'bib_geo2_Ramirez':   { title:'Geometría Analítica - Ramírez Galarza', driveId:'' },
+  'bib_al1_Curtis':     { title:'Linear Algebra - Curtis', driveId:'' },
+  'bib_al1_Friedberg':  { title:'Álgebra Lineal - Friedberg, Insel & Spence', driveId:'' },
+  'bib_al1_Hoffman':    { title:'Álgebra Lineal - Hoffman & Kunze', driveId:'' },
+  'bib_al1_Lang':       { title:'Álgebra Lineal - Lang', driveId:'' },
+  'bib_al1_Nomizu':     { title:'Fundamentals of Linear Algebra - Nomizu', driveId:'' },
+  'bib_al1_Rincon':     { title:'Álgebra Lineal - Rincón', driveId:'' },
+  'bib_cal3_Apostol':     { title:'Calculus, Volumen I - Apostol', driveId:'' },
+  'bib_cal3_Courant2':    { title:'Differential and Integral Calculus, Volumen II - Courant', driveId:'' },
+  'bib_cal3_CourantJohn': { title:'Introducción al Cálculo y al Análisis Matemático, Volumen II - Courant & John', driveId:'' },
+  'bib_cal3_Lang':        { title:'Calculus of Several Variables - Lang', driveId:'' },
+  'bib_cal3_Marsden':     { title:'Cálculo Vectorial - Marsden & Tromba', driveId:'' },
+  'bib_cal3_Thomas':      { title:'Cálculo: varias variables - Thomas & Finney', driveId:'' },
+  'bib_al2_Curtis':  { title:'Linear Algebra - Curtis', driveId:'' },
+  'bib_al2_Lang':    { title:'Álgebra Lineal - Lang', driveId:'' },
+  'bib_al2_Nomizu':  { title:'Fundamentals of Linear Algebra - Nomizu', driveId:'' },
+  'bib_al2_Rincon':  { title:'Álgebra Lineal - Rincón', driveId:'' },
+  'bib_cal4_Apostol':     { title:'Calculus. Volumen I - Apostol', driveId:'' },
+  'bib_cal4_Courant2':    { title:'Differential and Integral Calculus. Vol 2 - Courant', driveId:'' },
+  'bib_cal4_CourantJohn': { title:'Introducción al Cálculo y al Análisis Matemático. Vol. 2 - Courant & John', driveId:'' },
+  'bib_cal4_Lang':        { title:'Calculus of Several Variables - Lang', driveId:'' },
+  'bib_cal4_Marsden':     { title:'Cálculo Vectorial - Marsden & Tromba', driveId:'' },
+  'bib_cal4_Thomas':      { title:'Cálculo: Varias Variables - Thomas & Finney', driveId:'' }
 };
+
+/* ── DEDUP KEY ───────────────────────────────────────
+   Normaliza título (sin edición/volumen entre paréntesis/comas al final)
+   + primer apellido del primer autor, sin año.
+   Esto agrupa las mismas obras que aparecen en varias materias.           */
+function dedupKey(b) {
+  // Quitar año al final del autor y quedarse con primer apellido
+  const authorBase = b.author
+    .replace(/\d{4}.*$/, '')       // elimina año y lo que sigue
+    .split(',')[0]                  // primer autor
+    .trim()
+    .split(' ').pop()               // último token = apellido
+    .toLowerCase();
+  // Normalizar título: quitar paréntesis de edición, números romanos finales, etc.
+  const titleBase = b.title
+    .replace(/\s*\(.*?\)/g, '')    // quita (2a ed), (9ª ed.), etc.
+    .replace(/[·,].*$/, '')        // quita subtítulos tras · o ,
+    .replace(/\s+vol.*$/i, '')     // quita Vol. N al final
+    .trim()
+    .toLowerCase();
+  return `${titleBase}||${authorBase}`;
+}
+
 /* Computed lookups */
 const allBooks  = LIBRARY.flatMap(c => c.books);
 const bookMap   = Object.fromEntries(allBooks.map(b => [b.id, b]));
@@ -1155,13 +757,12 @@ const R = {
       </div>`;
     }
 
-    // Sections — orden fijo, los favoritos se marcan visualmente pero NO se reordenan
     html += LIBRARY.map(cat => {
       return `<div class="section">
         <div class="section-header"><span class="section-title">${cat.label}</span></div>
         <div class="hscroll" id="hscroll-${cat.label.replace(/\s+/g,'-')}">
           ${cat.books.map((b, idx) => `
-            <div class="mini-card" id="mc-${b.id}" data-book="${b.id}" data-idx="${idx}" onclick="Nav.detail('${b.id}')">
+            <div class="mini-card ${S.isFav(b.id)?'is-fav':''}" id="mc-${b.id}" data-book="${b.id}" data-idx="${idx}" onclick="Nav.detail('${b.id}')">
               <div class="mini-cover" style="background:${b.cover}">
                 ${coverHTML(b.id, b.title)}
                 <button class="fav-dot ${S.isFav(b.id)?'faved':''}"
@@ -1178,6 +779,16 @@ const R = {
     }).join('');
 
     document.getElementById('home').innerHTML = html;
+
+    // Mover al frente las cards que ya estaban favoritas al cargar
+    document.querySelectorAll('.hscroll').forEach(hscroll => {
+      const favCards    = [...hscroll.querySelectorAll('.mini-card.is-fav')];
+      const firstNonFav = hscroll.querySelector('.mini-card:not(.is-fav)');
+      favCards.forEach(card => {
+        if (firstNonFav) hscroll.insertBefore(card, firstNonFav);
+        else hscroll.appendChild(card);
+      });
+    });
   },
 
   detail(book) {
@@ -1266,10 +877,16 @@ const R = {
     if (q) A._runSearch(q);
   },
 
+  /* FIX 1 ── deduplicar por clave normalizada (título limpio + apellido autor),
+     no por title|author completo, para que libros repetidos entre materias
+     aparezcan una sola vez en el grid y en favoritos.                       */
   _grid() {
-    const seen = new Set();
-    const unique = allBooks.filter(b => { const k = b.title+'|'+b.author; return seen.has(k)?false:seen.add(k) });
-    unique.sort((a,b) => a.title.localeCompare(b.title,'es'));
+    const seen   = new Map(); // key → primer bookId encontrado
+    allBooks.forEach(b => {
+      const k = dedupKey(b);
+      if (!seen.has(k)) seen.set(k, b);
+    });
+    const unique = [...seen.values()].sort((a,b) => a.title.localeCompare(b.title,'es'));
     return `<div class="lib-grid">${unique.map(b => `
       <div class="lib-grid-card" onclick="Nav.detail('${b.id}')">
         <div class="lib-grid-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div>
@@ -1281,7 +898,15 @@ const R = {
   },
 
   favs() {
-    const favBooks  = allBooks.filter(b => S.isFav(b.id));
+    /* FIX 1 (favs) ── deduplicar favoritos de libro por clave normalizada   */
+    const seenFavBooks = new Map();
+    allBooks
+      .filter(b => S.isFav(b.id))
+      .forEach(b => {
+        const k = dedupKey(b);
+        if (!seenFavBooks.has(k)) seenFavBooks.set(k, b);
+      });
+    const favBooks  = [...seenFavBooks.values()];
     const favTracks = allTracks.filter(t => S.isFav(`${t.bookId}:${t.num}`));
     let html = '';
 
@@ -1334,7 +959,6 @@ const Nav = {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id)?.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
-    // Solo hacer scroll al tope en detail (las tabs tienen su propio scroll container)
     if (id === 'detail') window.scrollTo({ top:0, behavior:'instant' });
     S.prev = S.view; S.view = id;
     if (push) history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
@@ -1391,22 +1015,26 @@ const A = {
     el.classList.toggle('faved', on);
     el.textContent = isBtn ? (on ? '★ Guardado' : '☆ Guardar') : (on ? '★' : '☆');
 
-    // Mover card en el hscroll sin re-renderizar toda la vista
+    /* FIX 2 + FIX 3 ── manejo del carrusel en home:
+       · Al AÑADIR: mover la card antes del primer no-favorito del hscroll,
+         de modo que quede detrás de los que ya eran favoritos.
+         Marcar la card con .is-fav para poder identificarla.
+       · Al QUITAR: solo quitar .is-fav — la card se queda donde está,
+         no vuelve a su posición original.                                   */
     if (S.view === 'home') {
       const card = document.getElementById(`mc-${bookId}`);
       if (!card) return;
       const hscroll = card.parentElement;
+
       if (on) {
-        // Mover al frente (antes del primer hijo)
-        hscroll.insertBefore(card, hscroll.firstChild);
-      } else {
-        // Devolver al índice original según data-idx
-        const origIdx = parseInt(card.dataset.idx ?? '0');
-        const siblings = [...hscroll.children];
-        // Encontrar el nodo antes del cual insertar (el primero con idx > origIdx)
-        const after = siblings.find(c => c !== card && parseInt(c.dataset.idx ?? '0') > origIdx);
-        if (after) hscroll.insertBefore(card, after);
+        card.classList.add('is-fav');
+        // Insertar antes del primer hijo que NO sea favorito
+        const firstNonFav = [...hscroll.children].find(c => c !== card && !c.classList.contains('is-fav'));
+        if (firstNonFav) hscroll.insertBefore(card, firstNonFav);
         else hscroll.appendChild(card);
+      } else {
+        // Solo quitar la clase; la card permanece en su posición actual
+        card.classList.remove('is-fav');
       }
     }
   },
@@ -1424,7 +1052,6 @@ const A = {
 
     const opening = !wrap.classList.contains('open');
 
-    // Close all open
     document.querySelectorAll('.apunte-wrap.open').forEach(el => {
       el.classList.remove('open');
       const k = el.id.replace('apunte-','').replace(/-(\d+)$/,':$1');
@@ -1464,10 +1091,17 @@ const A = {
     const results = document.getElementById('search-results');
     if (!results) return;
 
-    const matches = [];
+    /* FIX 1 (búsqueda) ── deduplicar libros en resultados de búsqueda       */
+    const seenBooks = new Map();
+    const matches   = [];
+
     allBooks.forEach(b => {
-      if (b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql))
+      const bk = dedupKey(b);
+      const bookMatches = b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql);
+      if (bookMatches && !seenBooks.has(bk)) {
+        seenBooks.set(bk, true);
         matches.push({ type:'book', bookId:b.id, title:b.title, sub:b.author, emoji:b.emoji, cover:b.cover });
+      }
       b.tracks.forEach(t => {
         if (t.title.toLowerCase().includes(ql) || t.sub?.toLowerCase().includes(ql))
           matches.push({ type:'track', bookId:b.id, num:t.num, title:t.title, sub:`${b.title} · ${t.sub}`, emoji:b.emoji, cover:b.cover });
@@ -1564,7 +1198,7 @@ document.addEventListener('touchmove', e => {
   if (document.getElementById('reader-view').classList.contains('active')) e.preventDefault();
 }, { passive:false });
 
-/* ─── GLOBAL ALIASES (para onclick inline) ───────── */
+/* ─── GLOBAL ALIASES ─────────────────────────────── */
 window.goHome    = () => Nav.home();
 window.showSearch= () => Nav.search();
 window.showFavs  = () => Nav.favs();
