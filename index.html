@@ -961,11 +961,13 @@ const Nav = {
     S.prev = S.view; S.view = id;
     if (push) history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
   },
-  home() {
+  home(fromPopstate = false) {
     this._setBar('', false);
     R.home();
     this._show('home', false);
-    history.replaceState({ view:'home' }, '', '#home');
+    // Solo reemplazar el state si NO venimos de un popstate
+    // (si venimos de popstate, el browser ya colocó el estado correcto)
+    if (!fromPopstate) history.replaceState({ view:'home' }, '', '#home');
   },
   search() {
     this._setBar('Buscar', true);
@@ -1211,11 +1213,11 @@ window.addEventListener('popstate', e => {
     return;
   }
 
-  if (!v || v === 'home')                     Nav.home();
+  if (!v || v === 'home')                     Nav.home(true);
   else if (v === 'detail' && e.state.bookId)  Nav.detail(e.state.bookId, false);
   else if (v === 'search-view')               Nav.search();
   else if (v === 'favs-view')                 Nav.favs();
-  else                                         Nav.home();
+  else                                         Nav.home(true);
 });
 
 
