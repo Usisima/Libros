@@ -487,7 +487,8 @@ body{
       <span>No se pudo cargar el PDF.<br>Intenta abrirlo en Drive.</span>
       <button class="action-btn primary" onclick="Reader.openTab()" style="margin-top:8px">
         <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Abrir en Drive      </button>
+        Abrir en Drive
+      </button>
     </div>
     <iframe id="r-iframe" allow="autoplay" allowfullscreen></iframe>
   </div>
@@ -683,6 +684,7 @@ const S = {
   favs: new Set(loadFavs()),
   openTracks: new Set(),
   recent: loadRecent(),
+  historyStack: ['home'], // Mantener nuestro propio stack de historial
 
   isFav(k)   { return this.favs.has(k) },
   toggleFav(k) {
@@ -939,49 +941,70 @@ const Nav = {
     document.getElementById('tb-back').style.display    = back ? 'flex' : 'none';
     if (back) document.getElementById('tb-title').textContent = title ?? '';
   },
-  _show(id, push = true) {
+  
+  // Cambiar a una vista sin tocar el historial del navegador
+  _switchTo(viewId) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(id)?.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
-    if (id === 'detail') window.scrollTo({ top:0, behavior:'instant' });
-    S.prev = S.view; 
-    S.view = id;
-    if (push) {
-      history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
+    document.getElementById(viewId)?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === viewId));
+    if (viewId === 'detail') window.scrollTo({ top:0, behavior:'instant' });
+  },
+
+  // Ir a home (push al historial)
+  home() {
+    // Solo hacer push si no estamos ya en home
+    if (S.view !== 'home') {
+      S.prev = S.view;
+      S.view = 'home';
+      S.bookId = null;
+      this._setBar('', false);
+      R.home();
+      this._switchTo('home');
+      history.pushState({ view: 'home' }, '', '#home');
     }
   },
-  home(fromPopstate = false) {
-    S.view = 'home';
-    S.bookId = null;
-    this._setBar('', false);
-    R.home();
-    this._show('home', false);
-    if (!fromPopstate) {
-      history.replaceState({ view:'home' }, '', '#home');
-    }
-  },
+
+  // Ir a búsqueda (push al historial)
   search() {
-    S.view = 'search-view';
-    this._setBar('Buscar', true);
-    R.search();
-    this._show('search-view');
-    setTimeout(() => document.getElementById('search-input')?.focus(), 100);
+    if (S.view !== 'search-view') {
+      S.prev = S.view;
+      S.view = 'search-view';
+      this._setBar('Buscar', true);
+      R.search();
+      this._switchTo('search-view');
+      history.pushState({ view: 'search-view' }, '', '#search-view');
+      setTimeout(() => document.getElementById('search-input')?.focus(), 100);
+    }
   },
+
+  // Ir a favoritos (push al historial)
   favs() {
-    S.view = 'favs-view';
-    this._setBar('Favoritos', false);
-    R.favs();
-    this._show('favs-view');
+    if (S.view !== 'favs-view') {
+      S.prev = S.view;
+      S.view = 'favs-view';
+      this._setBar('Favoritos', false);
+      R.favs();
+      this._switchTo('favs-view');
+      history.pushState({ view: 'favs-view' }, '', '#favs-view');
+    }
   },
-  detail(bookId, push = true) {
+
+  // Ir a detalle de libro (push al historial)
+  detail(bookId) {
     const b = bookMap[bookId];
     if (!b) return;
-    S.bookId = bookId;
-    S.view = 'detail';
-    this._setBar(b.title, true);
-    R.detail(b);
-    this._show('detail', push);
+    
+    if (S.view !== 'detail' || S.bookId !== bookId) {
+      S.prev = S.view;
+      S.bookId = bookId;
+      S.view = 'detail';
+      this._setBar(b.title, true);
+      R.detail(b);
+      this._switchTo('detail');
+      history.pushState({ view: 'detail', bookId: bookId }, '', '#detail');
+    }
   },
+
   play(bookId, num) {
     if (S.view !== 'detail' || S.bookId !== bookId) {
       S.bookId = bookId;
@@ -992,9 +1015,6 @@ const Nav = {
       S.addRecent(bookId, num);
       A.toggle(bookId, num);
     }
-  },
-  back() {
-    history.back();
   }
 };
 
@@ -1129,7 +1149,6 @@ const KaTex = {
 /* ─── PDF READER ─────────────────────────────────── */
 const Reader = {
   driveId: null,
-  previousState: null,
 
   open(bookId) {
     const cfg = PDF[bookId];
@@ -1140,16 +1159,8 @@ const Reader = {
     document.getElementById('reader-view').classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Guardar el estado actual antes de abrir el reader
-    this.previousState = {
-      view: S.view,
-      bookId: S.bookId
-    };
-    
     // Push state para el reader
-    history.pushState({ 
-      view: 'reader'
-    }, '', '#reader');
+    history.pushState({ view: 'reader' }, '', '#reader');
 
     const loading = document.getElementById('r-loading');
     const error   = document.getElementById('r-error');
@@ -1183,58 +1194,43 @@ const Reader = {
 
 /* ─── POPSTATE ───────────────────────────────────── */
 window.addEventListener('popstate', e => {
-  const v = e.state?.view;
-  
-  // Si el reader está abierto, cerrarlo y restaurar la vista anterior
+  // Si el reader está abierto, cerrarlo
   if (document.getElementById('reader-view').classList.contains('active')) {
     Reader._closeUI();
-    
-    // Restaurar la vista que estaba activa cuando se abrió el reader
-    const prevView = Reader.previousState;
-    
-    // Usar setTimeout para asegurar que el DOM se actualice
-    setTimeout(() => {
-      if (prevView) {
-        if (prevView.view === 'detail' && prevView.bookId) {
-          const b = bookMap[prevView.bookId];
-          if (b) {
-            S.view = 'detail';
-            S.bookId = prevView.bookId;
-            Nav._setBar(b.title, true);
-            R.detail(b);
-            Nav._show('detail', false);
-          } else {
-            Nav.home(true);
-          }
-        } else if (prevView.view === 'home') {
-          Nav.home(true);
-        } else if (prevView.view === 'search-view') {
-          Nav.search();
-        } else if (prevView.view === 'favs-view') {
-          Nav.favs();
-        } else {
-          Nav.home(true);
-        }
-      } else if (S.bookId) {
-        Nav.detail(S.bookId, false);
-      } else {
-        Nav.home(true);
-      }
-    }, 50);
+    // No hacer nada más - el navegador ya retrocedió en el historial
+    // y restaurará la vista anterior automáticamente
     return;
   }
 
-  // Manejo normal del popstate cuando el reader NO está abierto
+  // Obtener el estado actual del historial
+  const v = e.state?.view;
+  
+  // Actualizar la UI según el estado
   if (!v || v === 'home') {
-    Nav.home(true);
+    S.view = 'home';
+    S.bookId = null;
+    Nav._setBar('', false);
+    R.home();
+    Nav._switchTo('home');
   } else if (v === 'detail' && e.state.bookId) {
-    Nav.detail(e.state.bookId, false);
+    const b = bookMap[e.state.bookId];
+    if (b) {
+      S.view = 'detail';
+      S.bookId = e.state.bookId;
+      Nav._setBar(b.title, true);
+      R.detail(b);
+      Nav._switchTo('detail');
+    }
   } else if (v === 'search-view') {
-    Nav.search();
+    S.view = 'search-view';
+    Nav._setBar('Buscar', true);
+    R.search();
+    Nav._switchTo('search-view');
   } else if (v === 'favs-view') {
-    Nav.favs();
-  } else {
-    Nav.home(true);
+    S.view = 'favs-view';
+    Nav._setBar('Favoritos', false);
+    R.favs();
+    Nav._switchTo('favs-view');
   }
 });
 
@@ -1246,7 +1242,9 @@ window.navBack   = () => history.back();
 
 /* ─── INIT ───────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  // Asegurar que el estado inicial sea home
   history.replaceState({ view:'home' }, '', '#home');
+  S.view = 'home';
   R.home();
   S._syncFavCount();
 });
