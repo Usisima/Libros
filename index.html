@@ -506,112 +506,289 @@ body{
    ============================================================ */
 
 // Mapeo de IDs reales a canónicos (para evitar duplicados)
-const REAL_TO_CANONICAL = {
-  // Álgebra Superior
-  "bib_as1_Cardenas": "Cardenas_Algebra",
-  "bib_as2_Cardenas": "Cardenas_Algebra",
-  "bib_as1_Nachbin": "Nachbin_Algebra",
-  "bib_as2_Nachbin": "Nachbin_Algebra",
-  // Cálculo
-  "bib_cal1_Spivak": "Spivak_Calculus",
-  "bib_cal2_Spivak": "Spivak_Calculus",
-  // Geometría
-  "bib_geo1_Bracho": "Bracho_Geom",
-  "bib_geo2_Bracho": "Bracho_Geom",
-  "bib_geo1_Efimov": "Efimov_Geom",
-  "bib_geo2_Efimov": "Efimov_Geom",
-  "bib_geo1_Preston": "Preston_Geom",
-  "bib_geo2_Preston": "Preston_Geom",
-  "bib_geo1_Ramirez": "Ramirez_Geom",
-  "bib_geo2_Ramirez": "Ramirez_Geom",
-  // Álgebra Lineal
-  "bib_al1_Curtis": "Curtis_Linear",
-  "bib_al2_Curtis": "Curtis_Linear",
-  "bib_al1_Lang": "Lang_Linear",
-  "bib_al2_Lang": "Lang_Linear",
-  "bib_al1_Nomizu": "Nomizu_Linear",
-  "bib_al2_Nomizu": "Nomizu_Linear",
-  "bib_al1_Rincon": "Rincon_Linear",
-  "bib_al2_Rincon": "Rincon_Linear"
-};
-
-// Datos canónicos de cada libro (único)
 const CANONICAL_BOOKS = {
+  // ==================== ÁLGEBRA SUPERIOR ====================
   "Cardenas_Algebra": {
     title: "Álgebra Superior",
     author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
     emoji: "📐",
     cover: "#1e1e2a",
-    driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL",
-    tracks: [
-      { num: 1, title: "Conjuntos y números naturales", sub: "Nociones básicas", 
-        latex: `<div class='def-box'><strong>Definición:</strong> Un conjunto es una colección de objetos bien definidos.</div>
-                <p>Los números naturales $\mathbb{N}$ satisfacen los axiomas de Peano.</p>
-                <div class='thm-box'><strong>Teorema de inducción:</strong> Si $P(1)$ es verdadero y $P(k)\Rightarrow P(k+1)$, entonces $P(n)$ es verdadero para todo $n\in\mathbb{N}$.</div>` },
-      { num: 2, title: "Relaciones y funciones", sub: "Propiedades fundamentales",
-        latex: `<p>Una <strong>función</strong> $f: A \to B$ es una relación donde cada elemento de $A$ tiene una única imagen.</p>
-                <div class='def-box'>$f$ es inyectiva si $f(x)=f(y) \Rightarrow x=y$</div>` }
-    ]
+    driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL"
   },
   "Nachbin_Algebra": {
     title: "Álgebra Elemental",
     author: "L. Nachbin 1986",
     emoji: "📘",
     cover: "#1e2a1e",
-    driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F",
-    tracks: [
-      { num: 1, title: "Estructuras algebraicas", sub: "Grupos, anillos", 
-        latex: `<p>Un <strong>grupo</strong> es un conjunto $G$ con una operación binaria $\cdot$ que satisface: asociatividad, neutro e inversos.</p>
-                <div class='thm-box'>Teorema de Lagrange: $|H|$ divide $|G|$ si $H\leq G$ finito.</div>` }
-    ]
+    driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F"
+  },
+
+  // ==================== CÁLCULO DIFERENCIAL E INTEGRAL ====================
+  "Arizmendi_Calculus": {
+    title: "Cálculo. Primer Curso",
+    author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
+    emoji: "∫",
+    cover: "#2a1e2a",
+    driveId: ""
+  },
+  "Courant_Calculus": {
+    title: "Introducción al Cálculo y al Análisis",
+    author: "R. Courant, F. John 1974/1996",
+    emoji: "∑",
+    cover: "#1e2a2a",
+    driveId: ""
+  },
+  "Lang_Calculus": {
+    title: "Cálculo I",
+    author: "S. Lang 1990",
+    emoji: "ƒ",
+    cover: "#2a2a1e",
+    driveId: ""
   },
   "Spivak_Calculus": {
     title: "Cálculo Infinitesimal (2a ed)",
     author: "M. Spivak 1998",
     emoji: "∫",
     cover: "#2a1e2a",
-    driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ",
-    tracks: [
-      { num: 1, title: "Límites y continuidad", sub: "Definición épsilon-delta", 
-        latex: `<p>Decimos que $\lim_{x\to a} f(x) = L$ si $\forall \varepsilon>0$, $\exists \delta>0$ tal que $0<|x-a|<\delta \Rightarrow |f(x)-L|<\varepsilon$.</p>
-                <div class='ex-box'>Ejemplo: $\lim_{x\to 2} x^2 = 4$</div>` },
-      { num: 2, title: "Derivadas", sub: "Reglas de diferenciación",
-        latex: `<p>La derivada de $f$ en $a$ es $f'(a) = \lim_{h\to 0} \frac{f(a+h)-f(a)}{h}$.</p>
-                <div class='thm-box'>Regla de la cadena: $(f \circ g)'(x) = f'(g(x)) \cdot g'(x)$</div>` }
-    ]
+    driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ"
   },
+  "Thomas_Calculus": {
+    title: "Cálculo con Geometría Analítica (9a ed)",
+    author: "G. B. Thomas, R. L. Finney 1987",
+    emoji: "📊",
+    cover: "#1e2a3a",
+    driveId: ""
+  },
+
+  // ==================== GEOMETRÍA ANALÍTICA ====================
   "Bracho_Geom": {
     title: "Geometría Analítica",
     author: "J. Bracho",
     emoji: "📐",
     cover: "#2a2a1e",
-    driveId: "",
-    tracks: [
-      { num: 1, title: "Coordenadas cartesianas", sub: "Distancia y rectas", 
-        latex: `<p>Distancia euclidiana: $d(P,Q) = \sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$.</p>
-                <p>Ecuación de la recta: $y = mx + b$</p>
-                <div class='ex-box'>Pendiente: $m = \frac{y_2-y_1}{x_2-x_1}$</div>` }
-    ]
+    driveId: ""
   },
   "Efimov_Geom": {
     title: "Geometría Superior",
     author: "N. Efimov 1984",
     emoji: "📏",
     cover: "#1e2a2a",
-    driveId: "",
-    tracks: [
-      { num: 1, title: "Cónicas", sub: "Elipse, hipérbola, parábola",
-        latex: `<p>Ecuación de la elipse: $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$</p>
-                <p>Ecuación de la hipérbola: $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$</p>` }
-    ]
+    driveId: ""
+  },
+  "Preston_Geom": {
+    title: "Modern Analytic Geometry",
+    author: "G. C. Preston, A. R. Lovaglia 1971",
+    emoji: "📐",
+    cover: "#2a1e2a",
+    driveId: ""
+  },
+  "Ramirez_Geom": {
+    title: "Geometría Analítica: Una Introducción a la Geometría",
+    author: "A. Ramírez Galarza 1998/2004",
+    emoji: "📏",
+    cover: "#1e2a1e",
+    driveId: ""
+  },
+
+  // ==================== ÁLGEBRA LINEAL ====================
+  "Curtis_Linear": {
+    title: "Linear Algebra",
+    author: "C. W. Curtis 1984",
+    emoji: "🧮",
+    cover: "#1e2a3a",
+    driveId: ""
+  },
+  "Friedberg_Linear": {
+    title: "Álgebra Lineal",
+    author: "S. H. Friedberg, A. J. Insel, L. E. Spence 1982",
+    emoji: "📊",
+    cover: "#3a1e2a",
+    driveId: ""
+  },
+  "Hoffman_Linear": {
+    title: "Álgebra Lineal",
+    author: "K. Hoffman, R. Kunze 1973",
+    emoji: "🧮",
+    cover: "#1e2a1e",
+    driveId: ""
+  },
+  "Lang_Linear": {
+    title: "Álgebra Lineal",
+    author: "S. Lang 1986",
+    emoji: "📏",
+    cover: "#2a1e1e",
+    driveId: ""
+  },
+  "Nomizu_Linear": {
+    title: "Fundamentals of Linear Algebra",
+    author: "K. Nomizu 1966",
+    emoji: "📐",
+    cover: "#2a2a3a",
+    driveId: ""
+  },
+  "Rincon_Linear": {
+    title: "Álgebra Lineal",
+    author: "H. A. Rincón 2002",
+    emoji: "🧮",
+    cover: "#3a2a1e",
+    driveId: ""
+  },
+
+  // ==================== CÁLCULO III (Varias Variables) ====================
+  "Apostol_Calculus3": {
+    title: "Calculus, Volumen I",
+    author: "T. M. Apostol 2001",
+    emoji: "∫",
+    cover: "#1e3a2a",
+    driveId: ""
+  },
+  "Courant2_Calculus3": {
+    title: "Differential and Integral Calculus, Volumen II",
+    author: "R. Courant 1936",
+    emoji: "∑",
+    cover: "#3a1e1e",
+    driveId: ""
+  },
+  "CourantJohn_Calculus3": {
+    title: "Introducción al Cálculo y al Análisis Matemático, Volumen II",
+    author: "R. Courant, F. John 1974",
+    emoji: "∫",
+    cover: "#1e1e3a",
+    driveId: ""
+  },
+  "Lang_Calculus3": {
+    title: "Calculus of Several Variables",
+    author: "S. Lang 1987",
+    emoji: "ƒ",
+    cover: "#2a3a1e",
+    driveId: ""
+  },
+  "Marsden_Calculus3": {
+    title: "Cálculo Vectorial",
+    author: "J. Marsden, A. Tromba 1998",
+    emoji: "∇",
+    cover: "#3a2a2a",
+    driveId: ""
+  },
+  "Thomas_Calculus3": {
+    title: "Cálculo: varias variables",
+    author: "G. B. Thomas, R. L. Finney 1999",
+    emoji: "📊",
+    cover: "#2a1e3a",
+    driveId: ""
+  },
+
+  // ==================== CÁLCULO IV (Continuación) ====================
+  "Apostol_Calculus4": {
+    title: "Calculus. Volumen I",
+    author: "T. M. Apostol 2001",
+    emoji: "∫",
+    cover: "#1e3a2a",
+    driveId: ""
+  },
+  "Courant2_Calculus4": {
+    title: "Differential and Integral Calculus. Vol 2",
+    author: "R. Courant 1936",
+    emoji: "∑",
+    cover: "#3a1e1e",
+    driveId: ""
+  },
+  "CourantJohn_Calculus4": {
+    title: "Introducción al Cálculo y al Análisis Matemático. Vol. 2",
+    author: "R. Courant, F. John 1974",
+    emoji: "∫",
+    cover: "#1e1e3a",
+    driveId: ""
+  },
+  "Lang_Calculus4": {
+    title: "Calculus of Several Variables",
+    author: "S. Lang 1987",
+    emoji: "ƒ",
+    cover: "#2a3a1e",
+    driveId: ""
+  },
+  "Marsden_Calculus4": {
+    title: "Cálculo Vectorial",
+    author: "J. Marsden, A. Tromba 1998",
+    emoji: "∇",
+    cover: "#3a2a2a",
+    driveId: ""
+  },
+  "Thomas_Calculus4": {
+    title: "Cálculo: Varias Variables",
+    author: "G. B. Thomas, R. L. Finney 1999",
+    emoji: "📊",
+    cover: "#2a1e3a",
+    driveId: ""
   }
 };
 
+// Mapeo de IDs reales a canónicos (para referencia)
+const REAL_TO_CANONICAL = {
+  // Álgebra Superior
+  "bib_as1_Cardenas": "Cardenas_Algebra",
+  "bib_as2_Cardenas": "Cardenas_Algebra",
+  "bib_as1_Nachbin": "Nachbin_Algebra",
+  "bib_as2_Nachbin": "Nachbin_Algebra",
+  
+  // Cálculo I
+  "bib_cal1_Arizmendi": "Arizmendi_Calculus",
+  "bib_cal1_Courant": "Courant_Calculus",
+  "bib_cal1_Lang": "Lang_Calculus",
+  "bib_cal1_Spivak": "Spivak_Calculus",
+  "bib_cal1_Thomas": "Thomas_Calculus",
+  
+  // Cálculo II
+  "bib_cal2_Arizmendi": "Arizmendi_Calculus",
+  "bib_cal2_Courant": "Courant_Calculus",
+  "bib_cal2_Lang": "Lang_Calculus",
+  "bib_cal2_Spivak": "Spivak_Calculus",
+  "bib_cal2_Thomas": "Thomas_Calculus",
+  
+  // Geometría I
+  "bib_geo1_Bracho": "Bracho_Geom",
+  "bib_geo1_Efimov": "Efimov_Geom",
+  "bib_geo1_Preston": "Preston_Geom",
+  "bib_geo1_Ramirez": "Ramirez_Geom",
+  
+  // Geometría II
+  "bib_geo2_Bracho": "Bracho_Geom",
+  "bib_geo2_Efimov": "Efimov_Geom",
+  "bib_geo2_Preston": "Preston_Geom",
+  "bib_geo2_Ramirez": "Ramirez_Geom",
+  
+  // Álgebra Lineal I
+  "bib_al1_Curtis": "Curtis_Linear",
+  "bib_al1_Friedberg": "Friedberg_Linear",
+  "bib_al1_Hoffman": "Hoffman_Linear",
+  "bib_al1_Lang": "Lang_Linear",
+  "bib_al1_Nomizu": "Nomizu_Linear",
+  "bib_al1_Rincon": "Rincon_Linear",
+  
+  // Álgebra Lineal II
+  "bib_al2_Curtis": "Curtis_Linear",
+  "bib_al2_Lang": "Lang_Linear",
+  "bib_al2_Nomizu": "Nomizu_Linear",
+  "bib_al2_Rincon": "Rincon_Linear",
+  
+  // Cálculo III
+  "bib_cal3_Apostol": "Apostol_Calculus3",
+  "bib_cal3_Courant2": "Courant2_Calculus3",
+  "bib_cal3_CourantJohn": "CourantJohn_Calculus3",
+  "bib_cal3_Lang": "Lang_Calculus3",
+  "bib_cal3_Marsden": "Marsden_Calculus3",
+  "bib_cal3_Thomas": "Thomas_Calculus3",
+  
+  // Cálculo IV
+  "bib_cal4_Apostol": "Apostol_Calculus4",
+  "bib_cal4_Courant2": "Courant2_Calculus4",
+  "bib_cal4_CourantJohn": "CourantJohn_Calculus4",
+  "bib_cal4_Lang": "Lang_Calculus4",
+  "bib_cal4_Marsden": "Marsden_Calculus4",
+  "bib_cal4_Thomas": "Thomas_Calculus4"
+};
 // Libros sin tracks definidos usan este default
-const DEFAULT_TRACKS = [
-  { num: 1, title: "Conceptos fundamentales", sub: "Introducción", 
-    latex: "<p>Contenido matemático en desarrollo.</p><div class='def-box'>Definiciones y teoremas esenciales.</div>" }
-];
+const DEFAULT_TRACKS = [];
 
 // LIBRARY original (sin modificar)
 const LIBRARY_ORIGINAL = [
