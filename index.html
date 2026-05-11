@@ -476,7 +476,7 @@ body{
       <button class="reader-btn" onclick="Reader.openTab()" aria-label="Abrir en Drive">
         <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </button>
-      <button class="reader-btn" onclick="Reader.close()" aria-label="Cerrar">
+      <button class="reader-btn" onclick="Reader.closeBtn()" aria-label="Cerrar">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -1179,24 +1179,39 @@ const Reader = {
     this.driveId = null;
     document.getElementById('reader-view').classList.remove('active');
     document.body.style.overflow = '';
+  },
+
+  // Llamado desde el botón X — navega atrás en el historial,
+  // lo que dispara popstate → _closeUI()
+  closeBtn() {
     if (location.hash === '#reader') history.back();
+    else this.close();
+  },
+
+  _closeUI() {
+    document.getElementById('r-iframe').src = '';
+    this.driveId = null;
+    document.getElementById('reader-view').classList.remove('active');
+    document.body.style.overflow = '';
   }
 };
 
 /* ─── POPSTATE ───────────────────────────────────── */
 window.addEventListener('popstate', e => {
+  // Si el reader está abierto y navegamos atrás (gesto o botón), cerrar UI
+  if (document.getElementById('reader-view').classList.contains('active')) {
+    Reader._closeUI();
+    return;
+  }
   const v = e.state?.view;
-  if (!v || v === 'home')        Nav.home();
-  else if (v === 'detail' && e.state.bookId) Nav.detail(e.state.bookId, false);
-  else if (v === 'search-view') Nav.search();
-  else if (v === 'favs-view')   Nav.favs();
-  else if (v === 'reader')      Reader.close();
-  else                           Nav.home();
+  if (!v || v === 'home')                     Nav.home();
+  else if (v === 'detail' && e.state.bookId)  Nav.detail(e.state.bookId, false);
+  else if (v === 'search-view')               Nav.search();
+  else if (v === 'favs-view')                 Nav.favs();
+  else                                         Nav.home();
 });
 
-document.addEventListener('touchmove', e => {
-  if (document.getElementById('reader-view').classList.contains('active')) e.preventDefault();
-}, { passive:false });
+
 
 /* ─── GLOBAL ALIASES ─────────────────────────────── */
 window.goHome    = () => Nav.home();
