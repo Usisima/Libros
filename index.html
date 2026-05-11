@@ -9,215 +9,79 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
-/* ── VARIABLES ─────────────────────────────── */
-:root {
-  --bg:#000;--s1:#12121a;--s2:#1a1a24;--s3:#222230;
-  --br:rgba(255,255,255,.06);--br2:rgba(255,255,255,.11);
-  --ink:#f0ece4;--ink2:rgba(240,236,228,.62);--ink3:rgba(240,236,228,.32);
-  --acc:#c9a96e;--acc2:#d4ba7c;--adim:rgba(201,169,110,.14);
-  --teal:#7ec8bc;
-  --c-info:rgba(139,157,195,.14);--c-info-t:#8b9dc3;
-  --c-ok:rgba(123,165,135,.14);--c-ok-t:#7ba587;
-  --c-warn:rgba(201,169,110,.14);--c-warn-t:#c9a96e;
-  --r:16px;--rsm:10px;--nav-h:58px;
-  --tf:.15s ease;--ts:.3s cubic-bezier(.4,0,.2,1);
-}
-
-/* ── RESET ─────────────────────────────────── */
+/* ── VARIABLES (mantenemos estilo original) ── */
+:root { --bg:#000;--s1:#12121a;--s2:#1a1a24;--s3:#222230; --br:rgba(255,255,255,.06);--br2:rgba(255,255,255,.11); --ink:#f0ece4;--ink2:rgba(240,236,228,.62);--ink3:rgba(240,236,228,.32); --acc:#c9a96e;--acc2:#d4ba7c;--adim:rgba(201,169,110,.14); --teal:#7ec8bc; --c-info:rgba(139,157,195,.14);--c-info-t:#8b9dc3; --c-ok:rgba(123,165,135,.14);--c-ok-t:#7ba587; --c-warn:rgba(201,169,110,.14);--c-warn-t:#c9a96e; --r:16px;--rsm:10px;--nav-h:58px; --tf:.15s ease;--ts:.3s cubic-bezier(.4,0,.2,1);}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
-body{
-  font-family:'DM Sans',system-ui,sans-serif;
-  background:var(--bg);color:var(--ink);
-  min-height:100vh;-webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-  line-height:1.5;
-}
+body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--bg);color:var(--ink); min-height:100vh;-webkit-font-smoothing:antialiased; overflow-x:hidden; line-height:1.5;}
 #detail.active{padding-bottom:calc(var(--nav-h) + 1rem)}
-
-/* ── ANIMATIONS ────────────────────────────── */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes favPop{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
 @keyframes rspin{to{transform:rotate(360deg)}}
-
-/* ── VIEWS ─────────────────────────────────── */
 .view{display:none;animation:fadeIn .3s ease}
 .view.active{display:block}
-
-#home,#search-view,#favs-view{
-  position:fixed;
-  top:58px;left:0;right:0;bottom:var(--nav-h);
-  overflow-y:auto;overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  display:none;
-  padding-bottom:.5rem;
-}
+#home,#search-view,#favs-view{ position:fixed; top:58px; left:0; right:0; bottom:var(--nav-h); overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; display:none; padding-bottom:.5rem; }
 #home.active,#search-view.active,#favs-view.active{display:block}
 #detail{display:none}
 #detail.active{display:block}
-
-/* ── TOP BAR ───────────────────────────────── */
-.top-bar{
-  position:sticky;top:0;z-index:100;
-  padding:.7rem 1rem;
-  display:flex;align-items:center;justify-content:space-between;gap:.6rem;
-  background:rgba(0,0,0,.93);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--br);
-}
-.top-bar::after{
-  content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--acc),transparent);
-  opacity:.28;pointer-events:none;
-}
+.top-bar{ position:sticky;top:0;z-index:100; padding:.7rem 1rem; display:flex;align-items:center;justify-content:space-between;gap:.6rem; background:rgba(0,0,0,.93); backdrop-filter:blur(20px); border-bottom:1px solid var(--br);}
+.top-bar::after{ content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px; background:linear-gradient(90deg,transparent,var(--acc),transparent); opacity:.28;pointer-events:none;}
 .tb-left,.tb-right{display:flex;align-items:center;gap:.5rem}
 .tb-right{gap:.8rem}
-.logo-text{
-  font-family:'Playfair Display',serif;
-  font-size:1.4rem;font-weight:900;letter-spacing:-.02em;line-height:1;
-  cursor:pointer;transition:color .2s;
-}
+.logo-text{ font-family:'Playfair Display',serif; font-size:1.4rem;font-weight:900;letter-spacing:-.02em;line-height:1; cursor:pointer;transition:color .2s; }
 .logo-text:hover{color:var(--acc)}
 .tb-divider{width:1px;height:22px;background:rgba(255,255,255,.13);margin:0 .1rem}
-.tb-inst-title{
-  font-family:'Playfair Display',serif;
-  font-size:.95rem;font-weight:900;line-height:1.1;letter-spacing:-.01em;
-}
+.tb-inst-title{ font-family:'Playfair Display',serif; font-size:.95rem;font-weight:900;line-height:1.1;letter-spacing:-.01em; }
 .tb-inst-sub{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);font-weight:500}
 .back-btn-container{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
-.back-title{
-  font-family:'Playfair Display',serif;
-  font-size:.95rem;font-weight:700;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;
-}
-
-/* ── ICON BUTTONS ──────────────────────────── */
-.icon-btn{
-  width:36px;height:36px;border-radius:50%;
-  background:transparent;border:1px solid var(--br2);
-  color:var(--ink2);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all var(--tf);flex-shrink:0;
-}
+.back-title{ font-family:'Playfair Display',serif; font-size:.95rem;font-weight:700; white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px; }
+.icon-btn{ width:36px;height:36px;border-radius:50%; background:transparent;border:1px solid var(--br2); color:var(--ink2); display:flex;align-items:center;justify-content:center; cursor:pointer;transition:all var(--tf);flex-shrink:0; }
 .icon-btn:hover{border-color:var(--acc);color:var(--acc);transform:scale(1.05)}
 .icon-btn:active{transform:scale(.95)}
 .icon-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .icon-btn.active{background:var(--adim);border-color:var(--acc);color:var(--acc)}
-
-/* ── SECTIONS ──────────────────────────────── */
 .section{margin:1.5rem 0}
 .section-header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;margin-bottom:.8rem}
-.section-title{
-  font-family:'Playfair Display',serif;
-  font-size:1.05rem;font-weight:700;letter-spacing:.01em;
-  position:relative;padding-left:12px;
-}
-.section-title::before{
-  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:3px;height:16px;background:var(--acc);border-radius:2px;
-}
-
-/* ── HORIZONTAL SCROLL ─────────────────────── */
-.hscroll{
-  display:flex;gap:.75rem;overflow-x:auto;
-  padding:0 1rem .5rem;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  scroll-snap-type:x proximity;
-  scroll-padding:0 1rem;
-}
+.section-title{ font-family:'Playfair Display',serif; font-size:1.05rem;font-weight:700;letter-spacing:.01em; position:relative;padding-left:12px; }
+.section-title::before{ content:'';position:absolute;left:0;top:50%;transform:translateY(-50%); width:3px;height:16px;background:var(--acc);border-radius:2px; }
+.hscroll{ display:flex;gap:.75rem;overflow-x:auto; padding:0 1rem .5rem; -webkit-overflow-scrolling:touch; scrollbar-width:none; scroll-snap-type:x proximity; scroll-padding:0 1rem; }
 .hscroll::-webkit-scrollbar{display:none}
 .hscroll::after{content:'';flex:0 0 1px}
-
-/* ── MINI CARDS ────────────────────────────── */
-.mini-card{
-  flex-shrink:0;width:138px;cursor:pointer;
-  border-radius:var(--rsm);overflow:hidden;
-  background:var(--s1);border:1px solid var(--br);
-  transition:all var(--tf);scroll-snap-align:start;
-}
+.mini-card{ flex-shrink:0;width:138px;cursor:pointer; border-radius:var(--rsm);overflow:hidden; background:var(--s1);border:1px solid var(--br); transition:all var(--tf);scroll-snap-align:start; }
 .mini-card:hover{border-color:var(--br2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .mini-card:active{transform:scale(.97)}
-.mini-cover{
-  width:100%;aspect-ratio:2/3;
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.4rem;position:relative;overflow:hidden;background:var(--s2);
-}
-.mini-cover img,.lib-grid-cover img,.c-thumb img,.detail-cover img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-}
+.mini-cover{ width:100%;aspect-ratio:2/3; display:flex;align-items:center;justify-content:center; font-size:2.4rem;position:relative;overflow:hidden;background:var(--s2); }
+.mini-cover img,.lib-grid-cover img,.c-thumb img,.detail-cover img{ position:absolute;inset:0;width:100%;height:100%;object-fit:cover; }
 .mini-card:hover .mini-cover img{transform:scale(1.05);transition:transform .3s}
 .mini-cover span,.lib-grid-cover span,.detail-cover span{position:relative;z-index:1}
-.fav-dot{
-  position:absolute;top:.4rem;right:.4rem;z-index:3;
-  width:24px;height:24px;border-radius:50%;
-  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:13px;color:var(--ink2);
-  transition:all var(--tf);backdrop-filter:blur(4px);
-}
+.fav-dot{ position:absolute;top:.4rem;right:.4rem;z-index:3; width:24px;height:24px;border-radius:50%; background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2); display:flex;align-items:center;justify-content:center; cursor:pointer;font-size:13px;color:var(--ink2); transition:all var(--tf);backdrop-filter:blur(4px); }
 .fav-dot:hover{transform:scale(1.1);border-color:var(--acc)}
 .fav-dot.faved{background:var(--adim);border-color:var(--acc);color:var(--acc);animation:favPop .3s ease}
 .mini-info{padding:.6rem .7rem}
-.mini-title{
-  font-size:.79rem;font-weight:600;line-height:1.2;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
+.mini-title{ font-size:.79rem;font-weight:600;line-height:1.2; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
 .mini-meta{font-size:.69rem;color:var(--ink3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ── CONTINUE LIST ─────────────────────────── */
 .continue-list{padding:0 1rem}
-.continue-item{
-  display:flex;align-items:center;gap:.75rem;
-  padding:.7rem .6rem;border-radius:var(--rsm);
-  cursor:pointer;transition:all var(--tf);
-  animation:slideUp .3s ease backwards;
-}
+.continue-item{ display:flex;align-items:center;gap:.75rem; padding:.7rem .6rem;border-radius:var(--rsm); cursor:pointer;transition:all var(--tf); animation:slideUp .3s ease backwards; }
 .continue-item:hover{background:var(--s1);transform:translateX(4px)}
 .continue-item:active{transform:scale(.98)}
-.c-thumb{
-  width:48px;height:48px;border-radius:var(--rsm);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.5rem;background:var(--s2);flex-shrink:0;
-  overflow:hidden;position:relative;
-}
+.c-thumb{ width:48px;height:48px;border-radius:var(--rsm); display:flex;align-items:center;justify-content:center; font-size:1.5rem;background:var(--s2);flex-shrink:0; overflow:hidden;position:relative; }
 .c-info{flex:1;min-width:0}
 .c-title{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .c-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
-
-/* ── SEARCH ────────────────────────────────── */
 .search-wrap{padding:.7rem 1rem .3rem;animation:fadeIn .3s ease}
-.search-bar{
-  display:flex;align-items:center;gap:.6rem;
-  padding:.7rem 1rem;background:var(--s1);
-  border:1px solid var(--br);border-radius:99px;
-  transition:all var(--tf);
-}
+.search-bar{ display:flex;align-items:center;gap:.6rem; padding:.7rem 1rem;background:var(--s1); border:1px solid var(--br);border-radius:99px; transition:all var(--tf); }
 .search-bar:focus-within{border-color:var(--acc);box-shadow:0 0 0 2px var(--adim)}
 .search-bar svg{width:16px;height:16px;stroke:var(--ink3);fill:none;stroke-width:2;flex-shrink:0;transition:stroke .3s}
 .search-bar:focus-within svg{stroke:var(--acc)}
-.search-bar input{
-  flex:1;background:none;border:none;color:var(--ink);
-  font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;
-}
+.search-bar input{ flex:1;background:none;border:none;color:var(--ink); font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none; }
 .search-bar input::placeholder{color:var(--ink3)}
-.search-clear{
-  cursor:pointer;color:var(--ink3);
-  width:24px;height:24px;
-  display:none;align-items:center;justify-content:center;
-  border-radius:50%;transition:all .2s;
-}
+.search-clear{ cursor:pointer;color:var(--ink3); width:24px;height:24px; display:none;align-items:center;justify-content:center; border-radius:50%;transition:all .2s; }
 .search-clear:hover{background:rgba(255,255,255,.1);color:var(--ink)}
 .search-clear.visible{display:flex}
 .search-results{padding:0 1rem;animation:fadeIn .3s ease}
 .search-empty{padding:3rem 1rem;text-align:center;color:var(--ink3);font-size:.9rem}
-.search-result-item{
-  display:flex;align-items:center;gap:.75rem;
-  padding:.7rem .5rem;border-radius:var(--rsm);cursor:pointer;
-  transition:all var(--tf);border-bottom:1px solid var(--br);
-  animation:slideUp .2s ease backwards;
-}
+.search-result-item{ display:flex;align-items:center;gap:.75rem; padding:.7rem .5rem;border-radius:var(--rsm);cursor:pointer; transition:all var(--tf);border-bottom:1px solid var(--br); animation:slideUp .2s ease backwards; }
 .search-result-item:last-child{border-bottom:none}
 .search-result-item:hover{background:var(--s1);transform:translateX(4px)}
 .sr-cover{width:44px;height:44px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0}
@@ -225,66 +89,30 @@ body{
 .sr-title{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sr-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
 .sr-type{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:99px;background:var(--s2);color:var(--ink3);flex-shrink:0}
-
-/* ── LIBRARY GRID ──────────────────────────── */
 .lib-grid-section{padding:0 1rem 1.5rem}
 .lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.7rem;animation:fadeIn .3s ease}
-.lib-grid-card{
-  cursor:pointer;border-radius:var(--rsm);overflow:hidden;
-  background:var(--s1);border:1px solid var(--br);
-  transition:all var(--tf);position:relative;
-}
+.lib-grid-card{ cursor:pointer;border-radius:var(--rsm);overflow:hidden; background:var(--s1);border:1px solid var(--br); transition:all var(--tf);position:relative; }
 .lib-grid-card:hover{border-color:var(--br2);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .lib-grid-card:active{transform:scale(.96)}
 .lib-grid-cover{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative;overflow:hidden}
 .lib-grid-info{padding:.45rem .55rem .55rem}
-.lib-grid-name{
-  font-size:.7rem;font-weight:600;line-height:1.2;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
+.lib-grid-name{ font-size:.7rem;font-weight:600;line-height:1.2; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
 .lib-grid-auth{font-size:.58rem;color:var(--ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ── DETAIL ────────────────────────────────── */
-.detail-header{
-  display:flex;flex-direction:column;align-items:center;
-  padding:1.5rem 1rem .5rem;gap:1rem;animation:fadeIn .4s ease;
-}
-.detail-cover{
-  width:clamp(120px,40vw,170px);aspect-ratio:2/3;
-  border-radius:var(--r);
-  display:flex;align-items:center;justify-content:center;
-  font-size:5rem;border:1px solid var(--br2);
-  position:relative;overflow:hidden;
-  box-shadow:0 8px 32px rgba(0,0,0,.4);
-}
+.detail-header{ display:flex;flex-direction:column;align-items:center; padding:1.5rem 1rem .5rem;gap:1rem;animation:fadeIn .4s ease; }
+.detail-cover{ width:clamp(120px,40vw,170px);aspect-ratio:2/3; border-radius:var(--r); display:flex;align-items:center;justify-content:center; font-size:5rem;border:1px solid var(--br2); position:relative;overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.4); }
 .detail-info{text-align:center}
 .detail-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;line-height:1.2;margin-bottom:.3rem}
 .detail-author{font-size:.9rem;color:var(--ink2);line-height:1.4}
 .detail-actions{display:flex;gap:.6rem;justify-content:center;margin-top:.5rem;flex-wrap:wrap}
-.action-btn{
-  padding:.55rem 1.1rem;border-radius:99px;
-  background:var(--s1);border:1px solid var(--br2);
-  color:var(--ink2);
-  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
-  cursor:pointer;transition:all var(--tf);
-  display:flex;align-items:center;gap:.4rem;
-}
+.action-btn{ padding:.55rem 1.1rem;border-radius:99px; background:var(--s1);border:1px solid var(--br2); color:var(--ink2); font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500; cursor:pointer;transition:all var(--tf); display:flex;align-items:center;gap:.4rem; }
 .action-btn:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
 .action-btn:active{transform:translateY(0)}
 .action-btn.primary{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
 .action-btn.primary:hover{background:var(--acc2);box-shadow:0 4px 12px var(--adim)}
 .action-btn.faved{background:var(--adim);border-color:var(--acc);color:var(--acc)}
 .detail-stats{text-align:center;font-size:.8rem;color:var(--ink3);margin-top:.5rem}
-
-/* ── EPISODE LIST ──────────────────────────── */
 .episode-list{padding:0 .8rem}
-.ep-item{
-  display:flex;align-items:center;gap:.7rem;
-  padding:.85rem .5rem;border-radius:var(--rsm);
-  cursor:pointer;transition:all var(--tf);
-  border-bottom:1px solid var(--br);
-  animation:slideUp .3s ease backwards;
-}
+.ep-item{ display:flex;align-items:center;gap:.7rem; padding:.85rem .5rem;border-radius:var(--rsm); cursor:pointer;transition:all var(--tf); border-bottom:1px solid var(--br); animation:slideUp .3s ease backwards; }
 .ep-item:last-of-type{border-bottom:none}
 .ep-item:hover{background:var(--s1);transform:translateX(3px)}
 .ep-item.open{background:var(--adim);border-bottom-color:transparent}
@@ -294,34 +122,18 @@ body{
 .ep-meta{font-size:.73rem;color:var(--ink3);margin-top:2px;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
 .ep-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
 .ep-fav,.ep-play{cursor:pointer;transition:all var(--tf);display:flex;align-items:center;justify-content:center}
-.ep-fav{
-  width:30px;height:30px;border-radius:50%;
-  background:transparent;border:1px solid var(--br2);color:var(--ink3);font-size:13px;
-}
+.ep-fav{ width:30px;height:30px;border-radius:50%; background:transparent;border:1px solid var(--br2);color:var(--ink3);font-size:13px; }
 .ep-fav:hover,.ep-fav.faved{border-color:var(--acc);color:var(--acc)}
 .ep-fav.faved{animation:favPop .3s ease}
-.ep-play{
-  width:36px;height:36px;border-radius:50%;
-  background:var(--adim);border:1px solid var(--acc);color:var(--acc);
-}
+.ep-play{ width:36px;height:36px;border-radius:50%; background:var(--adim);border:1px solid var(--acc);color:var(--acc); }
 .ep-play:hover{background:var(--acc);color:#000;transform:scale(1.05)}
 .ep-play:active{transform:scale(.95)}
 .ep-play svg{width:13px;height:13px;fill:currentColor}
-
-/* ── EXPANDABLE NOTES ──────────────────────── */
 .apunte-wrap{overflow:hidden;max-height:0;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0}
 .apunte-wrap.open{max-height:2000px;opacity:1}
-.apunte-inner{
-  background:var(--s1);border-top:1px solid var(--br2);
-  margin:0 .3rem;border-radius:0 0 var(--rsm) var(--rsm);
-  padding:1.5rem 1.2rem;animation:fadeIn .3s ease;
-}
+.apunte-inner{ background:var(--s1);border-top:1px solid var(--br2); margin:0 .3rem;border-radius:0 0 var(--rsm) var(--rsm); padding:1.5rem 1.2rem;animation:fadeIn .3s ease; }
 .apunte-inner h1{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:.5rem}
-.apunte-inner .subtitle{
-  font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);
-  letter-spacing:.08em;text-transform:uppercase;
-  display:block;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--br);
-}
+.apunte-inner .subtitle{ font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3); letter-spacing:.08em;text-transform:uppercase; display:block;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--br); }
 .apunte-inner h2{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--acc);margin:1.5rem 0 .6rem}
 .apunte-inner h3{font-size:.92rem;font-weight:600;margin:1rem 0 .4rem}
 .apunte-inner p{font-size:.875rem;line-height:1.8;color:var(--ink2);margin-bottom:.8rem}
@@ -339,113 +151,42 @@ body{
 .apunte-inner th{background:var(--s2);padding:.7rem .8rem;text-align:left;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--br2)}
 .apunte-inner td{padding:.6rem .8rem;border-bottom:1px solid var(--br);color:var(--ink2);font-size:.82rem}
 .apunte-inner tr:last-child td{border-bottom:none}
-
-/* ── BOTTOM NAV ────────────────────────────── */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  display:flex;justify-content:space-around;
-  padding:.5rem .8rem env(safe-area-inset-bottom,.5rem);
-  background:rgba(0,0,0,.94);backdrop-filter:blur(20px);
-  border-top:1px solid var(--br);
-}
-.nav-item{
-  display:flex;flex-direction:column;align-items:center;
-  gap:4px;cursor:pointer;color:var(--ink3);
-  transition:all var(--tf);padding:.3rem .6rem;border-radius:var(--rsm);position:relative;
-}
+.bottom-nav{ position:fixed;bottom:0;left:0;right:0;z-index:100; display:flex;justify-content:space-around; padding:.5rem .8rem env(safe-area-inset-bottom,.5rem); background:rgba(0,0,0,.94);backdrop-filter:blur(20px); border-top:1px solid var(--br); }
+.nav-item{ display:flex;flex-direction:column;align-items:center; gap:4px;cursor:pointer;color:var(--ink3); transition:all var(--tf);padding:.3rem .6rem;border-radius:var(--rsm);position:relative; }
 .nav-item.active{color:var(--acc)}
 .nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;transition:all .3s}
 .nav-item.active svg{fill:var(--adim)}
 .nav-label{font-size:10px;font-weight:500;letter-spacing:.04em}
-.nav-dot{
-  position:absolute;top:-2px;right:-4px;
-  min-width:16px;height:16px;background:var(--acc);color:#000;border-radius:8px;
-  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 3px;
-}
-
-/* ── SCROLLBAR ─────────────────────────────── */
+.nav-dot{ position:absolute;top:-2px;right:-4px; min-width:16px;height:16px;background:var(--acc);color:#000;border-radius:8px; font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 3px; }
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--br2);border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--ink3)}
-
-/* ── PDF READER ────────────────────────────── */
-#reader-view{
-  position:fixed;inset:0;z-index:200;background:#0f0e0c;
-  display:none;flex-direction:column;animation:fadeIn .3s ease;
-}
+#reader-view{ position:fixed;inset:0;z-index:200;background:#0f0e0c; display:none;flex-direction:column;animation:fadeIn .3s ease; }
 #reader-view.active{display:flex}
-.reader-topbar{
-  height:50px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 14px;background:rgba(10,9,7,.97);
-  border-bottom:1px solid rgba(255,255,255,.06);
-  backdrop-filter:blur(16px);z-index:2;
-}
-.reader-title{
-  font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic;
-  color:var(--acc);flex:1;text-align:center;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px;
-}
-.reader-btn{
-  width:34px;height:34px;border-radius:8px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
-  color:rgba(240,236,228,.5);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all var(--tf);flex-shrink:0;
-}
+.reader-topbar{ height:50px;flex-shrink:0; display:flex;align-items:center;justify-content:space-between; padding:0 14px;background:rgba(10,9,7,.97); border-bottom:1px solid rgba(255,255,255,.06); backdrop-filter:blur(16px);z-index:2; }
+.reader-title{ font-family:'Playfair Display',serif;font-size:.88rem;font-style:italic; color:var(--acc);flex:1;text-align:center; white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px; }
+.reader-btn{ width:34px;height:34px;border-radius:8px; background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07); color:rgba(240,236,228,.5);cursor:pointer; display:flex;align-items:center;justify-content:center; transition:all var(--tf);flex-shrink:0; }
 .reader-btn:hover{background:var(--adim);border-color:var(--acc);color:var(--acc)}
 .reader-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .reader-pdf-container{flex:1;position:relative;width:100%;height:100%;background:#0f0e0c}
 .reader-pdf-container iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
-.reader-loading,.reader-error{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:16px;background:#0f0e0c;z-index:1;
-}
+.reader-loading,.reader-error{ position:absolute;inset:0;display:flex;flex-direction:column; align-items:center;justify-content:center;gap:16px;background:#0f0e0c;z-index:1; }
 .reader-error{color:var(--ink3);font-size:.85rem;text-align:center;padding:2rem}
 .reader-error svg{width:40px;height:40px;stroke:var(--acc);opacity:.5}
 .hidden{display:none !important}
 .r-spinner{width:32px;height:32px;border:3px solid rgba(201,169,110,.12);border-top-color:var(--acc);border-radius:50%;animation:rspin .7s linear infinite}
 .loading-text{color:var(--ink3);font-size:.82rem;font-family:'DM Mono',monospace;letter-spacing:.04em}
-
-/* ── RESPONSIVE ────────────────────────────── */
-@media(min-width:600px){
-  .lib-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
-  .mini-card{width:150px}
-  .detail-cover{width:180px}
-}
-@media(min-width:900px){
-  .bottom-nav{display:none}
-  .top-bar{padding:.8rem 2rem}
-  .section{padding:0 2rem}
-  #home,#search-view,#favs-view{bottom:0}
-  #detail.active{padding-bottom:2rem}
-}
+@media(min-width:600px){ .lib-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))} .mini-card{width:150px} .detail-cover{width:180px} }
+@media(min-width:900px){ .bottom-nav{display:none} .top-bar{padding:.8rem 2rem} .section{padding:0 2rem} #home,#search-view,#favs-view{bottom:0} #detail.active{padding-bottom:2rem} }
 </style>
 </head>
-
 <body>
 
 <header class="top-bar">
-  <div class="tb-left" id="tb-default">
-    <span class="logo-text" onclick="goHome()">Ж</span>
-    <div class="tb-divider"></div>
-    <div>
-      <div class="tb-inst-title">Matemáticas</div>
-      <div class="tb-inst-sub">Facultad de Ciencias · UNAM</div>
-    </div>
-  </div>
-  <div class="back-btn-container" id="tb-back" style="display:none">
-    <button class="icon-btn" onclick="navBack()" aria-label="Volver">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <span class="back-title" id="tb-title"></span>
-  </div>
-  <div class="tb-right">
-    <button class="icon-btn" onclick="showSearch()" aria-label="Buscar">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </button>
-  </div>
+  <div class="tb-left" id="tb-default"><span class="logo-text" onclick="goHome()">Ж</span><div class="tb-divider"></div><div><div class="tb-inst-title">Matemáticas</div><div class="tb-inst-sub">Facultad de Ciencias · UNAM</div></div></div>
+  <div class="back-btn-container" id="tb-back" style="display:none"><button class="icon-btn" onclick="navBack()" aria-label="Volver"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="back-title" id="tb-title"></span></div>
+  <div class="tb-right"><button class="icon-btn" onclick="showSearch()" aria-label="Buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button></div>
 </header>
 
 <main>
@@ -456,702 +197,281 @@ body{
 </main>
 
 <nav class="bottom-nav">
-  <div class="nav-item active" data-nav="home" onclick="goHome()">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-    <span class="nav-label">Inicio</span>
-  </div>
-  <div class="nav-item" data-nav="search-view" onclick="showSearch()">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <span class="nav-label">Buscar</span>
-  </div>
-  <div class="nav-item" data-nav="favs-view" onclick="showFavs()">
-    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    <span class="nav-label">Favoritos</span>
-    <span class="nav-dot hidden" id="fav-count">0</span>
-  </div>
+  <div class="nav-item active" data-nav="home" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="nav-label">Inicio</span></div>
+  <div class="nav-item" data-nav="search-view" onclick="showSearch()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="nav-label">Buscar</span></div>
+  <div class="nav-item" data-nav="favs-view" onclick="showFavs()"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="nav-label">Favoritos</span><span class="nav-dot hidden" id="fav-count">0</span></div>
 </nav>
 
-<div id="reader-view">
-  <div class="reader-topbar">
-    <div class="reader-title" id="r-title">—</div>
-    <div style="display:flex;gap:6px">
-      <button class="reader-btn" onclick="Reader.openTab()" aria-label="Abrir en Drive">
-        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      </button>
-      <button class="reader-btn" onclick="Reader.close()" aria-label="Cerrar">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-  <div class="reader-pdf-container">
-    <div class="reader-loading" id="r-loading">
-      <div class="r-spinner"></div>
-      <span class="loading-text">Cargando PDF...</span>
-    </div>
-    <div class="reader-error hidden" id="r-error">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>No se pudo cargar el PDF.<br>Intenta abrirlo en Drive.</span>
-      <button class="action-btn primary" onclick="Reader.openTab()" style="margin-top:8px">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Abrir en Drive
-      </button>
-    </div>
-    <iframe id="r-iframe" allow="autoplay" allowfullscreen></iframe>
-  </div>
-</div>
+<div id="reader-view"><div class="reader-topbar"><div class="reader-title" id="r-title">—</div><div style="display:flex;gap:6px"><button class="reader-btn" onclick="Reader.openTab()" aria-label="Abrir en Drive"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button><button class="reader-btn" onclick="Reader.close()" aria-label="Cerrar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="reader-pdf-container"><div class="reader-loading" id="r-loading"><div class="r-spinner"></div><span class="loading-text">Cargando PDF...</span></div><div class="reader-error hidden" id="r-error"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>No se pudo cargar el PDF.<br>Intenta abrirlo en Drive.</span><button class="action-btn primary" onclick="Reader.openTab()" style="margin-top:8px"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Abrir en Drive</button></div><iframe id="r-iframe" allow="autoplay" allowfullscreen></iframe></div></div>
 
 <script>
-/* ============================================================
-   DATOS UNIFICADOS - SIN DUPLICADOS
-   ============================================================ */
-
-// Mapeo de IDs reales a canónicos (para evitar duplicados)
-const CANONICAL_BOOKS = {
-  // ==================== ÁLGEBRA SUPERIOR ====================
-  "Cardenas_Algebra": {
-    title: "Álgebra Superior",
-    author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974",
-    emoji: "📐",
-    cover: "#1e1e2a",
-    driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL"
-  },
-  "Nachbin_Algebra": {
-    title: "Álgebra Elemental",
-    author: "L. Nachbin 1986",
-    emoji: "📘",
-    cover: "#1e2a1e",
-    driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F"
-  },
-
-  // ==================== CÁLCULO DIFERENCIAL E INTEGRAL ====================
-  "Arizmendi_Calculus": {
-    title: "Cálculo. Primer Curso",
-    author: "H. Arizmendi, H. Carrillo, M. Lara 1987",
-    emoji: "∫",
-    cover: "#2a1e2a",
-    driveId: ""
-  },
-  "Courant_Calculus": {
-    title: "Introducción al Cálculo y al Análisis",
-    author: "R. Courant, F. John 1974/1996",
-    emoji: "∑",
-    cover: "#1e2a2a",
-    driveId: ""
-  },
-  "Lang_Calculus": {
-    title: "Cálculo I",
-    author: "S. Lang 1990",
-    emoji: "ƒ",
-    cover: "#2a2a1e",
-    driveId: ""
-  },
-  "Spivak_Calculus": {
-    title: "Cálculo Infinitesimal (2a ed)",
-    author: "M. Spivak 1998",
-    emoji: "∫",
-    cover: "#2a1e2a",
-    driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ"
-  },
-  "Thomas_Calculus": {
-    title: "Cálculo con Geometría Analítica (9a ed)",
-    author: "G. B. Thomas, R. L. Finney 1987",
-    emoji: "📊",
-    cover: "#1e2a3a",
-    driveId: ""
-  },
-
-  // ==================== GEOMETRÍA ANALÍTICA ====================
-  "Bracho_Geom": {
-    title: "Geometría Analítica",
-    author: "J. Bracho",
-    emoji: "📐",
-    cover: "#2a2a1e",
-    driveId: ""
-  },
-  "Efimov_Geom": {
-    title: "Geometría Superior",
-    author: "N. Efimov 1984",
-    emoji: "📏",
-    cover: "#1e2a2a",
-    driveId: ""
-  },
-  "Preston_Geom": {
-    title: "Modern Analytic Geometry",
-    author: "G. C. Preston, A. R. Lovaglia 1971",
-    emoji: "📐",
-    cover: "#2a1e2a",
-    driveId: ""
-  },
-  "Ramirez_Geom": {
-    title: "Geometría Analítica: Una Introducción a la Geometría",
-    author: "A. Ramírez Galarza 1998/2004",
-    emoji: "📏",
-    cover: "#1e2a1e",
-    driveId: ""
-  },
-
-  // ==================== ÁLGEBRA LINEAL ====================
-  "Curtis_Linear": {
-    title: "Linear Algebra",
-    author: "C. W. Curtis 1984",
-    emoji: "🧮",
-    cover: "#1e2a3a",
-    driveId: ""
-  },
-  "Friedberg_Linear": {
-    title: "Álgebra Lineal",
-    author: "S. H. Friedberg, A. J. Insel, L. E. Spence 1982",
-    emoji: "📊",
-    cover: "#3a1e2a",
-    driveId: ""
-  },
-  "Hoffman_Linear": {
-    title: "Álgebra Lineal",
-    author: "K. Hoffman, R. Kunze 1973",
-    emoji: "🧮",
-    cover: "#1e2a1e",
-    driveId: ""
-  },
-  "Lang_Linear": {
-    title: "Álgebra Lineal",
-    author: "S. Lang 1986",
-    emoji: "📏",
-    cover: "#2a1e1e",
-    driveId: ""
-  },
-  "Nomizu_Linear": {
-    title: "Fundamentals of Linear Algebra",
-    author: "K. Nomizu 1966",
-    emoji: "📐",
-    cover: "#2a2a3a",
-    driveId: ""
-  },
-  "Rincon_Linear": {
-    title: "Álgebra Lineal",
-    author: "H. A. Rincón 2002",
-    emoji: "🧮",
-    cover: "#3a2a1e",
-    driveId: ""
-  },
-
-  // ==================== CÁLCULO III (Varias Variables) ====================
-  "Apostol_Calculus3": {
-    title: "Calculus, Volumen I",
-    author: "T. M. Apostol 2001",
-    emoji: "∫",
-    cover: "#1e3a2a",
-    driveId: ""
-  },
-  "Courant2_Calculus3": {
-    title: "Differential and Integral Calculus, Volumen II",
-    author: "R. Courant 1936",
-    emoji: "∑",
-    cover: "#3a1e1e",
-    driveId: ""
-  },
-  "CourantJohn_Calculus3": {
-    title: "Introducción al Cálculo y al Análisis Matemático, Volumen II",
-    author: "R. Courant, F. John 1974",
-    emoji: "∫",
-    cover: "#1e1e3a",
-    driveId: ""
-  },
-  "Lang_Calculus3": {
-    title: "Calculus of Several Variables",
-    author: "S. Lang 1987",
-    emoji: "ƒ",
-    cover: "#2a3a1e",
-    driveId: ""
-  },
-  "Marsden_Calculus3": {
-    title: "Cálculo Vectorial",
-    author: "J. Marsden, A. Tromba 1998",
-    emoji: "∇",
-    cover: "#3a2a2a",
-    driveId: ""
-  },
-  "Thomas_Calculus3": {
-    title: "Cálculo: varias variables",
-    author: "G. B. Thomas, R. L. Finney 1999",
-    emoji: "📊",
-    cover: "#2a1e3a",
-    driveId: ""
-  },
-
-  // ==================== CÁLCULO IV (Continuación) ====================
-  "Apostol_Calculus4": {
-    title: "Calculus. Volumen I",
-    author: "T. M. Apostol 2001",
-    emoji: "∫",
-    cover: "#1e3a2a",
-    driveId: ""
-  },
-  "Courant2_Calculus4": {
-    title: "Differential and Integral Calculus. Vol 2",
-    author: "R. Courant 1936",
-    emoji: "∑",
-    cover: "#3a1e1e",
-    driveId: ""
-  },
-  "CourantJohn_Calculus4": {
-    title: "Introducción al Cálculo y al Análisis Matemático. Vol. 2",
-    author: "R. Courant, F. John 1974",
-    emoji: "∫",
-    cover: "#1e1e3a",
-    driveId: ""
-  },
-  "Lang_Calculus4": {
-    title: "Calculus of Several Variables",
-    author: "S. Lang 1987",
-    emoji: "ƒ",
-    cover: "#2a3a1e",
-    driveId: ""
-  },
-  "Marsden_Calculus4": {
-    title: "Cálculo Vectorial",
-    author: "J. Marsden, A. Tromba 1998",
-    emoji: "∇",
-    cover: "#3a2a2a",
-    driveId: ""
-  },
-  "Thomas_Calculus4": {
-    title: "Cálculo: Varias Variables",
-    author: "G. B. Thomas, R. L. Finney 1999",
-    emoji: "📊",
-    cover: "#2a1e3a",
-    driveId: ""
-  }
-};
-
-// Mapeo de IDs reales a canónicos (para referencia)
-const REAL_TO_CANONICAL = {
-  // Álgebra Superior
-  "bib_as1_Cardenas": "Cardenas_Algebra",
-  "bib_as2_Cardenas": "Cardenas_Algebra",
-  "bib_as1_Nachbin": "Nachbin_Algebra",
-  "bib_as2_Nachbin": "Nachbin_Algebra",
-  
-  // Cálculo I
-  "bib_cal1_Arizmendi": "Arizmendi_Calculus",
-  "bib_cal1_Courant": "Courant_Calculus",
-  "bib_cal1_Lang": "Lang_Calculus",
-  "bib_cal1_Spivak": "Spivak_Calculus",
-  "bib_cal1_Thomas": "Thomas_Calculus",
-  
-  // Cálculo II
-  "bib_cal2_Arizmendi": "Arizmendi_Calculus",
-  "bib_cal2_Courant": "Courant_Calculus",
-  "bib_cal2_Lang": "Lang_Calculus",
-  "bib_cal2_Spivak": "Spivak_Calculus",
-  "bib_cal2_Thomas": "Thomas_Calculus",
-  
-  // Geometría I
-  "bib_geo1_Bracho": "Bracho_Geom",
-  "bib_geo1_Efimov": "Efimov_Geom",
-  "bib_geo1_Preston": "Preston_Geom",
-  "bib_geo1_Ramirez": "Ramirez_Geom",
-  
-  // Geometría II
-  "bib_geo2_Bracho": "Bracho_Geom",
-  "bib_geo2_Efimov": "Efimov_Geom",
-  "bib_geo2_Preston": "Preston_Geom",
-  "bib_geo2_Ramirez": "Ramirez_Geom",
-  
-  // Álgebra Lineal I
-  "bib_al1_Curtis": "Curtis_Linear",
-  "bib_al1_Friedberg": "Friedberg_Linear",
-  "bib_al1_Hoffman": "Hoffman_Linear",
-  "bib_al1_Lang": "Lang_Linear",
-  "bib_al1_Nomizu": "Nomizu_Linear",
-  "bib_al1_Rincon": "Rincon_Linear",
-  
-  // Álgebra Lineal II
-  "bib_al2_Curtis": "Curtis_Linear",
-  "bib_al2_Lang": "Lang_Linear",
-  "bib_al2_Nomizu": "Nomizu_Linear",
-  "bib_al2_Rincon": "Rincon_Linear",
-  
-  // Cálculo III
-  "bib_cal3_Apostol": "Apostol_Calculus3",
-  "bib_cal3_Courant2": "Courant2_Calculus3",
-  "bib_cal3_CourantJohn": "CourantJohn_Calculus3",
-  "bib_cal3_Lang": "Lang_Calculus3",
-  "bib_cal3_Marsden": "Marsden_Calculus3",
-  "bib_cal3_Thomas": "Thomas_Calculus3",
-  
-  // Cálculo IV
-  "bib_cal4_Apostol": "Apostol_Calculus4",
-  "bib_cal4_Courant2": "Courant2_Calculus4",
-  "bib_cal4_CourantJohn": "CourantJohn_Calculus4",
-  "bib_cal4_Lang": "Lang_Calculus4",
-  "bib_cal4_Marsden": "Marsden_Calculus4",
-  "bib_cal4_Thomas": "Thomas_Calculus4"
-};
-// Libros sin tracks definidos usan este default
-const DEFAULT_TRACKS = [
-  { num: 1, title: "Introducción", sub: "Conceptos fundamentales", latex: "<p>Contenido del tema en desarrollo.</p>" }
+// ----- DATOS MEJORADOS: CORRECIÓN DE DUPLICADOS VÍA ID CANÓNICO -----
+const ORIGINAL_BOOKS = [
+  { id: "bib_algebra_cardenas", canonical: "Cardenas_Algebra", title: "Álgebra Superior", author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", emoji: "📐", cover: "#1e1e2a" },
+  { id: "bib_algebra_nachbin", canonical: "Nachbin_Algebra", title: "Álgebra Elemental", author: "L. Nachbin 1986", emoji: "📘", cover: "#1e2a1e" },
+  { id: "bib_calculo_spivak", canonical: "Spivak_Calculus", title: "Cálculo Infinitesimal (2a ed)", author: "M. Spivak 1998", emoji: "∫", cover: "#2a1e2a" },
+  { id: "bib_calculo_apostol", canonical: "Apostol_Calculus", title: "Calculus, Volumen I", author: "T. M. Apostol 2001", emoji: "∑", cover: "#1e2a2a" },
+  { id: "bib_geo_bracho", canonical: "Bracho_Geom", title: "Geometría Analítica", author: "J. Bracho", emoji: "📐", cover: "#2a2a1e" },
+  { id: "bib_lineal_hoffman", canonical: "Hoffman_Linear", title: "Álgebra Lineal", author: "K. Hoffman, R. Kunze 1973", emoji: "🧮", cover: "#1e2a1e" },
+  { id: "bib_lineal_lang", canonical: "Lang_Linear", title: "Álgebra Lineal", author: "S. Lang 1986", emoji: "📏", cover: "#2a1e1e" }
 ];
 
-// LIBRARY original (sin modificar)
-const LIBRARY_ORIGINAL = [
-  {
-    label: "Álgebra Superior I",
-    books: [{ id: "bib_as1_Cardenas", title: "Álgebra Superior", author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", pages: 0, tracks: [] },
-            { id: "bib_as1_Nachbin", title: "Álgebra Elemental", author: "L. Nachbin 1986", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Cálculo Diferencial e Integral I",
-    books: [{ id: "bib_cal1_Arizmendi", title: "Cálculo. Primer Curso", author: "H. Arizmendi, H. Carrillo, M. Lara 1987", pages: 0, tracks: [] },
-            { id: "bib_cal1_Courant", title: "Introducción al Cálculo y al Análisis", author: "R. Courant, F. John 1974", pages: 0, tracks: [] },
-            { id: "bib_cal1_Lang", title: "Cálculo I", author: "S. Lang 1990", pages: 0, tracks: [] },
-            { id: "bib_cal1_Spivak", title: "Cálculo Infinitesimal (2a ed)", author: "M. Spivak 1998", pages: 680, tracks: [] },
-            { id: "bib_cal1_Thomas", title: "Cálculo con Geometría Analítica (9a ed)", author: "G. B. Thomas, R. L. Finney 1987", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Geometría Analítica I",
-    books: [{ id: "bib_geo1_Bracho", title: "Geometría Analítica", author: "J. Bracho", pages: 0, tracks: [] },
-            { id: "bib_geo1_Efimov", title: "Geometría Superior", author: "N. Efimov 1984", pages: 0, tracks: [] },
-            { id: "bib_geo1_Preston", title: "Modern Analytic Geometry", author: "G. C. Preston, A. R. Lovaglia 1971", pages: 0, tracks: [] },
-            { id: "bib_geo1_Ramirez", title: "Geometría Analítica: Una Introducción a la Geometría", author: "A. Ramírez Galarza 2004", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Álgebra Superior II",
-    books: [{ id: "bib_as2_Cardenas", title: "Álgebra Superior", author: "H. Cárdenas, E. Lluis, F. Raggi, F. Tomás 1974", pages: 0, tracks: [] },
-            { id: "bib_as2_Nachbin", title: "Álgebra Elemental", author: "L. Nachbin 1986", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Cálculo Diferencial e Integral II",
-    books: [{ id: "bib_cal2_Arizmendi", title: "Cálculo. Primer Curso", author: "H. Arizmendi, H. Carrillo, M. Lara 1987", pages: 0, tracks: [] },
-            { id: "bib_cal2_Courant", title: "Introducción al Cálculo y al Análisis", author: "R. Courant, F. John 1996", pages: 0, tracks: [] },
-            { id: "bib_cal2_Lang", title: "Cálculo I", author: "S. Lang 1990", pages: 0, tracks: [] },
-            { id: "bib_cal2_Spivak", title: "Cálculo Infinitesimal (2ª ed.)", author: "M. Spivak 1998", pages: 680, tracks: [] },
-            { id: "bib_cal2_Thomas", title: "Cálculo con Geometría Analítica (9ª ed.)", author: "G. B. Thomas, R. L. Finney 1987", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Geometría Analítica II",
-    books: [{ id: "bib_geo2_Bracho", title: "Geometría Analítica", author: "J. Bracho", pages: 0, tracks: [] },
-            { id: "bib_geo2_Efimov", title: "Geometría Superior", author: "N. Efimov 1984", pages: 0, tracks: [] },
-            { id: "bib_geo2_Preston", title: "Modern Analytic Geometry", author: "G. C. Preston, A. R. Lovaglia 1971", pages: 0, tracks: [] },
-            { id: "bib_geo2_Ramirez", title: "Geometría Analítica: Una Introducción a la Geometría", author: "A. Ramírez Galarza 1998", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Álgebra Lineal I",
-    books: [{ id: "bib_al1_Curtis", title: "Linear Algebra", author: "C. W. Curtis 1984", pages: 0, tracks: [] },
-            { id: "bib_al1_Friedberg", title: "Álgebra Lineal", author: "S. H. Friedberg, A. J. Insel, L. E. Spence 1982", pages: 0, tracks: [] },
-            { id: "bib_al1_Hoffman", title: "Álgebra Lineal", author: "K. Hoffman, R. Kunze 1973", pages: 0, tracks: [] },
-            { id: "bib_al1_Lang", title: "Álgebra Lineal", author: "S. Lang 1986", pages: 0, tracks: [] },
-            { id: "bib_al1_Nomizu", title: "Fundamentals of Linear Algebra", author: "K. Nomizu 1966", pages: 0, tracks: [] },
-            { id: "bib_al1_Rincon", title: "Álgebra Lineal", author: "H. A. Rincón 2002", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Cálculo Diferencial e Integral III",
-    books: [{ id: "bib_cal3_Apostol", title: "Calculus, Volumen I", author: "T. M. Apostol 2001", pages: 0, tracks: [] },
-            { id: "bib_cal3_Courant2", title: "Differential and Integral Calculus, Volumen II", author: "R. Courant 1936", pages: 0, tracks: [] },
-            { id: "bib_cal3_CourantJohn", title: "Introducción al Cálculo y al Análisis Matemático, Volumen II", author: "R. Courant, F. John 1974", pages: 0, tracks: [] },
-            { id: "bib_cal3_Lang", title: "Calculus of Several Variables", author: "S. Lang 1987", pages: 0, tracks: [] },
-            { id: "bib_cal3_Marsden", title: "Cálculo Vectorial", author: "J. Marsden, A. Tromba 1998", pages: 0, tracks: [] },
-            { id: "bib_cal3_Thomas", title: "Cálculo: varias variables", author: "G. B. Thomas, R. L. Finney 1999", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Álgebra Lineal II",
-    books: [{ id: "bib_al2_Curtis", title: "Linear Algebra", author: "C. W. Curtis 1984", pages: 0, tracks: [] },
-            { id: "bib_al2_Lang", title: "Álgebra Lineal", author: "S. Lang 1986", pages: 0, tracks: [] },
-            { id: "bib_al2_Nomizu", title: "Fundamentals of Linear Algebra", author: "K. Nomizu 1966", pages: 0, tracks: [] },
-            { id: "bib_al2_Rincon", title: "Álgebra Lineal", author: "H. A. Rincón 2002", pages: 0, tracks: [] }]
-  },
-  {
-    label: "Cálculo Diferencial e Integral IV",
-    books: [{ id: "bib_cal4_Apostol", title: "Calculus. Volumen I", author: "T. M. Apostol 2001", pages: 0, tracks: [] },
-            { id: "bib_cal4_Courant2", title: "Differential and Integral Calculus. Vol 2", author: "R. Courant 1936", pages: 0, tracks: [] },
-            { id: "bib_cal4_CourantJohn", title: "Introducción al Cálculo y al Análisis Matemático. Vol. 2", author: "R. Courant, F. John 1974", pages: 0, tracks: [] },
-            { id: "bib_cal4_Lang", title: "Calculus of Several Variables", author: "S. Lang 1987", pages: 0, tracks: [] },
-            { id: "bib_cal4_Marsden", title: "Cálculo Vectorial", author: "J. Marsden, A. Tromba 1998", pages: 0, tracks: [] },
-            { id: "bib_cal4_Thomas", title: "Cálculo: Varias Variables", author: "G. B. Thomas, R. L. Finney 1999", pages: 0, tracks: [] }]
-  }
-];
+// Temas asociados a cada libro (contenido matemático real)
+const TRACKS_DATA = {
+  "bib_algebra_cardenas": [{ num:1, title:"Conjuntos y números naturales", sub:"Nociones básicas", latex:"<div class='def-box'><strong>Definición:</strong> Un conjunto es una colección de objetos bien definidos.</div><p>Los números naturales $\\mathbb{N}$ satisfacen los axiomas de Peano.</p><div class='thm-box'><strong>Teorema de inducción:</strong> Si $P(1)$ es verdadero y $P(k)\\Rightarrow P(k+1)$, entonces $P(n)$ es verdadero para todo $n\\in\\mathbb{N}$.</div>" }],
+  "bib_algebra_nachbin": [{ num:1, title:"Estructuras algebraicas", sub:"Grupos, anillos", latex:"<p>Un <strong>grupo</strong> es un conjunto $G$ con una operación binaria $\\cdot$ que satisface: asociatividad, neutro e inversos.</p><div class='thm-box'>Teorema de Lagrange: $|H|$ divide $|G|$ si $H\\leq G$ finito.</div>" }],
+  "bib_calculo_spivak": [{ num:1, title:"Límites y continuidad", sub:"Definición épsilon-delta", latex:"<p>Decimos que $\\lim_{x\\to a} f(x) = L$ si $\\forall \\varepsilon>0$, $\\exists \\delta>0$ tal que $0<|x-a|<\\delta \\Rightarrow |f(x)-L|<\\varepsilon$.</p><div class='ex-box'>Ejemplo: $\\lim_{x\\to 2} x^2 = 4$</div>" }],
+  "bib_geo_bracho": [{ num:1, title:"Coordenadas cartesianas", sub:"Distancia y rectas", latex:"<p>Distancia euclidiana: $d(P,Q) = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$.</p><p>Ecuación de la recta: $y = mx + b$</p>" }],
+  "bib_lineal_hoffman": [{ num:1, title:"Espacios vectoriales", sub:"Definición y ejemplos", latex:"<p>Un espacio vectorial sobre $\\mathbb{F}$ es un conjunto $V$ con suma y multiplicación escalar que cumple 8 axiomas.</p><p>Ejemplo: $\\mathbb{R}^n$ es un espacio vectorial sobre $\\mathbb{R}$.</p>" }]
+};
+// Asegurar tracks para todos; si falta, poner track por defecto
+ORIGINAL_BOOKS.forEach(b => { if (!TRACKS_DATA[b.id]) TRACKS_DATA[b.id] = [{ num:1, title:"Conceptos fundamentales", sub:"Introducción", latex:"<p>Contenido matemático en desarrollo.</p><div class='def-box'>Definiciones y teoremas esenciales.</div>" }]; });
 
-// Función para obtener datos canónicos de un libro por su ID real
-function getCanonicalBook(realId) {
-  const canonId = REAL_TO_CANONICAL[realId];
-  if (canonId && CANONICAL_BOOKS[canonId]) {
-    return { ...CANONICAL_BOOKS[canonId], id: realId, canonicalId: canonId };
+// Construir LIBRARY unificada usando canonical como agrupador único, evitando duplicados
+const canonicalMap = new Map(); // key=canonical, value = { label, books: [] }
+ORIGINAL_BOOKS.forEach(book => {
+  const canon = book.canonical;
+  if (!canonicalMap.has(canon)) {
+    canonicalMap.set(canon, { label: book.title.split(' ')[0], books: [] });
   }
-  // Si no tiene mapeo canónico, crear entrada genérica
-  return {
-    title: "Libro",
-    author: "Autor",
-    emoji: "📖",
-    cover: "#1a1a24",
-    driveId: "",
-    tracks: DEFAULT_TRACKS,
-    id: realId,
-    canonicalId: realId
-  };
-}
-
-// Construir LIBRARY final sin duplicados dentro de cada categoría
+  const enriched = { ...book, tracks: TRACKS_DATA[book.id] || [] };
+  canonicalMap.get(canon).books.push(enriched);
+});
+// Construir LIBRARY final: cada entrada es un "grupo" (materia) con libros únicos.
+// Para evitar duplicados en vista, aseguramos que dentro del grupo los libros tengan id único por canonical+id.
 const LIBRARY = [];
-for (const category of LIBRARY_ORIGINAL) {
-  const seenBooks = new Set();
-  const uniqueBooks = [];
-  for (const book of category.books) {
-    const canonId = REAL_TO_CANONICAL[book.id] || book.id;
-    if (!seenBooks.has(canonId)) {
-      seenBooks.add(canonId);
-      const canon = getCanonicalBook(book.id);
-      uniqueBooks.push({
-        id: book.id,
-        title: canon.title,
-        author: canon.author,
-        emoji: canon.emoji,
-        cover: canon.cover,
-        pages: book.pages,
-        tracks: canon.tracks
-      });
-    }
-  }
-  LIBRARY.push({ label: category.label, books: uniqueBooks });
-}
+canonicalMap.forEach((group, canonKey) => {
+  // Agrupar por título exacto para evitar duplicados dentro del grupo
+  const uniqueTitles = new Map();
+  group.books.forEach(b => {
+    if (!uniqueTitles.has(b.title)) uniqueTitles.set(b.title, b);
+  });
+  const booksUnique = Array.from(uniqueTitles.values());
+  LIBRARY.push({ label: group.label + " · Materiales", books: booksUnique });
+});
 
-// PDF mappings (completo)
+// PDF links (igual)
 const PDF = {
-  // Álgebra Superior
-  "bib_as1_Cardenas": { driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL", title: "Álgebra Superior - Cárdenas" },
-  "bib_as2_Cardenas": { driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL", title: "Álgebra Superior - Cárdenas" },
-  "bib_as1_Nachbin": { driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F", title: "Álgebra Elemental - Nachbin" },
-  "bib_as2_Nachbin": { driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F", title: "Álgebra Elemental - Nachbin" },
-  // Cálculo con PDFs disponibles
-  "bib_cal1_Spivak": { driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ", title: "Cálculo Infinitesimal - Spivak" },
-  "bib_cal2_Spivak": { driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ", title: "Cálculo Infinitesimal - Spivak" }
-  // Los demás libros tienen driveId: "" (sin PDF disponible)
-};
+  // ==================== ÁLGEBRA SUPERIOR I & II ====================
+  "bib_as1_Cardenas": {
+    driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL",
+    title: "Álgebra Superior - Cárdenas"
+  },
+  "bib_as2_Cardenas": {
+    driveId: "1nhluQ-eRdAy3wDSh43n9Qby0nfWPNfXL",
+    title: "Álgebra Superior - Cárdenas"
+  },
+  "bib_as1_Nachbin": {
+    driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F",
+    title: "Álgebra Elemental - Nachbin"
+  },
+  "bib_as2_Nachbin": {
+    driveId: "1Rbt8G73oo5H_LMenq-AuEf9STzwtAO-F",
+    title: "Álgebra Elemental - Nachbin"
+  },
 
-for (const category of LIBRARY_ORIGINAL) {
-  for (const book of category.books) {
-    if (!PDF[book.id]) {
-      PDF[book.id] = { driveId: "", title: book.title };
-    }
+  // ==================== CÁLCULO I & II ====================
+  "bib_cal1_Arizmendi": {
+    driveId: "",
+    title: "Cálculo. Primer Curso - Arizmendi"
+  },
+  "bib_cal2_Arizmendi": {
+    driveId: "",
+    title: "Cálculo. Primer Curso - Arizmendi"
+  },
+  "bib_cal1_Courant": {
+    driveId: "",
+    title: "Introducción al Cálculo y al Análisis - Courant"
+  },
+  "bib_cal2_Courant": {
+    driveId: "",
+    title: "Introducción al Cálculo y al Análisis - Courant"
+  },
+  "bib_cal1_Lang": {
+    driveId: "",
+    title: "Cálculo I - Lang"
+  },
+  "bib_cal2_Lang": {
+    driveId: "",
+    title: "Cálculo I - Lang"
+  },
+  "bib_cal1_Spivak": {
+    driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ",
+    title: "Cálculo Infinitesimal (2a ed) - Spivak"
+  },
+  "bib_cal2_Spivak": {
+    driveId: "1KGZWC40X271iPZ7C2zTYYVUsYvQ8BbdZ",
+    title: "Cálculo Infinitesimal (2ª ed.) - Spivak"
+  },
+  "bib_cal1_Thomas": {
+    driveId: "",
+    title: "Cálculo con Geometría Analítica (9a ed) - Thomas"
+  },
+  "bib_cal2_Thomas": {
+    driveId: "",
+    title: "Cálculo con Geometría Analítica (9ª ed.) - Thomas"
+  },
+
+  // ==================== GEOMETRÍA ANALÍTICA I & II ====================
+  "bib_geo1_Bracho": {
+    driveId: "",
+    title: "Geometría Analítica - Bracho"
+  },
+  "bib_geo2_Bracho": {
+    driveId: "",
+    title: "Geometría Analítica - Bracho"
+  },
+  "bib_geo1_Efimov": {
+    driveId: "",
+    title: "Geometría Superior - Efimov"
+  },
+  "bib_geo2_Efimov": {
+    driveId: "",
+    title: "Geometría Superior - Efimov"
+  },
+  "bib_geo1_Preston": {
+    driveId: "",
+    title: "Modern Analytic Geometry - Preston & Lovaglia"
+  },
+  "bib_geo2_Preston": {
+    driveId: "",
+    title: "Modern Analytic Geometry - Preston & Lovaglia"
+  },
+  "bib_geo1_Ramirez": {
+    driveId: "",
+    title: "Geometría Analítica - Ramírez Galarza"
+  },
+  "bib_geo2_Ramirez": {
+    driveId: "",
+    title: "Geometría Analítica - Ramírez Galarza"
+  },
+
+  // ==================== ÁLGEBRA LINEAL I & II ====================
+  "bib_al1_Curtis": {
+    driveId: "",
+    title: "Linear Algebra - Curtis"
+  },
+  "bib_al2_Curtis": {
+    driveId: "",
+    title: "Linear Algebra - Curtis"
+  },
+  "bib_al1_Friedberg": {
+    driveId: "",
+    title: "Álgebra Lineal - Friedberg, Insel & Spence"
+  },
+  "bib_al1_Hoffman": {
+    driveId: "",
+    title: "Álgebra Lineal - Hoffman & Kunze"
+  },
+  "bib_al1_Lang": {
+    driveId: "",
+    title: "Álgebra Lineal - Lang"
+  },
+  "bib_al2_Lang": {
+    driveId: "",
+    title: "Álgebra Lineal - Lang"
+  },
+  "bib_al1_Nomizu": {
+    driveId: "",
+    title: "Fundamentals of Linear Algebra - Nomizu"
+  },
+  "bib_al2_Nomizu": {
+    driveId: "",
+    title: "Fundamentals of Linear Algebra - Nomizu"
+  },
+  "bib_al1_Rincon": {
+    driveId: "",
+    title: "Álgebra Lineal - Rincón"
+  },
+  "bib_al2_Rincon": {
+    driveId: "",
+    title: "Álgebra Lineal - Rincón"
+  },
+
+  // ==================== CÁLCULO III ====================
+  "bib_cal3_Apostol": {
+    driveId: "",
+    title: "Calculus, Volumen I - Apostol"
+  },
+  "bib_cal3_Courant2": {
+    driveId: "",
+    title: "Differential and Integral Calculus, Volumen II - Courant"
+  },
+  "bib_cal3_CourantJohn": {
+    driveId: "",
+    title: "Introducción al Cálculo y al Análisis Matemático, Volumen II - Courant & John"
+  },
+  "bib_cal3_Lang": {
+    driveId: "",
+    title: "Calculus of Several Variables - Lang"
+  },
+  "bib_cal3_Marsden": {
+    driveId: "",
+    title: "Cálculo Vectorial - Marsden & Tromba"
+  },
+  "bib_cal3_Thomas": {
+    driveId: "",
+    title: "Cálculo: varias variables - Thomas & Finney"
+  },
+
+  // ==================== CÁLCULO IV ====================
+  "bib_cal4_Apostol": {
+    driveId: "",
+    title: "Calculus. Volumen I - Apostol"
+  },
+  "bib_cal4_Courant2": {
+    driveId: "",
+    title: "Differential and Integral Calculus. Vol 2 - Courant"
+  },
+  "bib_cal4_CourantJohn": {
+    driveId: "",
+    title: "Introducción al Cálculo y al Análisis Matemático. Vol. 2 - Courant & John"
+  },
+  "bib_cal4_Lang": {
+    driveId: "",
+    title: "Calculus of Several Variables - Lang"
+  },
+  "bib_cal4_Marsden": {
+    driveId: "",
+    title: "Cálculo Vectorial - Marsden & Tromba"
+  },
+  "bib_cal4_Thomas": {
+    driveId: "",
+    title: "Cálculo: Varias Variables - Thomas & Finney"
   }
-}
-
-// Computed lookups
+};
 const allBooks = LIBRARY.flatMap(c => c.books);
 const bookMap = Object.fromEntries(allBooks.map(b => [b.id, b]));
-const allTracks = allBooks.flatMap(b => b.tracks.map(t => ({ ...t, bookId: b.id, bookTitle: b.title, bookEmoji: b.emoji, bookCover: b.cover })));
+const allTracks = allBooks.flatMap(b => b.tracks.map(t => ({ ...t, bookId:b.id, bookTitle:b.title, bookEmoji:b.emoji, bookCover:b.cover })));
 
-/* ─── STATE ──────────────────────────────────────── */
-function loadFavs() {
-  try {
-    const raw = localStorage.getItem('np_favs');
-    if (!raw) return [];
-    return JSON.parse(raw).filter(x => typeof x === 'string');
-  } catch { localStorage.removeItem('np_favs'); return []; }
-}
-function loadRecent() {
-  try { return JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0,4); }
-  catch { return []; }
-}
+// ----- ESTADO Y FAVORITOS UNIFICADO -----
+function loadFavs() { try { const raw = localStorage.getItem('np_favs'); if (!raw) return []; return JSON.parse(raw).filter(x => typeof x === 'string'); } catch { localStorage.removeItem('np_favs'); return []; } }
+function loadRecent() { try { return JSON.parse(localStorage.getItem('np_recent') || '[]').slice(0,4); } catch { return []; } }
+const S = { view:'home', prev:null, bookId:null, favs: new Set(loadFavs()), openTracks: new Set(), recent: loadRecent(), isFav(k) { return this.favs.has(k); }, toggleFav(k) { this.favs.has(k) ? this.favs.delete(k) : this.favs.add(k); localStorage.setItem('np_favs', JSON.stringify([...this.favs])); this._syncFavCount(); return this.favs.has(k); }, addRecent(bookId, num) { const k = `${bookId}:${num}`; this.recent = [k, ...this.recent.filter(x => x !== k)].slice(0,4); localStorage.setItem('np_recent', JSON.stringify(this.recent)); }, _syncFavCount() { const el = document.getElementById('fav-count'); const n = this.favs.size; el.textContent = n; el.classList.toggle('hidden', n === 0); }, coverUrl(bookId) { const id = PDF[bookId]?.driveId; return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : null; } };
 
-const S = {
-  view: 'home',
-  prev: null,
-  bookId: null,
-  favs: new Set(loadFavs()),
-  openTracks: new Set(),
-  recent: loadRecent(),
+function coverHTML(bookId, alt='', cls='') { const url = S.coverUrl(bookId); const book = bookMap[bookId]; return url ? `<img src="${url}" alt="${alt}" loading="lazy"${cls ? ` class="${cls}"` : ''}>` : `<span>${book?.emoji ?? '📖'}</span>`; }
 
-  isFav(k) { return this.favs.has(k); },
-  toggleFav(k) {
-    this.favs[this.favs.has(k) ? 'delete' : 'add'](k);
-    localStorage.setItem('np_favs', JSON.stringify([...this.favs]));
-    this._syncFavCount();
-    return this.favs.has(k);
-  },
-  addRecent(bookId, num) {
-    const k = `${bookId}:${num}`;
-    this.recent = [k, ...this.recent.filter(x => x !== k)].slice(0,4);
-    localStorage.setItem('np_recent', JSON.stringify(this.recent));
-  },
-  _syncFavCount() {
-    const el = document.getElementById('fav-count');
-    const n = this.favs.size;
-    el.textContent = n;
-    el.classList.toggle('hidden', n === 0);
-  },
-  coverUrl(bookId) {
-    const id = PDF[bookId]?.driveId;
-    return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : null;
-  }
-};
-
-function coverHTML(bookId, alt = '', cls = '') {
-  const url = S.coverUrl(bookId);
-  const book = bookMap[bookId];
-  return url ? `<img src="${url}" alt="${alt}" loading="lazy"${cls ? ` class="${cls}"` : ''}>` : `<span>${book?.emoji ?? '📖'}</span>`;
-}
-
-/* ─── RENDER ─────────────────────────────────────── */
+// ----- RENDER (HOME con favoritos sin duplicación) -----
 const R = {
-  home() {
-    let html = '';
-    const recentItems = S.recent.map(k => { const [bid, n] = k.split(':'); const b = bookMap[bid]; const t = b?.tracks.find(x => x.num === +n); return b && t ? {b,t} : null; }).filter(Boolean);
-    if (recentItems.length) {
-      html += `<div class="section"><div class="section-header"><span class="section-title">Continuar leyendo</span></div><div class="continue-list">${recentItems.map(({b,t}) => `<div class="continue-item" onclick="Nav.play('${b.id}',${t.num})"><div class="c-thumb">${coverHTML(b.id, b.title)}</div><div class="c-info"><div class="c-title">${t.title}</div><div class="c-sub">${b.title} · ${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div></div>`;
-    }
-    html += LIBRARY.map(cat => `<div class="section"><div class="section-header"><span class="section-title">${cat.label}</span></div><div class="hscroll">${cat.books.map((b, idx) => `<div class="mini-card" data-book="${b.id}" data-idx="${idx}" onclick="Nav.detail('${b.id}')"><div class="mini-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}<button class="fav-dot ${S.isFav(b.id)?'faved':''}" onclick="event.stopPropagation();A.bookFav('${b.id}',this)">${S.isFav(b.id)?'★':'☆'}</button></div><div class="mini-info"><div class="mini-title">${b.title}</div><div class="mini-meta">${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div></div>`).join('');
-    document.getElementById('home').innerHTML = html;
+  home() { let html = ''; const recentItems = S.recent.map(k => { const [bid,n] = k.split(':'); const b = bookMap[bid]; const t = b?.tracks.find(x => x.num === +n); return b && t ? {b,t} : null; }).filter(Boolean);
+    if (recentItems.length) html += `<div class="section"><div class="section-header"><span class="section-title">Continuar leyendo</span></div><div class="continue-list">${recentItems.map(({b,t}) => `<div class="continue-item" onclick="Nav.play('${b.id}',${t.num})"><div class="c-thumb">${coverHTML(b.id, b.title)}</div><div class="c-info"><div class="c-title">${t.title}</div><div class="c-sub">${b.title} · ${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div></div>`; 
+    html += LIBRARY.map(cat => `<div class="section"><div class="section-header"><span class="section-title">${cat.label}</span></div><div class="hscroll">${cat.books.map((b,idx) => `<div class="mini-card" data-book="${b.id}" data-idx="${idx}" onclick="Nav.detail('${b.id}')"><div class="mini-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}<button class="fav-dot ${S.isFav(b.id)?'faved':''}" onclick="event.stopPropagation();A.bookFav('${b.id}',this)" aria-label="Favorito">${S.isFav(b.id)?'★':'☆'}</button></div><div class="mini-info"><div class="mini-title">${b.title}</div><div class="mini-meta">${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div></div>`).join('');
+    document.getElementById('home').innerHTML = html; 
   },
-
-  detail(book) {
-    if (!book) return;
-    S.bookId = book.id;
-    const coverInner = S.coverUrl(book.id) ? `<img src="${S.coverUrl(book.id)}" alt="${book.title}">` : `<span>${book.emoji}</span>`;
-    let html = `<div class="detail-header"><div class="detail-cover" style="background:${book.cover}">${coverInner}</div><div class="detail-info"><h1 class="detail-title">${book.title}</h1><p class="detail-author">${book.author}</p></div><div class="detail-actions"><button class="action-btn ${S.isFav(book.id)?'faved':''}" id="fav-btn" onclick="A.bookFav('${book.id}',this,true)">${S.isFav(book.id)?'★ Guardado':'☆ Guardar'}</button><button class="action-btn primary" onclick="Reader.open('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Leer PDF</button></div><div class="detail-stats">${book.tracks.length} temas</div></div><div class="section-header" style="padding:0 1rem .5rem"><span class="section-title">Temas</span></div><div class="episode-list">${book.tracks.map((t,i) => { const key = `${book.id}:${t.num}`; const open = S.openTracks.has(key); return `<div id="wrap-${book.id}-${t.num}" style="animation-delay:${i*.03}s"><div class="ep-item ${open?'open':''}" id="ep-${book.id}-${t.num}" onclick="A.toggle('${book.id}',${t.num})"><span class="ep-num">${String(t.num).padStart(2,'0')}</span><div class="ep-info"><div class="ep-title">${t.title}</div><div class="ep-meta"><span>${t.sub}</span></div></div><div class="ep-actions"><button class="ep-fav ${S.isFav(key)?'faved':''}" onclick="event.stopPropagation();A.trackFav('${book.id}',${t.num},this)">${S.isFav(key)?'★':'☆'}</button><button class="ep-play" onclick="event.stopPropagation();A.toggle('${book.id}',${t.num})"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg></button></div></div><div class="apunte-wrap ${open?'open':''}" id="apunte-${book.id}-${t.num}"><div class="apunte-inner" id="ai-${book.id}-${t.num}">${open ? t.latex : ''}</div></div></div>`; }).join('')}</div>`;
-    document.getElementById('detail').innerHTML = html;
-    if (S.openTracks.size) {
-      setTimeout(() => {
-        S.openTracks.forEach(k => {
-          const el = document.getElementById('ai-' + k.replace(':', '-'));
-          if (el?.innerHTML && window.renderMathInElement) renderMathInElement(el, { delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError: false });
-        });
-      }, 100);
-    }
-  },
-
-  search(q = '') {
-    document.getElementById('search-view').innerHTML = `<div class="search-wrap"><div class="search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="search-input" placeholder="Buscar libros, temas, materias…" value="${q}" autofocus oninput="A.search(this.value)"><span class="search-clear ${q?'visible':''}" id="search-clear" onclick="A.clearSearch()">✕</span></div></div><div class="search-results" id="search-results" style="display:${q?'block':'none'}"></div><div class="lib-grid-section" id="library-grid" style="display:${q?'none':'block'}">${this._grid()}</div>`;
-    if (q) A._runSearch(q);
-  },
-
-  _grid() {
-    const seen = new Set();
-    const unique = allBooks.filter(b => { const k = b.title+'|'+b.author; return seen.has(k) ? false : seen.add(k); });
-    unique.sort((a,b) => a.title.localeCompare(b.title,'es'));
-    return `<div class="lib-grid">${unique.map(b => `<div class="lib-grid-card" onclick="Nav.detail('${b.id}')"><div class="lib-grid-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div><div class="lib-grid-info"><div class="lib-grid-name">${b.title}</div><div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div>`;
-  },
-
-  favs() {
-    const favBooks = allBooks.filter(b => S.isFav(b.id));
-    const favTracks = allTracks.filter(t => S.isFav(`${t.bookId}:${t.num}`));
-    let html = '';
-    if (!favBooks.length && !favTracks.length) html = '<div class="search-empty" style="padding:4rem 1rem">Aún no tienes favoritos.<br>Guarda libros o temas con ☆</div>';
-    else {
-      if (favBooks.length) html += `<div class="section"><div class="section-header"><span class="section-title">Libros guardados</span></div><div class="hscroll">${favBooks.map(b => `<div class="mini-card" onclick="Nav.detail('${b.id}')"><div class="mini-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div><div class="mini-info"><div class="mini-title">${b.title}</div><div class="mini-meta">${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div></div>`;
-      if (favTracks.length) html += `<div class="section"><div class="section-header"><span class="section-title">Temas guardados</span></div><div class="continue-list">${favTracks.map(t => `<div class="continue-item" onclick="Nav.detail('${t.bookId}')"><div class="c-thumb">${t.bookEmoji}</div><div class="c-info"><div class="c-title">${t.title}</div><div class="c-sub">${t.bookTitle} · ${t.sub}</div></div></div>`).join('')}</div></div>`;
-    }
-    document.getElementById('favs-view').innerHTML = html;
-  }
+  detail(book) { if (!book) return; S.bookId = book.id; const coverInner = S.coverUrl(book.id) ? `<img src="${S.coverUrl(book.id)}" alt="${book.title}">` : `<span>${book.emoji}</span>`; let html = `<div class="detail-header"><div class="detail-cover" style="background:${book.cover}">${coverInner}</div><div class="detail-info"><h1 class="detail-title">${book.title}</h1><p class="detail-author">${book.author}</p></div><div class="detail-actions"><button class="action-btn ${S.isFav(book.id)?'faved':''}" id="fav-btn" onclick="A.bookFav('${book.id}',this,true)">${S.isFav(book.id)?'★ Guardado':'☆ Guardar'}</button><button class="action-btn primary" onclick="Reader.open('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Leer PDF</button></div><div class="detail-stats">${book.tracks.length} temas</div></div><div class="section-header" style="padding:0 1rem .5rem"><span class="section-title">Temas</span></div><div class="episode-list">${book.tracks.map((t,i) => { const key = `${book.id}:${t.num}`; const open = S.openTracks.has(key); return `<div id="wrap-${book.id}-${t.num}" style="animation-delay:${i*.03}s"><div class="ep-item ${open?'open':''}" id="ep-${book.id}-${t.num}" onclick="A.toggle('${book.id}',${t.num})"><span class="ep-num">${String(t.num).padStart(2,'0')}</span><div class="ep-info"><div class="ep-title">${t.title}</div><div class="ep-meta"><span>${t.sub}</span></div></div><div class="ep-actions"><button class="ep-fav ${S.isFav(key)?'faved':''}" onclick="event.stopPropagation();A.trackFav('${book.id}',${t.num},this)">${S.isFav(key)?'★':'☆'}</button><button class="ep-play" onclick="event.stopPropagation();A.toggle('${book.id}',${t.num})"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg></button></div></div><div class="apunte-wrap ${open?'open':''}" id="apunte-${book.id}-${t.num}"><div class="apunte-inner" id="ai-${book.id}-${t.num}">${open ? t.latex : ''}</div></div></div>`; }).join('')}</div>`; document.getElementById('detail').innerHTML = html; if (S.openTracks.size) setTimeout(() => { S.openTracks.forEach(k => { const el = document.getElementById('ai-' + k.replace(':', '-')); if (el?.innerHTML && window.renderMathInElement) renderMathInElement(el, { delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false }); }); }, 100); },
+  search(q='') { document.getElementById('search-view').innerHTML = `<div class="search-wrap"><div class="search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="search-input" placeholder="Buscar libros, temas..." value="${q}" autofocus oninput="A.search(this.value)"><span class="search-clear ${q?'visible':''}" id="search-clear" onclick="A.clearSearch()">✕</span></div></div><div class="search-results" id="search-results" style="display:${q?'block':'none'}"></div><div class="lib-grid-section" id="library-grid" style="display:${q?'none':'block'}">${this._grid()}</div>`; if (q) A._runSearch(q); },
+  _grid() { const seen = new Set(); const unique = allBooks.filter(b => { const k = b.title+'|'+b.author; if(seen.has(k)) return false; seen.add(k); return true; }); unique.sort((a,b)=>a.title.localeCompare(b.title,'es')); return `<div class="lib-grid">${unique.map(b => `<div class="lib-grid-card" onclick="Nav.detail('${b.id}')"><div class="lib-grid-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div><div class="lib-grid-info"><div class="lib-grid-name">${b.title}</div><div class="lib-grid-auth">${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div>`; },
+  favs() { const favBooks = allBooks.filter(b => S.isFav(b.id)); const favTracks = allTracks.filter(t => S.isFav(`${t.bookId}:${t.num}`)); let html = ''; if (!favBooks.length && !favTracks.length) html = '<div class="search-empty">Aún no tienes favoritos.<br>Guarda libros o temas con ☆</div>'; else { if (favBooks.length) html += `<div class="section"><div class="section-header"><span class="section-title">Libros guardados</span></div><div class="hscroll">${favBooks.map(b => `<div class="mini-card" onclick="Nav.detail('${b.id}')"><div class="mini-cover" style="background:${b.cover}">${coverHTML(b.id, b.title)}</div><div class="mini-info"><div class="mini-title">${b.title}</div><div class="mini-meta">${b.author.split('·')[0].trim()}</div></div></div>`).join('')}</div></div>`; if (favTracks.length) html += `<div class="section"><div class="section-header"><span class="section-title">Temas guardados</span></div><div class="continue-list">${favTracks.map(t => `<div class="continue-item" onclick="Nav.detail('${t.bookId}')"><div class="c-thumb">${t.bookEmoji}</div><div class="c-info"><div class="c-title">${t.title}</div><div class="c-sub">${t.bookTitle} · ${t.sub}</div></div></div>`).join('')}</div></div>`; } document.getElementById('favs-view').innerHTML = html; }
 };
 
-/* ─── NAVIGATION ─────────────────────────────────── */
-const Nav = {
-  _setBar(title, back) {
-    document.getElementById('tb-default').style.display = back ? 'none' : 'flex';
-    document.getElementById('tb-back').style.display = back ? 'flex' : 'none';
-    if (back) document.getElementById('tb-title').textContent = title ?? '';
-  },
-  _show(id, push = true) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(id)?.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
-    if (id === 'detail') window.scrollTo({ top: 0, behavior: 'instant' });
-    S.prev = S.view; S.view = id;
-    if (push) history.pushState({ view: id, bookId: S.bookId }, '', '#' + id);
-  },
-  home() { this._setBar('', false); R.home(); this._show('home', false); history.replaceState({ view: 'home' }, '', '#home'); },
-  search() { this._setBar('Buscar', true); R.search(); this._show('search-view'); setTimeout(() => document.getElementById('search-input')?.focus(), 100); },
-  favs() { this._setBar('Favoritos', false); R.favs(); this._show('favs-view'); },
-  detail(bookId, push = true) { const b = bookMap[bookId]; if (!b) return; S.bookId = bookId; this._setBar(b.title, true); R.detail(b); this._show('detail', push); },
-  play(bookId, num) { if (S.view !== 'detail' || S.bookId !== bookId) { S.bookId = bookId; S.addRecent(bookId, num); this.detail(bookId); setTimeout(() => A.toggle(bookId, num), 300); } else { S.addRecent(bookId, num); A.toggle(bookId, num); } },
-  back() { const prev = S.prev || 'home'; if (prev === 'home' || prev === S.view) { this.home(); return; } this._show(prev, false); if (prev === 'home') this._setBar('', false); else if (prev === 'detail') this._setBar(bookMap[S.bookId]?.title ?? '', true); }
-};
-
-/* ─── ACTIONS ────────────────────────────────────── */
-const A = {
-  bookFav(bookId, el, isBtn = false) {
-    const on = S.toggleFav(bookId);
-    el.classList.toggle('faved', on);
-    el.textContent = isBtn ? (on ? '★ Guardado' : '☆ Guardar') : (on ? '★' : '☆');
-    if (S.view === 'home') {
-      const card = document.getElementById(`mc-${bookId}`);
-      if (card && card.parentElement) {
-        const hscroll = card.parentElement;
-        if (on) hscroll.insertBefore(card, hscroll.firstChild);
-        else { const origIdx = parseInt(card.dataset.idx ?? '0'); const siblings = [...hscroll.children]; const after = siblings.find(c => c !== card && parseInt(c.dataset.idx ?? '0') > origIdx); if (after) hscroll.insertBefore(card, after); else hscroll.appendChild(card); }
-      }
-    }
-  },
-  trackFav(bookId, num, el) { const k = `${bookId}:${num}`; const on = S.toggleFav(k); el.classList.toggle('faved', on); el.textContent = on ? '★' : '☆'; },
-  toggle(bookId, num) {
-    const key = `${bookId}:${num}`;
-    const wrap = document.getElementById(`apunte-${bookId}-${num}`);
-    const epEl = document.getElementById(`ep-${bookId}-${num}`);
-    if (!wrap) return;
-    const opening = !wrap.classList.contains('open');
-    document.querySelectorAll('.apunte-wrap.open').forEach(el => { el.classList.remove('open'); const k = el.id.replace('apunte-', '').replace(/-(\d+)$/, ':$1'); S.openTracks.delete(k); });
-    document.querySelectorAll('.ep-item.open').forEach(el => el.classList.remove('open'));
-    if (opening) {
-      wrap.classList.add('open');
-      epEl?.classList.add('open');
-      S.openTracks.add(key);
-      const ai = document.getElementById(`ai-${bookId}-${num}`);
-      if (!ai.dataset.rendered) {
-        const t = bookMap[bookId]?.tracks.find(x => x.num === num);
-        if (t) { ai.innerHTML = t.latex; ai.dataset.rendered = '1'; setTimeout(() => { if (window.renderMathInElement) renderMathInElement(ai, { delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError: false }); }, 150); }
-      }
-      setTimeout(() => epEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 200);
-    }
-  },
-  search: (function() { let timer; return function(q) { if (timer) clearTimeout(timer); timer = setTimeout(() => { const clear = document.getElementById('search-clear'); const results = document.getElementById('search-results'); const grid = document.getElementById('library-grid'); clear?.classList.toggle('visible', q.length > 0); if (!q.trim()) { if (results) results.style.display = 'none'; if (grid) grid.style.display = 'block'; return; } if (results) results.style.display = 'block'; if (grid) grid.style.display = 'none'; A._runSearch(q); }, 300); }; })(),
-  _runSearch(q) {
-    const ql = q.toLowerCase();
-    const results = document.getElementById('search-results');
-    if (!results) return;
-    const matches = [];
-    allBooks.forEach(b => {
-      if (b.title.toLowerCase().includes(ql) || b.author.toLowerCase().includes(ql)) matches.push({ type: 'book', bookId: b.id, title: b.title, sub: b.author, emoji: b.emoji, cover: b.cover });
-      b.tracks.forEach(t => { if (t.title.toLowerCase().includes(ql) || t.sub?.toLowerCase().includes(ql)) matches.push({ type: 'track', bookId: b.id, num: t.num, title: t.title, sub: `${b.title} · ${t.sub}`, emoji: b.emoji, cover: b.cover }); });
-    });
-    results.innerHTML = matches.length ? matches.map((m,i) => `<div class="search-result-item" style="animation-delay:${i*.02}s" onclick="${m.type==='book' ? `Nav.detail('${m.bookId}')` : `Nav.play('${m.bookId}',${m.num})`}"><div class="sr-cover" style="background:${m.cover}">${m.emoji}</div><div class="sr-info"><div class="sr-title">${m.title}</div><div class="sr-sub">${m.sub.split('·')[0].trim()}</div></div><span class="sr-type">${m.type==='book'?'Libro':'Tema'}</span></div>`).join('') : `<div class="search-empty">Sin resultados para "<strong>${q}</strong>"</div>`;
-  },
-  clearSearch() { const inp = document.getElementById('search-input'); if (inp) { inp.value = ''; inp.focus(); } this.search(''); }
-};
-
-/* ─── PDF READER ─────────────────────────────────── */
-const Reader = {
-  driveId: null,
-  open(bookId) {
-    const cfg = PDF[bookId];
-    if (!cfg?.driveId) { alert('PDF no disponible para este libro.'); return; }
-    this.driveId = cfg.driveId;
-    document.getElementById('r-title').textContent = cfg.title ?? bookId;
-    document.getElementById('reader-view').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    history.pushState({ view: 'reader', bookId }, '', '#reader');
-    const loading = document.getElementById('r-loading');
-    const error = document.getElementById('r-error');
-    const iframe = document.getElementById('r-iframe');
-    loading.classList.remove('hidden');
-    error.classList.add('hidden');
-    let loaded = false;
-    iframe.onload = () => { loaded = true; loading.classList.add('hidden'); };
-    iframe.onerror = () => { loading.classList.add('hidden'); error.classList.remove('hidden'); };
-    setTimeout(() => { if (!loaded) loading.classList.add('hidden'); }, 10000);
-    iframe.src = `https://drive.google.com/file/d/${this.driveId}/preview`;
-  },
-  openTab() { if (this.driveId) window.open(`https://drive.google.com/file/d/${this.driveId}/view`, '_blank'); },
-  close() { document.getElementById('r-iframe').src = ''; this.driveId = null; document.getElementById('reader-view').classList.remove('active'); document.body.style.overflow = ''; if (location.hash === '#reader') history.back(); }
-};
-
-window.addEventListener('popstate', e => { const v = e.state?.view; if (!v || v === 'home') Nav.home(); else if (v === 'detail' && e.state.bookId) Nav.detail(e.state.bookId, false); else if (v === 'search-view') Nav.search(); else if (v === 'favs-view') Nav.favs(); else if (v === 'reader') Reader.close(); else Nav.home(); });
-document.addEventListener('touchmove', e => { if (document.getElementById('reader-view').classList.contains('active')) e.preventDefault(); }, { passive: false });
-
-window.goHome = () => Nav.home();
-window.showSearch = () => Nav.search();
-window.showFavs = () => Nav.favs();
-window.navBack = () => Nav.back();
-
-document.addEventListener('DOMContentLoaded', () => { history.replaceState({ view: 'home' }, '', '#home'); R.home(); S._syncFavCount(); });
+// ----- NAVEGACIÓN Y ACCIONES -----
+const Nav = { _setBar(title,back) { document.getElementById('tb-default').style.display = back ? 'none' : 'flex'; document.getElementById('tb-back').style.display = back ? 'flex' : 'none'; if(back) document.getElementById('tb-title').textContent = title??''; }, _show(id,push=true) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id)?.classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.nav===id)); if(id==='detail') window.scrollTo({top:0,behavior:'instant'}); S.prev=S.view; S.view=id; if(push) history.pushState({view:id,bookId:S.bookId},'','#'+id); }, home() { this._setBar('',false); R.home(); this._show('home',false); history.replaceState({view:'home'},'','#home'); }, search() { this._setBar('Buscar',true); R.search(); this._show('search-view'); setTimeout(()=>document.getElementById('search-input')?.focus(),100); }, favs() { this._setBar('Favoritos',false); R.favs(); this._show('favs-view'); }, detail(bookId,push=true) { const b=bookMap[bookId]; if(!b) return; S.bookId=bookId; this._setBar(b.title,true); R.detail(b); this._show('detail',push); }, play(bookId,num) { if(S.view!=='detail'||S.bookId!==bookId){ S.bookId=bookId; S.addRecent(bookId,num); this.detail(bookId); setTimeout(()=>A.toggle(bookId,num),300); } else { S.addRecent(bookId,num); A.toggle(bookId,num); } }, back() { const prev=S.prev||'home'; if(prev==='home'||prev===S.view){ this.home(); return; } this._show(prev,false); if(prev==='home') this._setBar('',false); else if(prev==='detail') this._setBar(bookMap[S.bookId]?.title??'',true); } };
+const A = { bookFav(bookId,el,isBtn=false){ const on=S.toggleFav(bookId); el.classList.toggle('faved',on); el.textContent=isBtn?(on?'★ Guardado':'☆ Guardar'):(on?'★':'☆'); if(S.view==='home'){ const card=document.getElementById(`mc-${bookId}`); if(card&&card.parentElement){ const hscroll=card.parentElement; if(on) hscroll.insertBefore(card,hscroll.firstChild); else{ const origIdx=parseInt(card.dataset.idx??'0'); const siblings=[...hscroll.children]; const after=siblings.find(c=>c!==card&&parseInt(c.dataset.idx??'0')>origIdx); if(after) hscroll.insertBefore(card,after); else hscroll.appendChild(card); } } } }, trackFav(bookId,num,el){ const k=`${bookId}:${num}`; const on=S.toggleFav(k); el.classList.toggle('faved',on); el.textContent=on?'★':'☆'; }, toggle(bookId,num){ const key=`${bookId}:${num}`; const wrap=document.getElementById(`apunte-${bookId}-${num}`); const epEl=document.getElementById(`ep-${bookId}-${num}`); if(!wrap) return; const opening=!wrap.classList.contains('open'); document.querySelectorAll('.apunte-wrap.open').forEach(el=>{el.classList.remove('open'); const k=el.id.replace('apunte-','').replace(/-(\d+)$/,':$1'); S.openTracks.delete(k);}); document.querySelectorAll('.ep-item.open').forEach(el=>el.classList.remove('open')); if(opening){ wrap.classList.add('open'); epEl?.classList.add('open'); S.openTracks.add(key); const ai=document.getElementById(`ai-${bookId}-${num}`); if(!ai.dataset.rendered){ const t=bookMap[bookId]?.tracks.find(x=>x.num===num); if(t){ ai.innerHTML=t.latex; ai.dataset.rendered='1'; setTimeout(()=>{if(window.renderMathInElement)renderMathInElement(ai,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});},150);} } setTimeout(()=>epEl?.scrollIntoView({behavior:'smooth',block:'nearest'}),200); } }, search: (function(){ let timer; return function(q){ if(timer) clearTimeout(timer); timer=setTimeout(()=>{ const clear=document.getElementById('search-clear'); const results=document.getElementById('search-results'); const grid=document.getElementById('library-grid'); clear?.classList.toggle('visible',q.length>0); if(!q.trim()){ if(results) results.style.display='none'; if(grid) grid.style.display='block'; return; } if(results) results.style.display='block'; if(grid) grid.style.display='none'; A._runSearch(q); },300); } })(), _runSearch(q){ const ql=q.toLowerCase(); const results=document.getElementById('search-results'); if(!results) return; const matches=[]; allBooks.forEach(b=>{ if(b.title.toLowerCase().includes(ql)||b.author.toLowerCase().includes(ql)) matches.push({type:'book',bookId:b.id,title:b.title,sub:b.author,emoji:b.emoji,cover:b.cover}); b.tracks.forEach(t=>{ if(t.title.toLowerCase().includes(ql)||t.sub?.toLowerCase().includes(ql)) matches.push({type:'track',bookId:b.id,num:t.num,title:t.title,sub:`${b.title} · ${t.sub}`,emoji:b.emoji,cover:b.cover}); }); }); results.innerHTML=matches.length?matches.map((m,i)=>`<div class="search-result-item" style="animation-delay:${i*.02}s" onclick="${m.type==='book'?`Nav.detail('${m.bookId}')`:`Nav.play('${m.bookId}',${m.num})`}"><div class="sr-cover" style="background:${m.cover}">${m.emoji}</div><div class="sr-info"><div class="sr-title">${m.title}</div><div class="sr-sub">${m.sub.split('·')[0].trim()}</div></div><span class="sr-type">${m.type==='book'?'Libro':'Tema'}</span></div>`).join(''):`<div class="search-empty">Sin resultados para "<strong>${q}</strong>"</div>`; }, clearSearch(){ const inp=document.getElementById('search-input'); if(inp){ inp.value=''; inp.focus(); } this.search(''); } };
+const Reader = { driveId:null, open(bookId){ const cfg=PDF[bookId]; if(!cfg?.driveId){ console.warn('Sin PDF'); return; } this.driveId=cfg.driveId; document.getElementById('r-title').textContent=cfg.title??bookId; document.getElementById('reader-view').classList.add('active'); document.body.style.overflow='hidden'; history.pushState({view:'reader',bookId},'','#reader'); const loading=document.getElementById('r-loading'); const error=document.getElementById('r-error'); const iframe=document.getElementById('r-iframe'); loading.classList.remove('hidden'); error.classList.add('hidden'); let loaded=false; iframe.onload=()=>{loaded=true; loading.classList.add('hidden');}; iframe.onerror=()=>{loading.classList.add('hidden'); error.classList.remove('hidden');}; setTimeout(()=>{if(!loaded)loading.classList.add('hidden');},10000); iframe.src=`https://drive.google.com/file/d/${this.driveId}/preview`; }, openTab(){ if(this.driveId) window.open(`https://drive.google.com/file/d/${this.driveId}/view`,'_blank'); }, close(){ document.getElementById('r-iframe').src=''; this.driveId=null; document.getElementById('reader-view').classList.remove('active'); document.body.style.overflow=''; if(location.hash==='#reader') history.back(); } };
+window.addEventListener('popstate',e=>{ const v=e.state?.view; if(!v||v==='home') Nav.home(); else if(v==='detail'&&e.state.bookId) Nav.detail(e.state.bookId,false); else if(v==='search-view') Nav.search(); else if(v==='favs-view') Nav.favs(); else if(v==='reader') Reader.close(); else Nav.home(); });
+document.addEventListener('touchmove',e=>{ if(document.getElementById('reader-view').classList.contains('active')) e.preventDefault(); },{passive:false});
+window.goHome=()=>Nav.home(); window.showSearch=()=>Nav.search(); window.showFavs=()=>Nav.favs(); window.navBack=()=>Nav.back();
+document.addEventListener('DOMContentLoaded',()=>{ history.replaceState({view:'home'},'','#home'); R.home(); S._syncFavCount(); });
 </script>
 </body>
 </html>
