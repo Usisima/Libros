@@ -1210,22 +1210,19 @@ const Reader = {
   }
 };
 
-/* ─── POPSTATE ───────────────────────────────────── */
+// ─── POPSTATE ─────────────────────────────────────
 window.addEventListener('popstate', e => {
   const v = e.state?.view;
-  const prevView = e.state?.previousView;
   
-  // Si el reader está abierto, cualquier popstate significa "cerrar reader"
+  // Si el reader está abierto, cerrarlo y restaurar la vista anterior
   if (document.getElementById('reader-view').classList.contains('active')) {
     Reader._closeUI();
     
-    // Restaurar la vista anterior que estaba activa cuando se abrió el reader
+    // Restaurar la vista que estaba activa cuando se abrió el reader
+    const prevView = e.state?.previousView;
     if (prevView) {
       if (prevView.view === 'detail' && prevView.bookId) {
-        // Restaurar la vista de detalle del libro
         Nav.detail(prevView.bookId, false);
-        // Actualizar el estado actual para reflejar que estamos en detail
-        history.replaceState({ view: 'detail', bookId: prevView.bookId }, '', '#detail');
       } else if (prevView.view === 'home') {
         Nav.home(true);
       } else if (prevView.view === 'search-view') {
@@ -1233,20 +1230,17 @@ window.addEventListener('popstate', e => {
       } else if (prevView.view === 'favs-view') {
         Nav.favs();
       } else {
-        // Fallback: ir a home
         Nav.home(true);
       }
     } else if (S.bookId) {
-      // Si no hay previousView pero hay un bookId, ir al detalle
       Nav.detail(S.bookId, false);
-      history.replaceState({ view: 'detail', bookId: S.bookId }, '', '#detail');
     } else {
       Nav.home(true);
     }
     return;
   }
 
-  // Manejo normal del popstate cuando el reader NO está abierto
+  // Manejo del popstate cuando NO hay reader abierto
   if (!v || v === 'home') {
     Nav.home(true);
   } else if (v === 'detail' && e.state.bookId) {
@@ -1259,7 +1253,6 @@ window.addEventListener('popstate', e => {
     Nav.home(true);
   }
 });
-
 
 /* ─── GLOBAL ALIASES ─────────────────────────────── */
 window.goHome    = () => Nav.home();
