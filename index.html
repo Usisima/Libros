@@ -158,7 +158,7 @@ body{
   transition:all var(--tf);backdrop-filter:blur(4px);
 }
 .fav-dot:hover{transform:scale(1.1);border-color:var(--acc)}
-.fav-dot.faved{background:var(--adim);border-color:var(--acc);color:var(--acc);animation:favPop .3s ease}
+.fav-dot.faved{background:var(--adim);border-color:var(--acc);color:var(--acc)}
 .mini-info{padding:.6rem .7rem}
 .mini-title{
   font-size:.79rem;font-weight:600;line-height:1.2;
@@ -1033,8 +1033,12 @@ const A = {
         if (firstNonFav) hscroll.insertBefore(card, firstNonFav);
         else hscroll.appendChild(card);
       } else {
-        // Solo quitar la clase; la card permanece en su posición actual
+        // Quitar clase pero mantener dentro del bloque de favoritos:
+        // colocar justo antes del primer no-favorito (o al inicio si ya no hay favoritos).
         card.classList.remove('is-fav');
+        const firstNonFav = [...hscroll.children].find(c => c !== card && !c.classList.contains('is-fav'));
+        if (firstNonFav) hscroll.insertBefore(card, firstNonFav);
+        else hscroll.prepend(card);
       }
     }
   },
