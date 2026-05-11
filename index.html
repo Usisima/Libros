@@ -1145,6 +1145,7 @@ const KaTex = {
 };
 
 /* ─── PDF READER ─────────────────────────────────── */
+// ─── PDF READER ───────────────────────────────────
 const Reader = {
   driveId: null,
 
@@ -1156,7 +1157,19 @@ const Reader = {
     document.getElementById('r-title').textContent = cfg.title ?? bookId;
     document.getElementById('reader-view').classList.add('active');
     document.body.style.overflow = 'hidden';
-    history.pushState({ view:'reader', bookId }, '', '#reader');
+    
+    // Guardar el estado actual antes de abrir el reader
+    const currentState = {
+      view: S.view,
+      bookId: S.bookId
+    };
+    
+    // Push state para el reader
+    history.pushState({ 
+      view: 'reader', 
+      bookId: S.bookId,
+      previousView: currentState 
+    }, '', '#reader');
 
     const loading = document.getElementById('r-loading');
     const error   = document.getElementById('r-error');
@@ -1177,17 +1190,16 @@ const Reader = {
   },
 
   close() {
+    // Cerrar sin modificar el historial
     document.getElementById('r-iframe').src = '';
     this.driveId = null;
     document.getElementById('reader-view').classList.remove('active');
     document.body.style.overflow = '';
   },
 
-  // Llamado desde el botón X — navega atrás en el historial,
-  // lo que dispara popstate → _closeUI()
   closeBtn() {
-    if (location.hash === '#reader') history.back();
-    else this.close();
+    // Simplemente hacer history.back() - el popstate se encargará de todo
+    history.back();
   },
 
   _closeUI() {
@@ -1201,30 +1213,52 @@ const Reader = {
 /* ─── POPSTATE ───────────────────────────────────── */
 window.addEventListener('popstate', e => {
   const v = e.state?.view;
-
-  // Si el reader está abierto, cualquier popstate significa "cerrar reader".
-  // El state puede ser 'reader' (swipe) o 'detail'/'home' (back rápido).
-  // En todos los casos: cerrar UI y mostrar el detalle del libro actual.
+  const prevView = e.state?.previousView;
+  
+  // Si el reader está abierto, cualquier popstate significa "cerrar reader"
   if (document.getElementById('reader-view').classList.contains('active')) {
     Reader._closeUI();
-    if (S.bookId) {
+    
+    // Restaurar la vista anterior que estaba activa cuando se abrió el reader
+    if (prevView) {
+      if (prevView.view === 'detail' && prevView.bookId) {
+        // Restaurar la vista de detalle del libro
+        Nav.detail(prevView.bookId, false);
+        // Actualizar el estado actual para reflejar que estamos en detail
+        history.replaceState({ view: 'detail', bookId: prevView.bookId }, '', '#detail');
+      } else if (prevView.view === 'home') {
+        Nav.home(true);
+      } else if (prevView.view === 'search-view') {
+        Nav.search();
+      } else if (prevView.view === 'favs-view') {
+        Nav.favs();
+      } else {
+        // Fallback: ir a home
+        Nav.home(true);
+      }
+    } else if (S.bookId) {
+      // Si no hay previousView pero hay un bookId, ir al detalle
       Nav.detail(S.bookId, false);
-      // Reemplazar el estado actual (#reader) por detail,
-      // para que el siguiente swipe encuentre home correctamente.
-      history.replaceState({ view:'detail', bookId:S.bookId }, '', '#detail');
+      history.replaceState({ view: 'detail', bookId: S.bookId }, '', '#detail');
     } else {
       Nav.home(true);
     }
     return;
   }
 
-  if (!v || v === 'home')                     Nav.home(true);
-  else if (v === 'detail' && e.state.bookId)  Nav.detail(e.state.bookId, false);
-  else if (v === 'search-view')               Nav.search();
-  else if (v === 'favs-view')                 Nav.favs();
-  else                                         Nav.home(true);
+  // Manejo normal del popstate cuando el reader NO está abierto
+  if (!v || v === 'home') {
+    Nav.home(true);
+  } else if (v === 'detail' && e.state.bookId) {
+    Nav.detail(e.state.bookId, false);
+  } else if (v === 'search-view') {
+    Nav.search();
+  } else if (v === 'favs-view') {
+    Nav.favs();
+  } else {
+    Nav.home(true);
+  }
 });
-
 
 
 /* ─── GLOBAL ALIASES ─────────────────────────────── */
