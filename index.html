@@ -1202,13 +1202,18 @@ const Reader = {
 window.addEventListener('popstate', e => {
   const v = e.state?.view;
 
-  // El reader está abierto: el swipe aterrizó en el estado anterior (detail).
-  // Solo cerrar la UI — no pushear nada, el historial ya está correcto.
+  // Si el reader está abierto, cualquier popstate significa "cerrar reader".
+  // El state puede ser 'reader' (swipe) o 'detail'/'home' (back rápido).
+  // En todos los casos: cerrar UI y mostrar el detalle del libro actual.
   if (document.getElementById('reader-view').classList.contains('active')) {
     Reader._closeUI();
-    // Mostrar el detalle sin pushear (ya estamos en ese estado del historial)
-    if (v === 'detail' && e.state?.bookId) {
-      Nav.detail(e.state.bookId, false);
+    if (S.bookId) {
+      Nav.detail(S.bookId, false);
+      // Reemplazar el estado actual (#reader) por detail,
+      // para que el siguiente swipe encuentre home correctamente.
+      history.replaceState({ view:'detail', bookId:S.bookId }, '', '#detail');
+    } else {
+      Nav.home(true);
     }
     return;
   }
