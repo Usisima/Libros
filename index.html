@@ -875,11 +875,8 @@ const R = {
     if (q) A._runSearch(q);
   },
 
-  /* FIX 1 ── deduplicar por clave normalizada (título limpio + apellido autor),
-     no por title|author completo, para que libros repetidos entre materias
-     aparezcan una sola vez en el grid y en favoritos.                       */
   _grid() {
-    const seen   = new Map(); // key → primer bookId encontrado
+    const seen   = new Map();
     allBooks.forEach(b => {
       const k = dedupKey(b);
       if (!seen.has(k)) seen.set(k, b);
@@ -896,7 +893,6 @@ const R = {
   },
 
   favs() {
-    /* FIX 1 (favs) ── deduplicar favoritos de libro por clave normalizada   */
     const seenFavBooks = new Map();
     allBooks
       .filter(b => S.isFav(b.id))
@@ -959,15 +955,17 @@ const Nav = {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
     if (id === 'detail') window.scrollTo({ top:0, behavior:'instant' });
     S.prev = S.view; S.view = id;
-    if (push) history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
+    if (push) {
+      history.pushState({ view:id, bookId:S.bookId }, '', '#'+id);
+    }
   },
   home(fromPopstate = false) {
     this._setBar('', false);
     R.home();
     this._show('home', false);
-    // Solo reemplazar el state si NO venimos de un popstate
-    // (si venimos de popstate, el browser ya colocó el estado correcto)
-    if (!fromPopstate) history.replaceState({ view:'home' }, '', '#home');
+    if (!fromPopstate) {
+      history.replaceState({ view:'home' }, '', '#home');
+    }
   },
   search() {
     this._setBar('Buscar', true);
@@ -1015,12 +1013,6 @@ const A = {
     el.classList.toggle('faved', on);
     el.textContent = isBtn ? (on ? '★ Guardado' : '☆ Guardar') : (on ? '★' : '☆');
 
-    /* FIX 2 + FIX 3 ── manejo del carrusel en home:
-       · Al AÑADIR: mover la card antes del primer no-favorito del hscroll,
-         de modo que quede detrás de los que ya eran favoritos.
-         Marcar la card con .is-fav para poder identificarla.
-       · Al QUITAR: solo quitar .is-fav — la card se queda donde está,
-         no vuelve a su posición original.                                   */
     if (S.view === 'home') {
       const card = document.getElementById(`mc-${bookId}`);
       if (!card) return;
@@ -1034,7 +1026,6 @@ const A = {
         else hscroll.appendChild(card);
         hscroll.scrollLeft = savedScroll;
       } else {
-        // Solo cambiar la clase, sin mover el nodo: evita salto de scroll
         card.classList.remove('is-fav');
       }
     }
@@ -1092,7 +1083,6 @@ const A = {
     const results = document.getElementById('search-results');
     if (!results) return;
 
-    /* FIX 1 (búsqueda) ── deduplicar libros en resultados de búsqueda       */
     const seenBooks = new Map();
     const matches   = [];
 
@@ -1145,7 +1135,6 @@ const KaTex = {
 };
 
 /* ─── PDF READER ─────────────────────────────────── */
-// ─── PDF READER ───────────────────────────────────
 const Reader = {
   driveId: null,
 
@@ -1164,7 +1153,7 @@ const Reader = {
       bookId: S.bookId
     };
     
-    // Push state para el reader
+    // Push state para el reader con la información de la vista anterior
     history.pushState({ 
       view: 'reader', 
       bookId: S.bookId,
@@ -1190,15 +1179,14 @@ const Reader = {
   },
 
   close() {
-    // Cerrar sin modificar el historial
     document.getElementById('r-iframe').src = '';
     this.driveId = null;
     document.getElementById('reader-view').classList.remove('active');
     document.body.style.overflow = '';
   },
 
+  // Llamado desde el botón X - usa history.back() para mantener coherencia
   closeBtn() {
-    // Simplemente hacer history.back() - el popstate se encargará de todo
     history.back();
   },
 
@@ -1210,7 +1198,7 @@ const Reader = {
   }
 };
 
-// ─── POPSTATE ─────────────────────────────────────
+/* ─── POPSTATE ───────────────────────────────────── */
 window.addEventListener('popstate', e => {
   const v = e.state?.view;
   
@@ -1222,6 +1210,7 @@ window.addEventListener('popstate', e => {
     const prevView = e.state?.previousView;
     if (prevView) {
       if (prevView.view === 'detail' && prevView.bookId) {
+        // Restaurar la vista de detalle del libro
         Nav.detail(prevView.bookId, false);
       } else if (prevView.view === 'home') {
         Nav.home(true);
@@ -1230,9 +1219,11 @@ window.addEventListener('popstate', e => {
       } else if (prevView.view === 'favs-view') {
         Nav.favs();
       } else {
+        // Fallback: ir a home
         Nav.home(true);
       }
     } else if (S.bookId) {
+      // Si no hay previousView pero hay un bookId, ir al detalle
       Nav.detail(S.bookId, false);
     } else {
       Nav.home(true);
@@ -1240,7 +1231,7 @@ window.addEventListener('popstate', e => {
     return;
   }
 
-  // Manejo del popstate cuando NO hay reader abierto
+  // Manejo normal del popstate cuando el reader NO está abierto
   if (!v || v === 'home') {
     Nav.home(true);
   } else if (v === 'detail' && e.state.bookId) {
@@ -1258,7 +1249,7 @@ window.addEventListener('popstate', e => {
 window.goHome    = () => Nav.home();
 window.showSearch= () => Nav.search();
 window.showFavs  = () => Nav.favs();
-window.navBack   = () => Nav.back();
+window.navBack   = () => history.back();
 
 /* ─── INIT ───────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
