@@ -1198,9 +1198,15 @@ const Reader = {
 
 /* ─── POPSTATE ───────────────────────────────────── */
 window.addEventListener('popstate', e => {
-  // Si el reader está abierto y navegamos atrás (gesto o botón), cerrar UI
+  // Si el reader está abierto, el swipe/back cierra el reader
+  // y reempuja el estado detail para que el siguiente swipe funcione normalmente.
   if (document.getElementById('reader-view').classList.contains('active')) {
     Reader._closeUI();
+    // Reempujar el estado del detalle actual en el historial
+    // para que home → detail → (swipe) funcione correctamente.
+    if (S.bookId) {
+      history.pushState({ view:'detail', bookId:S.bookId }, '', '#detail');
+    }
     return;
   }
   const v = e.state?.view;
